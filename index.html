@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AgenticSionna</title>
-  <meta name="description" content="Intent-driven wireless network simulation and optimization with self-evolving agents.">
-  <meta property="og:title" content="AgenticSionna">
-  <meta property="og:description" content="Natural-language 3D radio worlds, executable Sionna simulations, and self-evolving wireless agents.">
+  <title>AutoNetSim</title>
+  <meta name="description" content="Intent-driven wireless network experimentation with self-evolving agents.">
+  <meta property="og:title" content="AutoNetSim">
+  <meta property="og:description" content="Natural-language radio environments, executable Sionna simulations, and self-evolving wireless agents.">
   <meta property="og:image" content="assets/sionna_dashboard.png">
   <style>
     :root {
@@ -281,6 +281,36 @@
       margin: 0 auto;
     }
 
+    .paper-figure {
+      background: #f7f4ed;
+      padding: clamp(10px, 1.8vw, 18px);
+    }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .figure-card {
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .figure-card img {
+      width: 100%;
+      background: #f7f4ed;
+    }
+
+    .figure-caption {
+      padding: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
     .demo-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
@@ -436,6 +466,7 @@
       }
 
       .grid-3,
+      .figure-grid,
       .metric-row,
       .resource-grid {
         grid-template-columns: 1fr;
@@ -449,9 +480,9 @@
 </head>
 <body>
   <nav class="nav" aria-label="Primary navigation">
-    <a class="brand" href="#top" aria-label="AgenticSionna home">
+    <a class="brand" href="#top" aria-label="AutoNetSim home">
       <span class="brand-mark">RF</span>
-      <span>AgenticSionna</span>
+      <span>AutoNetSim</span>
     </a>
     <div class="nav-links">
       <a href="#system">System</a>
@@ -464,12 +495,12 @@
   <header class="hero" id="top">
     <div class="hero-inner">
       <p class="eyebrow">Research project</p>
-      <h1>AgenticSionna</h1>
-      <p class="subtitle">Intent-driven wireless network simulation and optimization with self-evolving agents.</p>
-      <p class="hero-copy">AgenticSionna turns natural-language wireless intents into executable 3D radio worlds, Sionna simulations, coverage diagnostics, and iterative deployment plans.</p>
+      <h1>AutoNetSim</h1>
+      <p class="subtitle">Intent-driven wireless network experimentation with self-evolving agents.</p>
+      <p class="hero-copy">AutoNetSim turns natural-language wireless intents into executable radio environments, Sionna simulations, coverage diagnostics, and reusable simulation skills.</p>
       <div class="actions" aria-label="Project links">
         <a class="button primary" href="assets/paper.pdf">Paper PDF</a>
-        <a class="button" href="#demo">Watch demo</a>
+        <a class="button" href="#demo">View demo</a>
         <a class="button" href="#bibtex">BibTeX</a>
         <span class="button disabled" aria-disabled="true">Code coming soon</span>
       </div>
@@ -484,7 +515,7 @@
             <p class="kicker">Why it matters</p>
             <h2>Wireless simulation is a cross-layer artifact problem.</h2>
           </div>
-          <p class="lead">A valid result must keep geometry, RF materials, device placement, channel assumptions, PHY settings, and analysis objectives mutually consistent. AgenticSionna makes this workflow inspectable and executable.</p>
+          <p class="lead">A valid result must keep geometry, RF materials, device placement, channel assumptions, PHY settings, and analysis objectives mutually consistent. AutoNetSim makes this workflow inspectable and executable.</p>
         </div>
         <div class="grid-3">
           <article class="card">
@@ -493,7 +524,7 @@
           </article>
           <article class="card">
             <h3>Executable simulations</h3>
-            <p>The agent produces runnable Sionna workflows for coverage, ray tracing, link-level metrics, and follow-up planning experiments.</p>
+            <p>The agent produces runnable Sionna workflows for coverage, ray tracing, link-level metrics, network-level outputs, and follow-up planning experiments.</p>
           </article>
           <article class="card">
             <h3>Verifier-driven skills</h3>
@@ -514,13 +545,13 @@
         </div>
         <div class="demo-grid">
           <div class="media-frame" id="demo-media">
-            <img src="assets/sionna_dashboard.png" alt="AgenticSionna dashboard with a 3D indoor radio scene and coverage heatmap.">
+            <img src="assets/sionna_dashboard.png" alt="AutoNetSim dashboard with a 3D indoor radio scene and coverage heatmap.">
           </div>
           <aside class="demo-panel">
             <div>
-              <span class="demo-status">Demo slot</span>
-              <h3>Video-ready page section</h3>
-              <p class="lead">Place a demo recording at <code>assets/demo.mp4</code> and this block will automatically switch from the poster image to an embedded video player.</p>
+              <span class="demo-status">Interactive demo</span>
+              <h3>Editable radio scenes with live simulation feedback.</h3>
+              <p class="lead">The dashboard exposes the generated scene, furniture, transmitters, receivers, coverage layers, ray paths, and communication metrics in one inspectable workspace.</p>
             </div>
             <div class="list">
               <div class="list-item"><span class="dot"></span><span>Natural-language scene and furniture generation.</span></div>
@@ -541,20 +572,45 @@
           </div>
           <p class="lead">A central orchestrator dispatches typed tasks to specialized workers. Scene building, simulation, reflection, planning, and skill learning all operate through inspectable artifacts instead of free-form chat alone.</p>
         </div>
-        <div class="media-frame architecture-frame">
-          <img src="assets/architecture.jpg" alt="AgenticSionna architecture with scene builder, simulator, reflector, planner, skill learner, and shared state.">
+        <div class="media-frame architecture-frame paper-figure">
+          <img src="assets/architecture.jpg" alt="AutoNetSim architecture with scene builder, simulator, reflector, planner, skill learner, and shared state.">
         </div>
       </div>
     </section>
 
-    <section class="section alt" id="results">
+    <section class="section alt" id="workflow">
       <div class="wrap">
         <div class="section-head">
           <div>
-            <p class="kicker">Preliminary results</p>
+            <p class="kicker">Agent workflow</p>
+            <h2>Scene construction, reflection, and skill learning stay connected.</h2>
+          </div>
+          <p class="lead">AutoNetSim keeps the radio environment as a structured object-level state, exports it to simulator-facing artifacts, and turns verifier feedback into reusable procedural skill updates.</p>
+        </div>
+        <div class="media-frame paper-figure">
+          <img src="assets/radioworld.jpg" alt="Radio environment construction workflow from language to structured scene and simulator export.">
+        </div>
+        <div class="figure-grid">
+          <div class="figure-card">
+            <img src="assets/reflection.jpg" alt="Online and offline reflection workflow for simulation failures.">
+            <div class="figure-caption">Reflection localizes execution, schema, geometry, and metric failures before they propagate to the user.</div>
+          </div>
+          <div class="figure-card">
+            <img src="assets/skill-learning.jpg" alt="Skill learning loop that converts failures into accepted procedural updates.">
+            <div class="figure-caption">Accepted skill edits are versioned and reused through retrieval, keeping later runs shorter and more reliable.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="results">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Main results</p>
             <h2>Execution-based evaluation rather than visual inspection.</h2>
           </div>
-          <p class="lead">The benchmark checks whether the agent produces valid artifacts and simulations: legal geometry, in-bounds furniture, RF-material assignments, Sionna loadability, executable scripts, and physically plausible trends.</p>
+          <p class="lead">The benchmark checks whether the agent produces valid artifacts and simulations: legal geometry, in-bounds furniture, RF-material assignments, Sionna loadability, executable scripts, structured network traces, and physically plausible trends. Main experiments use Claude Sonnet 4.6 as the default backbone.</p>
         </div>
         <div class="metric-row" aria-label="Result highlights">
           <div class="metric">
@@ -562,37 +618,37 @@
             <span>Held-out pass rate on radio-world generation.</span>
           </div>
           <div class="metric">
-            <strong>82.5%</strong>
-            <span>Average pass rate on wireless simulation tasks.</span>
+            <strong>77.5%</strong>
+            <span>Average pass rate across ten simple-prompt simulation families.</span>
+          </div>
+          <div class="metric">
+            <strong>95.0%</strong>
+            <span>Enhanced-prompt pass rate on the system-level suite.</span>
           </div>
           <div class="metric">
             <strong>32.0%</strong>
             <span>Average generated-token reduction.</span>
           </div>
-          <div class="metric">
-            <strong>0.0%</strong>
-            <span>Naive and self-written-skill baseline pass rate.</span>
-          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="benchmark">
+    <section class="section alt" id="benchmark">
       <div class="wrap">
         <div class="split">
           <div>
             <p class="kicker">Benchmark pipeline</p>
             <h2>Prompts become artifacts, artifacts face verifiers.</h2>
-            <p class="lead">AgenticSionna evaluates the complete workflow: a task prompt and base environment are converted into scene files, Sionna code, plots, and diagnostics, then checked by independent verifiers.</p>
+            <p class="lead">AutoNetSim evaluates the complete workflow: a task prompt and base environment are converted into scene files, Sionna code, plots, structured traces, and diagnostics, then checked by independent verifiers.</p>
             <div class="list">
               <div class="list-item"><span class="dot"></span><span>Geometry: valid XML, valid polygons, no collisions, correct placements.</span></div>
               <div class="list-item"><span class="dot"></span><span>RF materials: assigned, valid, and physically meaningful.</span></div>
               <div class="list-item"><span class="dot"></span><span>Sionna load: scripts run and scenes load without hidden failures.</span></div>
-              <div class="list-item"><span class="dot"></span><span>Physical trends: metrics follow expected wireless behavior.</span></div>
+              <div class="list-item"><span class="dot"></span><span>System traces: per-user rates, fairness, scheduling, and sweep tables are internally coherent.</span></div>
             </div>
           </div>
-          <div class="media-frame">
-            <img src="assets/benchmark.png" alt="AgenticSionna benchmark pipeline from task prompt to verifier diagnostics.">
+          <div class="media-frame paper-figure">
+            <img src="assets/benchmark.png" alt="AutoNetSim benchmark pipeline from task prompt to verifier diagnostics.">
           </div>
         </div>
       </div>
@@ -610,11 +666,11 @@
         <div class="resource-grid">
           <a class="resource" href="assets/paper.pdf">
             <b>Paper PDF</b>
-            <span>Current manuscript snapshot.</span>
+            <span>Latest manuscript snapshot.</span>
           </a>
           <a class="resource" href="#demo">
             <b>Demo</b>
-            <span>Dashboard poster now, video-ready slot.</span>
+            <span>Interactive Sionna dashboard view.</span>
           </a>
           <span class="resource">
             <b>Code</b>
@@ -637,8 +693,8 @@
           </div>
           <p class="lead">Use this temporary anonymous entry during review. Replace it with the final author list and venue after publication.</p>
         </div>
-        <pre><code>@article{anonymous2026agenticsionna,
-  title   = {Intent-Driven Wireless Network Simulation and Optimization with Self-Evolving Agents},
+        <pre><code>@article{anonymous2026autonetsim,
+  title   = {AutoNetSim: Intent-Driven Wireless Network Experimentation with Self-Evolving Agents},
   author  = {Anonymous Authors},
   year    = {2026},
   url     = {https://anonymous123-max.github.io/agentic-sionna/}
@@ -648,7 +704,7 @@
   </main>
 
   <footer>
-    AgenticSionna project page. Built as a static GitHub Pages site.
+    AutoNetSim project page. Built as a static GitHub Pages site.
   </footer>
 
   <script>
