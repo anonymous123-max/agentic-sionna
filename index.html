@@ -4,106 +4,660 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AgenticSionna</title>
-  <meta name="description" content="Intent-driven wireless network experimentation with self-evolving agents.">
+  <meta name="description" content="Intent-driven wireless network simulation and optimization with self-evolving agents.">
+  <meta property="og:title" content="AgenticSionna">
+  <meta property="og:description" content="Natural-language 3D radio worlds, executable Sionna simulations, and self-evolving wireless agents.">
+  <meta property="og:image" content="assets/sionna_dashboard.png">
   <style>
     :root {
-      color-scheme: light;
-      --ink: #172033;
-      --muted: #5a6475;
-      --line: #d8dee8;
-      --accent: #1b8a8f;
-      --bg: #f6f8fb;
-      --panel: #ffffff;
+      color-scheme: dark;
+      --bg: #050505;
+      --bg-soft: #0d0e0f;
+      --panel: #111111;
+      --panel-2: #171717;
+      --line: #272727;
+      --line-strong: #3a3a3a;
+      --text: #f7f4ed;
+      --muted: #a19d94;
+      --dim: #6d6a64;
+      --accent: #e6e0d4;
+      --green: #4cd964;
+      --teal: #1b8a8f;
+      --amber: #ffb84d;
+      --max: 1180px;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
-      color: var(--ink);
-      line-height: 1.65;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
     }
 
-    main {
-      width: min(920px, calc(100% - 40px));
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 20;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 4vw, 48px);
+      background: rgba(5, 5, 5, 0.78);
+      border-bottom: 1px solid rgba(230, 224, 212, 0.12);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #050505;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      min-height: 88vh;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background: #050505;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(5, 5, 5, 0.98) 0%, rgba(5, 5, 5, 0.80) 34%, rgba(5, 5, 5, 0.24) 78%),
+        linear-gradient(0deg, rgba(5, 5, 5, 0.98) 0%, rgba(5, 5, 5, 0.12) 48%, rgba(5, 5, 5, 0.42) 100%),
+        url("assets/sionna_dashboard.png") center right / cover no-repeat;
+      filter: saturate(1.02);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: min(var(--max), calc(100% - 40px));
       margin: 0 auto;
-      padding: 72px 0;
-    }
-
-    .paper {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: clamp(28px, 5vw, 56px);
-      box-shadow: 0 18px 50px rgba(23, 32, 51, 0.08);
+      padding: 132px 0 76px;
     }
 
     .eyebrow {
-      margin: 0 0 14px;
-      color: var(--accent);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      margin: 0 0 18px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
     h1 {
       margin: 0;
       max-width: 820px;
-      font-size: clamp(2.2rem, 6vw, 4.25rem);
-      line-height: 1.04;
+      font-size: clamp(48px, 9vw, 112px);
+      line-height: 0.92;
       letter-spacing: 0;
     }
 
     .subtitle {
-      margin: 22px 0 34px;
-      color: var(--muted);
-      font-size: clamp(1.02rem, 2vw, 1.2rem);
-      max-width: 760px;
+      margin: 24px 0 0;
+      max-width: 720px;
+      color: #d6d0c6;
+      font-size: clamp(19px, 2.2vw, 29px);
+      line-height: 1.28;
     }
 
-    h2 {
-      margin: 0 0 14px;
-      padding-top: 26px;
-      border-top: 1px solid var(--line);
-      font-size: 1rem;
-      letter-spacing: 0.08em;
+    .hero-copy {
+      max-width: 700px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(230, 224, 212, 0.26);
+      color: var(--text);
+      background: rgba(17, 17, 17, 0.86);
+      font-weight: 720;
+      font-size: 14px;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: #050505;
+      border-color: var(--accent);
+    }
+
+    .button.disabled {
+      color: var(--dim);
+      cursor: not-allowed;
+    }
+
+    .section {
+      padding: clamp(64px, 8vw, 104px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section.alt {
+      background: var(--bg-soft);
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: clamp(24px, 5vw, 72px);
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
-    p {
+    h2 {
       margin: 0;
-      font-size: 1.04rem;
+      font-size: clamp(30px, 4vw, 54px);
+      line-height: 1.04;
+      letter-spacing: 0;
     }
 
-    .abstract p + p {
-      margin-top: 14px;
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
     }
 
-    strong {
-      font-weight: 750;
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .media-frame {
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: #000;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .media-frame img,
+    .media-frame video {
+      width: 100%;
+      height: auto;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .demo-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .demo-status {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(76, 217, 100, 0.10);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .demo-status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 18px rgba(76, 217, 100, 0.75);
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--accent);
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 22px;
+      align-items: center;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .list-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .dot {
+      flex: 0 0 auto;
+      width: 8px;
+      height: 8px;
+      margin-top: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .resource {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 20px;
+      min-height: 128px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .resource b {
+      font-size: 17px;
+    }
+
+    .resource span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #090909;
+      color: #dcd6ca;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    footer {
+      padding: 32px 0;
+      color: var(--dim);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+
+      .section-head,
+      .demo-grid,
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-3,
+      .metric-row,
+      .resource-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: 780px;
+      }
     }
   </style>
 </head>
 <body>
-  <main>
-    <article class="paper">
-      <p class="eyebrow">Research Paper</p>
-      <h1>AgenticSionna: Intent-Driven Wireless Network Experimentation with Self-Evolving Agents</h1>
-      <p class="subtitle">A self-evolving language-agent system for natural-language 3D radio environment construction and executable Sionna wireless simulation.</p>
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="brand" href="#top" aria-label="AgenticSionna home">
+      <span class="brand-mark">RF</span>
+      <span>AgenticSionna</span>
+    </a>
+    <div class="nav-links">
+      <a href="#system">System</a>
+      <a href="#demo">Demo</a>
+      <a href="#results">Results</a>
+      <a href="#resources">Resources</a>
+    </div>
+  </nav>
 
-      <section class="abstract" aria-labelledby="abstract-title">
-        <h2 id="abstract-title">Abstract</h2>
-        <p>Wireless network simulation and optimization are difficult because they require solving a complex cross-layer configuration problem while interacting with complex 3D radio environments. For decades, engineers have relied on channel models, channel simulators, and extensive standards to guide this process, but using them correctly still requires substantial domain expertise and engineering effort. Recent language-model agents can automate parts of wireless reasoning and code generation, yet they are not trained for the cross-layer setting in which an agent must construct a 3D radio environment, bind it to radio and network assumptions, and run simulations inside it.</p>
-        <p>We present AgenticSionna, a self-evolving language-agent system for intent-driven wireless network simulation. AgenticSionna converts a natural-language request into an executable radio environment that combines a 3D radio environment with a cross-layer wireless-system configuration and optimization. The system uses a multi-agent architecture with specialized scene-building, simulation, reflection, planning, and skill-learning agents. It learns from previous tutorials, worked examples, prior simulation results, and its own failed trajectories, then updates a procedural skill and knowledge base through verifier-driven optimization.</p>
-        <p>We evaluate AgenticSionna on benchmark suites covering 3D radio environment generation, wireless simulation, and token efficiency across multiple indoor and outdoor scenarios. On 3D radio environment generation, AgenticSionna reaches <strong>72.5%</strong> held-out pass rate, compared with <strong>0.0%</strong> for both Naive LLM and Self-Written Skill. On wireless simulation, AgenticSionna achieves an average <strong>82.5%</strong> pass rate, compared with <strong>0.0%</strong> for Naive LLM and <strong>1.25%</strong> for Self-Written Skill, while reducing generated tokens by <strong>32.0%</strong> on average.</p>
-      </section>
-    </article>
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <p class="eyebrow">Research project</p>
+      <h1>AgenticSionna</h1>
+      <p class="subtitle">Intent-driven wireless network simulation and optimization with self-evolving agents.</p>
+      <p class="hero-copy">AgenticSionna turns natural-language wireless intents into executable 3D radio worlds, Sionna simulations, coverage diagnostics, and iterative deployment plans.</p>
+      <div class="actions" aria-label="Project links">
+        <a class="button primary" href="assets/paper.pdf">Paper PDF</a>
+        <a class="button" href="#demo">Watch demo</a>
+        <a class="button" href="#bibtex">BibTeX</a>
+        <span class="button disabled" aria-disabled="true">Code coming soon</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="problem">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Why it matters</p>
+            <h2>Wireless simulation is a cross-layer artifact problem.</h2>
+          </div>
+          <p class="lead">A valid result must keep geometry, RF materials, device placement, channel assumptions, PHY settings, and analysis objectives mutually consistent. AgenticSionna makes this workflow inspectable and executable.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>RF-aware worlds</h3>
+            <p>Generated scenes are not just visual layouts. They expose editable objects, radio-material assignments, transmitter placement, and simulator-ready exports.</p>
+          </article>
+          <article class="card">
+            <h3>Executable simulations</h3>
+            <p>The agent produces runnable Sionna workflows for coverage, ray tracing, link-level metrics, and follow-up planning experiments.</p>
+          </article>
+          <article class="card">
+            <h3>Verifier-driven skills</h3>
+            <p>Failures become updates to a human-readable skill substrate, accepted only through geometry, Sionna-load, and physical-trend checks.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="demo">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Interactive demo</p>
+            <h2>From language to a Sionna-backed radio dashboard.</h2>
+          </div>
+          <p class="lead">The dashboard lets a user inspect the generated scene, edit furniture and RF parameters, run coverage computation, animate rays, and read BER, PDP, OFDM, and global statistics.</p>
+        </div>
+        <div class="demo-grid">
+          <div class="media-frame" id="demo-media">
+            <img src="assets/sionna_dashboard.png" alt="AgenticSionna dashboard with a 3D indoor radio scene and coverage heatmap.">
+          </div>
+          <aside class="demo-panel">
+            <div>
+              <span class="demo-status">Demo slot</span>
+              <h3>Video-ready page section</h3>
+              <p class="lead">Place a demo recording at <code>assets/demo.mp4</code> and this block will automatically switch from the poster image to an embedded video player.</p>
+            </div>
+            <div class="list">
+              <div class="list-item"><span class="dot"></span><span>Natural-language scene and furniture generation.</span></div>
+              <div class="list-item"><span class="dot"></span><span>Layer toggles for walls, furniture, heatmaps, transmitters, and rays.</span></div>
+              <div class="list-item"><span class="dot"></span><span>Sionna-backed coverage and ray-tracing computation.</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="system">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">System design</p>
+            <h2>A multi-agent loop over typed wireless artifacts.</h2>
+          </div>
+          <p class="lead">A central orchestrator dispatches typed tasks to specialized workers. Scene building, simulation, reflection, planning, and skill learning all operate through inspectable artifacts instead of free-form chat alone.</p>
+        </div>
+        <div class="media-frame">
+          <img src="assets/architecture.png" alt="AgenticSionna architecture with scene builder, simulator, reflector, planner, skill learner, and shared state.">
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="results">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Preliminary results</p>
+            <h2>Execution-based evaluation rather than visual inspection.</h2>
+          </div>
+          <p class="lead">The benchmark checks whether the agent produces valid artifacts and simulations: legal geometry, in-bounds furniture, RF-material assignments, Sionna loadability, executable scripts, and physically plausible trends.</p>
+        </div>
+        <div class="metric-row" aria-label="Result highlights">
+          <div class="metric">
+            <strong>72.5%</strong>
+            <span>Held-out pass rate on radio-world generation.</span>
+          </div>
+          <div class="metric">
+            <strong>82.5%</strong>
+            <span>Average pass rate on wireless simulation tasks.</span>
+          </div>
+          <div class="metric">
+            <strong>32.0%</strong>
+            <span>Average generated-token reduction.</span>
+          </div>
+          <div class="metric">
+            <strong>0.0%</strong>
+            <span>Naive and self-written-skill baseline pass rate.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="benchmark">
+      <div class="wrap">
+        <div class="split">
+          <div>
+            <p class="kicker">Benchmark pipeline</p>
+            <h2>Prompts become artifacts, artifacts face verifiers.</h2>
+            <p class="lead">AgenticSionna evaluates the complete workflow: a task prompt and base environment are converted into scene files, Sionna code, plots, and diagnostics, then checked by independent verifiers.</p>
+            <div class="list">
+              <div class="list-item"><span class="dot"></span><span>Geometry: valid XML, valid polygons, no collisions, correct placements.</span></div>
+              <div class="list-item"><span class="dot"></span><span>RF materials: assigned, valid, and physically meaningful.</span></div>
+              <div class="list-item"><span class="dot"></span><span>Sionna load: scripts run and scenes load without hidden failures.</span></div>
+              <div class="list-item"><span class="dot"></span><span>Physical trends: metrics follow expected wireless behavior.</span></div>
+            </div>
+          </div>
+          <div class="media-frame">
+            <img src="assets/benchmark.png" alt="AgenticSionna benchmark pipeline from task prompt to verifier diagnostics.">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="resources">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Resources</p>
+            <h2>Paper artifacts for review and reproduction.</h2>
+          </div>
+          <p class="lead">This page is designed to stay anonymous during review while still exposing the paper, system overview, demo media, and citation block in one place.</p>
+        </div>
+        <div class="resource-grid">
+          <a class="resource" href="assets/paper.pdf">
+            <b>Paper PDF</b>
+            <span>Current manuscript snapshot.</span>
+          </a>
+          <a class="resource" href="#demo">
+            <b>Demo</b>
+            <span>Dashboard poster now, video-ready slot.</span>
+          </a>
+          <span class="resource">
+            <b>Code</b>
+            <span>Coming soon after artifact cleanup.</span>
+          </span>
+          <a class="resource" href="#bibtex">
+            <b>BibTeX</b>
+            <span>Anonymous citation entry.</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="bibtex">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Citation</p>
+            <h2>BibTeX</h2>
+          </div>
+          <p class="lead">Use this temporary anonymous entry during review. Replace it with the final author list and venue after publication.</p>
+        </div>
+        <pre><code>@article{anonymous2026agenticsionna,
+  title   = {Intent-Driven Wireless Network Simulation and Optimization with Self-Evolving Agents},
+  author  = {Anonymous Authors},
+  year    = {2026},
+  url     = {https://anonymous123-max.github.io/agentic-sionna/}
+}</code></pre>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    AgenticSionna project page. Built as a static GitHub Pages site.
+  </footer>
+
+  <script>
+    (function () {
+      var demoSrc = "assets/demo.mp4";
+      fetch(demoSrc, { method: "HEAD" })
+        .then(function (res) {
+          if (!res.ok) return;
+          var media = document.getElementById("demo-media");
+          if (!media) return;
+          media.innerHTML = '<video controls playsinline poster="assets/sionna_dashboard.png"><source src="' + demoSrc + '" type="video/mp4"></video>';
+        })
+        .catch(function () {});
+    }());
+  </script>
 </body>
 </html>
