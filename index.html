@@ -3,46 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AutoNetSim</title>
-  <meta name="description" content="Intent-driven wireless network experimentation with self-evolving agents.">
+  <title>AutoNetSim — Intent-Driven Wireless Network Experimentation with Self-Evolving Agents</title>
+  <meta name="description" content="AutoNetSim turns natural-language wireless intents into executable radio environments, Sionna simulations, coverage diagnostics, and reusable simulation skills.">
   <meta property="og:title" content="AutoNetSim">
   <meta property="og:description" content="Natural-language radio environments, executable Sionna simulations, and self-evolving wireless agents.">
   <meta property="og:image" content="assets/sionna_dashboard.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='%230C6B70' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='16' cy='21' r='2.6' fill='%230C6B70' stroke='none'/%3E%3Cpath d='M9.5 14.5a9.2 9.2 0 0 1 13 0'/%3E%3Cpath d='M5.5 10.5a15 15 0 0 1 21 0'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      color-scheme: dark;
-      --bg: #050505;
-      --bg-soft: #0d0e0f;
-      --panel: #111111;
-      --panel-2: #171717;
-      --line: #272727;
-      --line-strong: #3a3a3a;
-      --text: #f7f4ed;
-      --muted: #a19d94;
-      --dim: #6d6a64;
-      --accent: #e6e0d4;
-      --green: #4cd964;
-      --teal: #1b8a8f;
-      --amber: #ffb84d;
-      --max: 1180px;
+      color-scheme: light;
+      --paper: #FCFCF9;
+      --wash: #F4F4EC;
+      --ink: #1C2225;
+      --muted: #59636A;
+      --faint: #8A949A;
+      --line: rgba(28, 34, 37, 0.16);
+      --line-soft: rgba(28, 34, 37, 0.09);
+      --accent: #0C6B70;
+      --accent-deep: #08585C;
+      --bezel: #101314;
+      --track: #E9E9E0;
+      --signal: linear-gradient(90deg, #2C46A6 0%, #0C6B70 30%, #5E9E43 56%, #E0A33B 78%, #C2452D 100%);
+      --serif: "Newsreader", Georgia, "Times New Roman", serif;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --max: 1120px;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
+    @media (prefers-reduced-motion: no-preference) {
+      html {
+        scroll-behavior: smooth;
+      }
     }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.55;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-optical-sizing: auto;
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
     a {
@@ -55,433 +64,755 @@
       max-width: 100%;
     }
 
+    ::selection {
+      background: rgba(12, 107, 112, 0.16);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    .mono {
+      font-family: var(--mono);
+    }
+
+    /* ---------- signal strip ---------- */
+
+    .signal-strip {
+      height: 3px;
+      background: var(--signal);
+    }
+
+    /* ---------- nav ---------- */
+
     .nav {
-      position: fixed;
-      inset: 0 0 auto;
+      position: sticky;
+      top: 0;
       z-index: 20;
-      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 clamp(20px, 4vw, 48px);
-      background: rgba(5, 5, 5, 0.78);
-      border-bottom: 1px solid rgba(230, 224, 212, 0.12);
-      backdrop-filter: blur(12px);
+      gap: 16px;
+      height: 60px;
+      padding: 0 clamp(20px, 4vw, 44px);
+      background: rgba(252, 252, 249, 0.88);
+      border-bottom: 1px solid var(--line-soft);
+      backdrop-filter: blur(10px) saturate(1.4);
+      -webkit-backdrop-filter: blur(10px) saturate(1.4);
     }
 
     .brand {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 750;
-      letter-spacing: 0.02em;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
     }
 
-    .brand-mark {
-      width: 30px;
-      height: 30px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #050505;
-      font-size: 12px;
-      font-weight: 850;
+    .brand svg {
+      flex: 0 0 auto;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 22px;
+      gap: 26px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       color: var(--muted);
-      font-size: 14px;
     }
 
     .nav-links a:hover {
-      color: var(--text);
+      color: var(--accent);
     }
+
+    .nav-pdf {
+      display: inline-flex;
+      align-items: center;
+      height: 32px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+    }
+
+    .nav-pdf:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ---------- hero ---------- */
 
     .hero {
-      min-height: 88vh;
-      position: relative;
-      display: flex;
-      align-items: flex-end;
-      overflow: hidden;
-      border-bottom: 1px solid var(--line);
-      background: #050505;
+      padding: clamp(64px, 9vh, 104px) 0 clamp(48px, 6vw, 72px);
+      text-align: center;
     }
 
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, rgba(5, 5, 5, 0.98) 0%, rgba(5, 5, 5, 0.80) 34%, rgba(5, 5, 5, 0.24) 78%),
-        linear-gradient(0deg, rgba(5, 5, 5, 0.98) 0%, rgba(5, 5, 5, 0.12) 48%, rgba(5, 5, 5, 0.42) 100%),
-        url("assets/sionna_dashboard.png") center right / cover no-repeat;
-      filter: saturate(1.02);
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      width: min(var(--max), calc(100% - 40px));
+    .wrap {
+      width: min(var(--max), calc(100% - 48px));
       margin: 0 auto;
-      padding: 132px 0 76px;
     }
 
     .eyebrow {
-      margin: 0 0 18px;
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
+      margin: 0 0 26px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
+      color: var(--accent);
     }
 
     h1 {
-      margin: 0;
-      max-width: 820px;
-      font-size: clamp(48px, 9vw, 112px);
-      line-height: 0.92;
-      letter-spacing: 0;
+      margin: 0 auto;
+      max-width: 900px;
+      font-size: clamp(56px, 9vw, 112px);
+      font-weight: 500;
+      line-height: 0.98;
+      letter-spacing: -0.015em;
     }
 
     .subtitle {
-      margin: 24px 0 0;
-      max-width: 720px;
-      color: #d6d0c6;
-      font-size: clamp(19px, 2.2vw, 29px);
-      line-height: 1.28;
+      margin: 26px auto 0;
+      max-width: 680px;
+      font-style: italic;
+      font-size: clamp(20px, 2.6vw, 29px);
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--ink);
     }
 
     .hero-copy {
-      max-width: 700px;
-      margin: 22px 0 0;
+      margin: 20px auto 0;
+      max-width: 640px;
+      font-size: 17.5px;
       color: var(--muted);
-      font-size: 17px;
     }
 
     .actions {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 12px;
-      margin-top: 34px;
+      margin-top: 38px;
     }
 
     .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 44px;
-      padding: 0 18px;
-      border-radius: 8px;
-      border: 1px solid rgba(230, 224, 212, 0.26);
-      color: var(--text);
-      background: rgba(17, 17, 17, 0.86);
-      font-weight: 720;
-      font-size: 14px;
+      gap: 8px;
+      min-height: 46px;
+      padding: 0 20px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+    }
+
+    .button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     .button.primary {
       background: var(--accent);
-      color: #050505;
       border-color: var(--accent);
+      color: #FCFCF9;
+    }
+
+    .button.primary:hover {
+      background: var(--accent-deep);
+      border-color: var(--accent-deep);
+      color: #FCFCF9;
     }
 
     .button.disabled {
-      color: var(--dim);
+      color: var(--faint);
+      border-style: dashed;
       cursor: not-allowed;
     }
 
+    /* hero load sequence */
+
+    @media (prefers-reduced-motion: no-preference) {
+      .rise {
+        opacity: 0;
+        transform: translateY(14px);
+        animation: rise 660ms cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+      }
+
+      .rise-1 { animation-delay: 40ms; }
+      .rise-2 { animation-delay: 120ms; }
+      .rise-3 { animation-delay: 200ms; }
+      .rise-4 { animation-delay: 280ms; }
+      .rise-5 { animation-delay: 380ms; }
+      .rise-6 { animation-delay: 520ms; }
+
+      @keyframes rise {
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    }
+
+    /* ---------- teaser figure ---------- */
+
+    .teaser {
+      padding: 0 0 clamp(56px, 7vw, 88px);
+    }
+
+    .screen {
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(16, 19, 20, 0.9);
+      background: var(--bezel);
+      padding: 9px;
+      box-shadow:
+        0 1px 2px rgba(28, 34, 37, 0.10),
+        0 24px 64px -24px rgba(28, 34, 37, 0.38);
+    }
+
+    .screen img,
+    .screen video {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    .figcap {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      margin: 16px auto 0;
+      max-width: 780px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .figcap b {
+      flex: 0 0 auto;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    /* ---------- sections ---------- */
+
     .section {
       padding: clamp(64px, 8vw, 104px) 0;
-      border-bottom: 1px solid var(--line);
+      border-top: 1px solid var(--line-soft);
+      scroll-margin-top: 76px;
     }
 
-    .section.alt {
-      background: var(--bg-soft);
-    }
-
-    .wrap {
-      width: min(var(--max), calc(100% - 40px));
-      margin: 0 auto;
+    .section.wash {
+      background: var(--wash);
     }
 
     .section-head {
       display: grid;
-      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-      gap: clamp(24px, 5vw, 72px);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+      gap: clamp(28px, 5vw, 80px);
       align-items: end;
-      margin-bottom: 34px;
+      margin-bottom: clamp(36px, 4.5vw, 56px);
     }
 
     .kicker {
-      margin: 0 0 10px;
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
+      margin: 0 0 14px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
+      color: var(--accent);
     }
 
     h2 {
       margin: 0;
-      font-size: clamp(30px, 4vw, 54px);
+      font-size: clamp(32px, 4.4vw, 52px);
+      font-weight: 500;
       line-height: 1.04;
-      letter-spacing: 0;
+      letter-spacing: -0.01em;
     }
 
     .lead {
       margin: 0;
+      font-size: 17.5px;
+      line-height: 1.62;
       color: var(--muted);
-      font-size: 17px;
     }
 
-    .grid-3 {
+    /* ---------- three columns ---------- */
+
+    .cols {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      border-top: 1px solid var(--line);
     }
 
-    .card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      padding: 22px;
+    .col {
+      padding: 26px 28px 6px 0;
     }
 
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 17px;
+    .col + .col {
+      padding-left: 28px;
+      border-left: 1px solid var(--line-soft);
     }
 
-    .card p {
+    .col h3 {
+      margin: 0 0 12px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .col p {
       margin: 0;
+      font-size: 16px;
+      line-height: 1.62;
       color: var(--muted);
-      font-size: 15px;
     }
 
-    .media-frame {
-      overflow: hidden;
-      border: 1px solid var(--line-strong);
-      border-radius: 8px;
-      background: #000;
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
-    }
-
-    .media-frame img,
-    .media-frame video {
-      width: 100%;
-      height: auto;
-    }
-
-    .architecture-frame {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .paper-figure {
-      background: #f7f4ed;
-      padding: clamp(10px, 1.8vw, 18px);
-    }
-
-    .figure-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .figure-card {
-      overflow: hidden;
-      border: 1px solid var(--line-strong);
-      border-radius: 8px;
-      background: var(--panel);
-    }
-
-    .figure-card img {
-      width: 100%;
-      background: #f7f4ed;
-    }
-
-    .figure-caption {
-      padding: 16px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    /* ---------- demo ---------- */
 
     .demo-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
-      gap: 18px;
+      grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.85fr);
+      gap: clamp(24px, 3.5vw, 44px);
       align-items: stretch;
+    }
+
+    .demo-crop img {
+      aspect-ratio: 16 / 10.5;
+      object-fit: cover;
+      object-position: left bottom;
     }
 
     .demo-panel {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      padding: 22px;
+      justify-content: center;
+      gap: 20px;
+      padding-left: clamp(20px, 2.5vw, 32px);
+      border-left: 1px solid var(--line);
     }
 
-    .demo-status {
+    .chip {
       display: inline-flex;
       width: fit-content;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 18px;
-      padding: 6px 10px;
-      border-radius: 8px;
-      background: rgba(76, 217, 100, 0.10);
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 800;
+      gap: 9px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      color: var(--accent);
     }
 
-    .demo-status::before {
+    .chip::before {
       content: "";
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 18px rgba(76, 217, 100, 0.75);
+      background: var(--accent);
     }
 
-    .metric-row {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+    .demo-panel h3 {
+      margin: 0;
+      font-size: clamp(22px, 2.2vw, 27px);
+      font-weight: 500;
+      line-height: 1.22;
     }
 
-    .metric {
-      border-top: 1px solid var(--line);
-      padding-top: 18px;
-    }
-
-    .metric strong {
-      display: block;
-      color: var(--accent);
-      font-size: clamp(32px, 4vw, 52px);
-      line-height: 1;
-      letter-spacing: 0;
-    }
-
-    .metric span {
-      display: block;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .split {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 22px;
-      align-items: center;
+    .demo-panel .lead {
+      font-size: 16px;
     }
 
     .list {
       display: grid;
       gap: 12px;
-      margin-top: 24px;
+      margin: 4px 0 0;
+      padding: 0;
+      list-style: none;
     }
 
-    .list-item {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
+    .list li {
+      position: relative;
+      padding-left: 22px;
+      font-size: 15.5px;
+      line-height: 1.55;
       color: var(--muted);
-      font-size: 15px;
     }
 
-    .dot {
-      flex: 0 0 auto;
-      width: 8px;
-      height: 8px;
-      margin-top: 8px;
+    .list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background: var(--green);
+      border: 2px solid var(--accent);
     }
 
-    .resource-grid {
+    /* ---------- video slots ---------- */
+
+    .clip-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .clip-tabs[hidden] {
+      display: none;
+    }
+
+    .clip-tab {
+      min-height: 34px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 140ms ease, color 140ms ease;
+    }
+
+    .clip-tab:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .clip-tab.active {
+      border-color: var(--accent);
+      background: rgba(12, 107, 112, 0.08);
+      color: var(--accent);
+    }
+
+    .slot-block {
+      display: none;
+      margin-top: clamp(28px, 3.5vw, 44px);
+    }
+
+    .slot-block.on {
+      display: block;
+    }
+
+    .slot-block .figcap {
+      justify-content: flex-start;
+      margin: 14px 0 0;
+    }
+
+    /* ---------- figures ---------- */
+
+    .fig {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #FFFFFF;
+    }
+
+    .fig img {
+      width: 100%;
+      padding: clamp(10px, 1.6vw, 20px);
+    }
+
+    .architecture {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(20px, 3vw, 32px);
+      margin-top: clamp(28px, 3.5vw, 44px);
+    }
+
+    .figure-grid .figcap {
+      margin: 14px 0 0;
+      justify-content: flex-start;
+    }
+
+    .workflow-main .figcap {
+      margin-top: 16px;
+    }
+
+    /* ---------- metrics ---------- */
+
+    .metric-row {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+      gap: clamp(24px, 3.5vw, 44px);
     }
 
-    .resource {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      padding: 20px;
-      min-height: 128px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    .metric strong {
+      display: block;
+      font-family: var(--mono);
+      font-size: clamp(40px, 4.6vw, 62px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
     }
 
-    .resource b {
-      font-size: 17px;
+    .metric .bar {
+      position: relative;
+      height: 6px;
+      margin: 18px 0 14px;
+      border-radius: 3px;
+      background: var(--signal);
+      overflow: hidden;
     }
 
-    .resource span {
+    /* The track-colored cover slides right to reveal the gradient up to the value. */
+    .metric .bar i {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: var(--track);
+      transition: left 1100ms cubic-bezier(0.22, 0.9, 0.25, 1);
+    }
+
+    .metric.inview .bar i,
+    .no-motion .metric .bar i {
+      left: var(--v);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .metric .bar i {
+        transition: none;
+        left: var(--v);
+      }
+    }
+
+    .metric span {
+      display: block;
+      font-size: 15px;
+      line-height: 1.5;
       color: var(--muted);
-      font-size: 14px;
+    }
+
+    .metric .unit {
+      display: inline;
+      font-size: 0.55em;
+      font-style: normal;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--faint);
+    }
+
+    /* ---------- resources ---------- */
+
+    .rows {
+      border-top: 1px solid var(--line);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr) 24px;
+      gap: 24px;
+      align-items: baseline;
+      padding: 22px 4px;
+      border-bottom: 1px solid var(--line-soft);
+      transition: background 140ms ease;
+    }
+
+    a.row:hover {
+      background: var(--wash);
+    }
+
+    a.row:hover .row-arrow {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .row b {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .row span {
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .row-arrow {
+      justify-self: end;
+      font-family: var(--mono);
+      color: var(--faint);
+      transition: transform 140ms ease, color 140ms ease;
+    }
+
+    .row.disabled b,
+    .row.disabled span {
+      color: var(--faint);
+    }
+
+    .row .soon {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 2px 8px;
+      border: 1px dashed var(--line);
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    /* ---------- bibtex ---------- */
+
+    .bibtex-block {
+      position: relative;
     }
 
     pre {
       margin: 0;
       overflow-x: auto;
-      padding: 18px;
+      padding: 24px 26px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #090909;
-      color: #dcd6ca;
+      border-radius: 10px;
+      background: #F4F4EC;
+      color: var(--ink);
+      font-family: var(--mono);
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.62;
+      tab-size: 2;
     }
 
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      min-height: 34px;
+      padding: 0 13px;
+      border-radius: 6px;
+      background: var(--paper);
+    }
+
+    /* ---------- footer ---------- */
+
     footer {
-      padding: 32px 0;
-      color: var(--dim);
-      font-size: 13px;
+      padding: 40px 0 48px;
+      border-top: 1px solid var(--line-soft);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      color: var(--faint);
       text-align: center;
     }
 
-    @media (max-width: 900px) {
-      .nav-links {
+    /* ---------- responsive ---------- */
+
+    @media (max-width: 940px) {
+      .nav-links a:not(.nav-pdf) {
         display: none;
       }
 
       .section-head,
-      .demo-grid,
-      .split {
+      .demo-grid {
         grid-template-columns: 1fr;
       }
 
-      .grid-3,
-      .figure-grid,
-      .metric-row,
-      .resource-grid {
+      .demo-panel {
+        padding-left: 0;
+        padding-top: 24px;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .cols {
         grid-template-columns: 1fr;
       }
 
-      .hero {
-        min-height: 780px;
+      .col {
+        padding: 24px 0 10px;
+      }
+
+      .col + .col {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid var(--line-soft);
+      }
+
+      .metric-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 36px 28px;
+      }
+
+      .figure-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .row {
+        grid-template-columns: minmax(0, 1fr) 24px;
+      }
+
+      .row span {
+        grid-column: 1 / -1;
+      }
+
+      .row .row-arrow {
+        grid-row: 1;
+        grid-column: 2;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .metric-row {
+        grid-template-columns: 1fr;
+      }
+
+      .actions .button {
+        flex: 1 1 46%;
       }
     }
   </style>
 </head>
 <body>
+  <div class="signal-strip" aria-hidden="true"></div>
+
   <nav class="nav" aria-label="Primary navigation">
     <a class="brand" href="#top" aria-label="AutoNetSim home">
-      <span class="brand-mark">RF</span>
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="21" r="2.6" fill="#0C6B70"/>
+        <path d="M9.5 14.5a9.2 9.2 0 0 1 13 0" stroke="#0C6B70" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M5.5 10.5a15 15 0 0 1 21 0" stroke="#0C6B70" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
       <span>AutoNetSim</span>
     </a>
     <div class="nav-links">
@@ -489,16 +820,17 @@
       <a href="#demo">Demo</a>
       <a href="#results">Results</a>
       <a href="#resources">Resources</a>
+      <a class="nav-pdf" href="assets/paper.pdf">Paper PDF</a>
     </div>
   </nav>
 
   <header class="hero" id="top">
-    <div class="hero-inner">
-      <p class="eyebrow">Research project</p>
-      <h1>AutoNetSim</h1>
-      <p class="subtitle">Intent-driven wireless network experimentation with self-evolving agents.</p>
-      <p class="hero-copy">AutoNetSim turns natural-language wireless intents into executable radio environments, Sionna simulations, coverage diagnostics, and reusable simulation skills.</p>
-      <div class="actions" aria-label="Project links">
+    <div class="wrap">
+      <p class="eyebrow rise rise-1">Anonymous project page · Under review</p>
+      <h1 class="rise rise-2">AutoNetSim</h1>
+      <p class="subtitle rise rise-3">Intent-driven wireless network experimentation with <span style="white-space: nowrap;">self-evolving agents.</span></p>
+      <p class="hero-copy rise rise-4">AutoNetSim turns natural-language wireless intents into executable radio environments, Sionna simulations, coverage diagnostics, and reusable simulation skills.</p>
+      <div class="actions rise rise-5" aria-label="Project links">
         <a class="button primary" href="assets/paper.pdf">Paper PDF</a>
         <a class="button" href="#demo">View demo</a>
         <a class="button" href="#bibtex">BibTeX</a>
@@ -506,6 +838,15 @@
       </div>
     </div>
   </header>
+
+  <div class="teaser rise rise-6">
+    <div class="wrap">
+      <div class="screen" id="demo-media">
+        <img src="assets/sionna_dashboard.png" alt="AutoNetSim dashboard with a 3D indoor radio scene and coverage heatmap.">
+      </div>
+      <p class="figcap"><b>FIG. 1</b><span>The Sionna-backed dashboard generated from a natural-language intent — editable indoor scene, coverage heatmap, ray paths, and link-level metrics in one workspace.</span></p>
+    </div>
+  </div>
 
   <main>
     <section class="section" id="problem">
@@ -517,16 +858,16 @@
           </div>
           <p class="lead">A valid result must keep geometry, RF materials, device placement, channel assumptions, PHY settings, and analysis objectives mutually consistent. AutoNetSim makes this workflow inspectable and executable.</p>
         </div>
-        <div class="grid-3">
-          <article class="card">
+        <div class="cols">
+          <article class="col">
             <h3>RF-aware worlds</h3>
             <p>Generated scenes are not just visual layouts. They expose editable objects, radio-material assignments, transmitter placement, and simulator-ready exports.</p>
           </article>
-          <article class="card">
+          <article class="col">
             <h3>Executable simulations</h3>
             <p>The agent produces runnable Sionna workflows for coverage, ray tracing, link-level metrics, network-level outputs, and follow-up planning experiments.</p>
           </article>
-          <article class="card">
+          <article class="col">
             <h3>Verifier-driven skills</h3>
             <p>Failures become updates to a human-readable skill substrate, accepted only through geometry, Sionna-load, and physical-trend checks.</p>
           </article>
@@ -534,7 +875,7 @@
       </div>
     </section>
 
-    <section class="section alt" id="demo">
+    <section class="section wash" id="demo">
       <div class="wrap">
         <div class="section-head">
           <div>
@@ -544,20 +885,21 @@
           <p class="lead">The dashboard lets a user inspect the generated scene, edit furniture and RF parameters, run coverage computation, animate rays, and read BER, PDP, OFDM, and global statistics.</p>
         </div>
         <div class="demo-grid">
-          <div class="media-frame" id="demo-media">
-            <img src="assets/sionna_dashboard.png" alt="AutoNetSim dashboard with a 3D indoor radio scene and coverage heatmap.">
+          <div class="demo-media">
+            <div class="screen demo-crop" id="clip-stage">
+              <img src="assets/sionna_dashboard.png" alt="Close-up of the dashboard's scene controls and link-level metric panels.">
+            </div>
+            <div class="clip-tabs" id="clip-tabs" hidden role="tablist" aria-label="Demo clips"></div>
           </div>
           <aside class="demo-panel">
-            <div>
-              <span class="demo-status">Interactive demo</span>
-              <h3>Editable radio scenes with live simulation feedback.</h3>
-              <p class="lead">The dashboard exposes the generated scene, furniture, transmitters, receivers, coverage layers, ray paths, and communication metrics in one inspectable workspace.</p>
-            </div>
-            <div class="list">
-              <div class="list-item"><span class="dot"></span><span>Natural-language scene and furniture generation.</span></div>
-              <div class="list-item"><span class="dot"></span><span>Layer toggles for walls, furniture, heatmaps, transmitters, and rays.</span></div>
-              <div class="list-item"><span class="dot"></span><span>Sionna-backed coverage and ray-tracing computation.</span></div>
-            </div>
+            <span class="chip">Dashboard preview</span>
+            <h3>Editable radio scenes with live simulation feedback.</h3>
+            <p class="lead">The generated scene, furniture, transmitters, receivers, coverage layers, ray paths, and communication metrics stay inspectable in one workspace.</p>
+            <ul class="list">
+              <li>Natural-language scene and furniture generation.</li>
+              <li>Layer toggles for walls, furniture, heatmaps, transmitters, and rays.</li>
+              <li>Sionna-backed coverage and ray-tracing computation.</li>
+            </ul>
           </aside>
         </div>
       </div>
@@ -572,13 +914,22 @@
           </div>
           <p class="lead">A central orchestrator dispatches typed tasks to specialized workers. Scene building, simulation, reflection, planning, and skill learning all operate through inspectable artifacts instead of free-form chat alone.</p>
         </div>
-        <div class="media-frame architecture-frame paper-figure">
-          <img src="assets/architecture.jpg" alt="AutoNetSim architecture with scene builder, simulator, reflector, planner, skill learner, and shared state.">
+        <div class="architecture">
+          <div class="fig">
+            <img src="assets/architecture.jpg" alt="AutoNetSim architecture with scene builder, simulator, reflector, planner, skill learner, and shared state.">
+          </div>
+          <p class="figcap"><b>FIG. 2</b><span>The orchestrator–worker architecture. A memory bank of verified skills, solutions, and failure roots closes the loop between simulation and skill learning.</span></p>
+        </div>
+        <div class="slot-block architecture" id="slot-agent">
+          <div class="screen">
+            <video controls playsinline muted preload="metadata"></video>
+          </div>
+          <p class="figcap"><b>RUN TRACE</b><span>A complete agent run, end to end — the orchestrator dispatches workers, artifacts are written, verifiers gate the results.</span></p>
         </div>
       </div>
     </section>
 
-    <section class="section alt" id="workflow">
+    <section class="section" id="workflow">
       <div class="wrap">
         <div class="section-head">
           <div>
@@ -587,23 +938,36 @@
           </div>
           <p class="lead">AutoNetSim keeps the radio environment as a structured object-level state, exports it to simulator-facing artifacts, and turns verifier feedback into reusable procedural skill updates.</p>
         </div>
-        <div class="media-frame paper-figure">
-          <img src="assets/radioworld.jpg" alt="Radio environment construction workflow from language to structured scene and simulator export.">
+        <div class="workflow-main">
+          <div class="fig">
+            <img src="assets/radioworld.jpg" alt="Radio environment construction workflow from language to structured scene and simulator export.">
+          </div>
+          <p class="figcap"><b>FIG. 3</b><span>Radio-environment construction — from a natural-language request to a structured scene with radio materials and a simulation-ready Sionna export.</span></p>
         </div>
         <div class="figure-grid">
-          <div class="figure-card">
-            <img src="assets/reflection.jpg" alt="Online and offline reflection workflow for simulation failures.">
-            <div class="figure-caption">Reflection localizes execution, schema, geometry, and metric failures before they propagate to the user.</div>
+          <div>
+            <div class="fig">
+              <img src="assets/reflection.jpg" alt="Online and offline reflection workflow for simulation failures.">
+            </div>
+            <p class="figcap"><b>FIG. 4</b><span>Reflection localizes execution, schema, geometry, and metric failures before they propagate to the user.</span></p>
+            <div class="slot-block" id="slot-reflection">
+              <div class="screen">
+                <video controls playsinline muted preload="metadata"></video>
+              </div>
+              <p class="figcap"><b>DEMO</b><span>A seeded failure is caught by the verifier, diagnosed, patched, and re-run to a pass.</span></p>
+            </div>
           </div>
-          <div class="figure-card">
-            <img src="assets/skill-learning.jpg" alt="Skill learning loop that converts failures into accepted procedural updates.">
-            <div class="figure-caption">Accepted skill edits are versioned and reused through retrieval, keeping later runs shorter and more reliable.</div>
+          <div>
+            <div class="fig">
+              <img src="assets/skill-learning.jpg" alt="Skill learning loop that converts failures into accepted procedural updates.">
+            </div>
+            <p class="figcap"><b>FIG. 5</b><span>Accepted skill edits are versioned and reused through retrieval, keeping later runs shorter and more reliable.</span></p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="results">
+    <section class="section wash" id="results">
       <div class="wrap">
         <div class="section-head">
           <div>
@@ -613,51 +977,58 @@
           <p class="lead">The benchmark checks whether the agent produces valid artifacts and simulations: legal geometry, in-bounds furniture, RF-material assignments, Sionna loadability, executable scripts, structured network traces, and physically plausible trends. Main experiments use Claude Sonnet 4.6 as the default backbone.</p>
         </div>
         <div class="metric-row" aria-label="Result highlights">
-          <div class="metric">
-            <strong>72.5%</strong>
+          <div class="metric" style="--v: 72.5%">
+            <strong>72.5<em class="unit">%</em></strong>
+            <div class="bar" aria-hidden="true"><i></i></div>
             <span>Held-out pass rate on radio-world generation.</span>
           </div>
-          <div class="metric">
-            <strong>77.5%</strong>
+          <div class="metric" style="--v: 77.5%">
+            <strong>77.5<em class="unit">%</em></strong>
+            <div class="bar" aria-hidden="true"><i></i></div>
             <span>Average pass rate across ten simple-prompt simulation families.</span>
           </div>
-          <div class="metric">
-            <strong>95.0%</strong>
+          <div class="metric" style="--v: 95%">
+            <strong>95.0<em class="unit">%</em></strong>
+            <div class="bar" aria-hidden="true"><i></i></div>
             <span>Enhanced-prompt pass rate on the system-level suite.</span>
           </div>
-          <div class="metric">
-            <strong>32.0%</strong>
-            <span>Average generated-token reduction.</span>
+          <div class="metric" style="--v: 32%">
+            <strong>32.0<em class="unit">%</em></strong>
+            <div class="bar" aria-hidden="true"><i></i></div>
+            <span>Average generated-token reduction from learned skills.</span>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section alt" id="resources">
+    <section class="section" id="resources">
       <div class="wrap">
         <div class="section-head">
           <div>
             <p class="kicker">Resources</p>
             <h2>Paper artifacts for review and reproduction.</h2>
           </div>
-          <p class="lead">This page is designed to stay anonymous during review while still exposing the paper, system overview, demo media, and citation block in one place.</p>
+          <p class="lead">This page stays anonymous during review while exposing the paper, system overview, demo media, and citation block in one place.</p>
         </div>
-        <div class="resource-grid">
-          <a class="resource" href="assets/paper.pdf">
+        <div class="rows">
+          <a class="row" href="assets/paper.pdf">
             <b>Paper PDF</b>
             <span>Latest manuscript snapshot.</span>
+            <em class="row-arrow" aria-hidden="true">&rarr;</em>
           </a>
-          <a class="resource" href="#demo">
+          <a class="row" href="#demo">
             <b>Demo</b>
             <span>Interactive Sionna dashboard view.</span>
+            <em class="row-arrow" aria-hidden="true">&rarr;</em>
           </a>
-          <span class="resource">
-            <b>Code</b>
-            <span>Coming soon after artifact cleanup.</span>
-          </span>
-          <a class="resource" href="#bibtex">
+          <div class="row disabled">
+            <b>Code<span class="soon">Coming soon</span></b>
+            <span>Released after artifact cleanup.</span>
+          </div>
+          <a class="row" href="#bibtex">
             <b>BibTeX</b>
             <span>Anonymous citation entry.</span>
+            <em class="row-arrow" aria-hidden="true">&rarr;</em>
           </a>
         </div>
       </div>
@@ -672,31 +1043,127 @@
           </div>
           <p class="lead">Use this temporary anonymous entry during review. Replace it with the final author list and venue after publication.</p>
         </div>
-        <pre><code>@article{anonymous2026autonetsim,
+        <div class="bibtex-block">
+          <pre id="bibtex-code"><code>@article{anonymous2026autonetsim,
   title   = {AutoNetSim: Intent-Driven Wireless Network Experimentation with Self-Evolving Agents},
   author  = {Anonymous Authors},
   year    = {2026},
   url     = {https://anonymous123-max.github.io/agentic-sionna/}
 }</code></pre>
+          <button class="button copy-btn" id="copy-bibtex" type="button">Copy</button>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
-    AutoNetSim project page. Built as a static GitHub Pages site.
+    AutoNetSim — anonymous project page · static site, no tracking.
   </footer>
 
   <script>
     (function () {
-      var demoSrc = "assets/demo.mp4";
-      fetch(demoSrc, { method: "HEAD" })
-        .then(function (res) {
-          if (!res.ok) return;
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function exists(url) {
+        return fetch(url, { method: "HEAD" })
+          .then(function (res) { return res.ok; })
+          .catch(function () { return false; });
+      }
+
+      // --- Hero teaser: the first video candidate that exists replaces the image. ---
+      var HERO = ["assets/demo-hero.mp4", "assets/demo.mp4"];
+      (function heroSlot(i) {
+        if (i >= HERO.length) return;
+        exists(HERO[i]).then(function (ok) {
+          if (!ok) { heroSlot(i + 1); return; }
           var media = document.getElementById("demo-media");
           if (!media) return;
-          media.innerHTML = '<video controls playsinline poster="assets/sionna_dashboard.png"><source src="' + demoSrc + '" type="video/mp4"></video>';
-        })
-        .catch(function () {});
+          media.innerHTML = '<video controls playsinline poster="assets/sionna_dashboard.png"><source src="' + HERO[i] + '" type="video/mp4"></video>';
+          var label = document.querySelector(".teaser .figcap b");
+          if (label) label.textContent = "DEMO 1";
+        });
+      })(0);
+
+      // --- Demo section: tabbed clips; a tab appears only when its file exists. ---
+      var CLIPS = [
+        { src: "assets/demo-editing.mp4", label: "Scene editing" },
+        { src: "assets/demo-rf.mp4", label: "RF parameters" },
+        { src: "assets/demo-rays.mp4", label: "Ray tracing" }
+      ];
+      var stage = document.getElementById("clip-stage");
+      var tabs = document.getElementById("clip-tabs");
+
+      function playClip(clip, btn) {
+        var auto = reduceMotion ? "" : "autoplay ";
+        stage.innerHTML = "<video " + auto + 'muted loop controls playsinline><source src="' + clip.src + '" type="video/mp4"></video>';
+        stage.classList.remove("demo-crop");
+        Array.prototype.forEach.call(tabs.children, function (b) {
+          b.classList.toggle("active", b === btn);
+          b.setAttribute("aria-selected", b === btn ? "true" : "false");
+        });
+      }
+
+      if (stage && tabs) {
+        Promise.all(CLIPS.map(function (c) { return exists(c.src); })).then(function (found) {
+          var avail = CLIPS.filter(function (_, i) { return found[i]; });
+          if (!avail.length) return;
+          avail.forEach(function (clip) {
+            var btn = document.createElement("button");
+            btn.className = "clip-tab";
+            btn.type = "button";
+            btn.setAttribute("role", "tab");
+            btn.textContent = clip.label;
+            btn.addEventListener("click", function () { playClip(clip, btn); });
+            tabs.appendChild(btn);
+          });
+          tabs.hidden = false;
+          playClip(avail[0], tabs.children[0]);
+        });
+      }
+
+      // --- Standalone blocks that appear once their video exists. ---
+      var BLOCKS = [
+        { src: "assets/demo-agent.mp4", id: "slot-agent" },
+        { src: "assets/demo-reflection.mp4", id: "slot-reflection" }
+      ];
+      BLOCKS.forEach(function (b) {
+        exists(b.src).then(function (ok) {
+          if (!ok) return;
+          var el = document.getElementById(b.id);
+          if (!el) return;
+          el.querySelector("video").src = b.src;
+          el.classList.add("on");
+        });
+      });
+
+      // --- Sweep the result bars in when they enter the viewport. ---
+      var metrics = document.querySelectorAll(".metric");
+      if (!("IntersectionObserver" in window) || reduceMotion) {
+        document.body.classList.add("no-motion");
+      } else {
+        var seen = 0;
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            setTimeout(function () { el.classList.add("inview"); }, 120 * seen++);
+            observer.unobserve(el);
+          });
+        }, { threshold: 0.4 });
+        metrics.forEach(function (m) { observer.observe(m); });
+      }
+
+      // --- Copy BibTeX. ---
+      var copyBtn = document.getElementById("copy-bibtex");
+      if (copyBtn && navigator.clipboard) {
+        copyBtn.addEventListener("click", function () {
+          var code = document.getElementById("bibtex-code");
+          navigator.clipboard.writeText(code.textContent.trim()).then(function () {
+            copyBtn.textContent = "Copied";
+            setTimeout(function () { copyBtn.textContent = "Copy"; }, 1600);
+          });
+        });
+      }
     }());
   </script>
 </body>
