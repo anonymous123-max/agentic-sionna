@@ -619,69 +619,6 @@
       color: var(--faint);
     }
 
-    /* ---------- resources ---------- */
-
-    .rows {
-      border-top: 1px solid var(--line);
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 200px minmax(0, 1fr) 24px;
-      gap: 24px;
-      align-items: baseline;
-      padding: 22px 4px;
-      border-bottom: 1px solid var(--line-soft);
-      transition: background 140ms ease;
-    }
-
-    a.row:hover {
-      background: var(--wash);
-    }
-
-    a.row:hover .row-arrow {
-      color: var(--accent);
-      transform: translateX(4px);
-    }
-
-    .row b {
-      font-family: var(--mono);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-    }
-
-    .row span {
-      font-size: 16px;
-      color: var(--muted);
-    }
-
-    .row-arrow {
-      justify-self: end;
-      font-family: var(--mono);
-      color: var(--faint);
-      transition: transform 140ms ease, color 140ms ease;
-    }
-
-    .row.disabled b,
-    .row.disabled span {
-      color: var(--faint);
-    }
-
-    .row .soon {
-      display: inline-block;
-      margin-left: 10px;
-      padding: 2px 8px;
-      border: 1px dashed var(--line);
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: 10.5px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--faint);
-    }
-
     /* ---------- bibtex ---------- */
 
     .bibtex-block {
@@ -761,19 +698,6 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 36px 28px;
       }
-
-      .row {
-        grid-template-columns: minmax(0, 1fr) 24px;
-      }
-
-      .row span {
-        grid-column: 1 / -1;
-      }
-
-      .row .row-arrow {
-        grid-row: 1;
-        grid-column: 2;
-      }
     }
 
     @media (max-width: 560px) {
@@ -803,7 +727,6 @@
       <a href="#system">System</a>
       <a href="#demo">Demo</a>
       <a href="#results">Results</a>
-      <a href="#resources">Resources</a>
       <a class="nav-pdf" href="assets/paper.pdf">Paper PDF</a>
     </div>
   </nav>
@@ -967,39 +890,6 @@
             <div class="bar" aria-hidden="true"><i></i></div>
             <span>Average generated-token reduction from learned skills.</span>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="resources">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="kicker">Resources</p>
-            <h2>Paper artifacts for review and reproduction.</h2>
-          </div>
-          <p class="lead">This page stays anonymous during review while exposing the paper, system overview, demo media, and citation block in one place.</p>
-        </div>
-        <div class="rows">
-          <a class="row" href="assets/paper.pdf">
-            <b>Paper PDF</b>
-            <span>Latest manuscript snapshot.</span>
-            <em class="row-arrow" aria-hidden="true">&rarr;</em>
-          </a>
-          <a class="row" href="#demo">
-            <b>Demo</b>
-            <span>Interactive Sionna dashboard view.</span>
-            <em class="row-arrow" aria-hidden="true">&rarr;</em>
-          </a>
-          <div class="row disabled">
-            <b>Code<span class="soon">Coming soon</span></b>
-            <span>Released after artifact cleanup.</span>
-          </div>
-          <a class="row" href="#bibtex">
-            <b>BibTeX</b>
-            <span>Anonymous citation entry.</span>
-            <em class="row-arrow" aria-hidden="true">&rarr;</em>
-          </a>
         </div>
       </div>
     </section>
