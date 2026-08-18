@@ -549,18 +549,6 @@
       margin: 0 auto;
     }
 
-    .figure-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: clamp(20px, 3vw, 32px);
-      margin-top: clamp(28px, 3.5vw, 44px);
-    }
-
-    .figure-grid .figcap {
-      margin: 14px 0 0;
-      justify-content: flex-start;
-    }
-
     .workflow-main .figcap {
       margin-top: 16px;
     }
@@ -774,10 +762,6 @@
         gap: 36px 28px;
       }
 
-      .figure-grid {
-        grid-template-columns: 1fr;
-      }
-
       .row {
         grid-template-columns: minmax(0, 1fr) 24px;
       }
@@ -944,25 +928,11 @@
           </div>
           <p class="figcap"><b>FIG. 3</b><span>Radio-environment construction — from a natural-language request to a structured scene with radio materials and a simulation-ready Sionna export.</span></p>
         </div>
-        <div class="figure-grid">
-          <div>
-            <div class="fig">
-              <img src="assets/reflection.jpg" alt="Online and offline reflection workflow for simulation failures.">
-            </div>
-            <p class="figcap"><b>FIG. 4</b><span>Reflection localizes execution, schema, geometry, and metric failures before they propagate to the user.</span></p>
-            <div class="slot-block" id="slot-reflection">
-              <div class="screen">
-                <video controls playsinline muted preload="metadata"></video>
-              </div>
-              <p class="figcap"><b>DEMO</b><span>A seeded failure is caught by the verifier, diagnosed, patched, and re-run to a pass.</span></p>
-            </div>
+        <div class="slot-block architecture" id="slot-reflection">
+          <div class="screen">
+            <video controls playsinline muted preload="metadata"></video>
           </div>
-          <div>
-            <div class="fig">
-              <img src="assets/skill-learning.jpg" alt="Skill learning loop that converts failures into accepted procedural updates.">
-            </div>
-            <p class="figcap"><b>FIG. 5</b><span>Accepted skill edits are versioned and reused through retrieval, keeping later runs shorter and more reliable.</span></p>
-          </div>
+          <p class="figcap"><b>DEMO</b><span>A seeded failure is caught by the verifier, diagnosed, patched, and re-run to a pass.</span></p>
         </div>
       </div>
     </section>
