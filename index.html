@@ -396,12 +396,6 @@
       align-items: stretch;
     }
 
-    .demo-crop img {
-      aspect-ratio: 16 / 10.5;
-      object-fit: cover;
-      object-position: left bottom;
-    }
-
     .demo-panel {
       display: flex;
       flex-direction: column;
@@ -787,7 +781,7 @@
         </div>
         <div class="demo-grid">
           <div class="demo-media">
-            <div class="screen demo-crop" id="clip-stage">
+            <div class="screen" id="clip-stage">
               <img src="assets/sionna_dashboard.png" alt="Close-up of the dashboard's scene controls and link-level metric panels.">
             </div>
             <div class="clip-tabs" id="clip-tabs" hidden role="tablist" aria-label="Demo clips"></div>
@@ -951,7 +945,6 @@
       function playClip(clip, btn) {
         var auto = reduceMotion ? "" : "autoplay ";
         stage.innerHTML = "<video " + auto + 'muted loop controls playsinline><source src="' + clip.src + '" type="video/mp4"></video>';
-        stage.classList.remove("demo-crop");
         Array.prototype.forEach.call(tabs.children, function (b) {
           b.classList.toggle("active", b === btn);
           b.setAttribute("aria-selected", b === btn ? "true" : "false");
