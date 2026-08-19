@@ -932,7 +932,8 @@
           if (!ok) { heroSlot(i + 1); return; }
           var media = document.getElementById("demo-media");
           if (!media) return;
-          media.innerHTML = '<video controls playsinline poster="assets/sionna_dashboard.png"><source src="' + HERO[i] + '" type="video/mp4"></video>';
+          var auto = reduceMotion ? "" : "autoplay muted loop ";
+          media.innerHTML = "<video " + auto + 'controls playsinline poster="assets/sionna_dashboard.png"><source src="' + HERO[i] + '" type="video/mp4"></video>';
           var label = document.querySelector(".teaser .figcap b");
           if (label) label.textContent = "DEMO 1";
         });
