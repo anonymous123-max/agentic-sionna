@@ -134,7 +134,7 @@ The dataset directory must contain `model_info.json` and per-model
 ## Repo layout
 
 ```
-sionna-skill/
+agentic-sionna/
 ├── .claude/skills/rf-simulator/    # The skill (SKILL.md + references + templates + agents)
 ├── web/                            # Flask dashboard (backend + frontend)
 │   ├── dashboard_app.py            #   Flask app entry
@@ -187,11 +187,11 @@ See [docs/BENCHMARK.md](docs/BENCHMARK.md) for the full pipeline.
 If you use AutoNetSim in your work, please cite:
 
 ```bibtex
-@inproceedings{autonetsim2026,
-  title  = {AutoNetSim: Intent-Driven Wireless Network Experimentation with Self-Evolving Agents},
-  author = {Song, John and Si, Runnan and An, Zhenlin and ...},
-  year   = {2026},
-  note   = {Submission #125}
+@inproceedings{si2026autonetsim,
+  title     = {AutoNetSim: Intent-Driven Wireless Network Experimentation with Self-Evolving Agents},
+  author    = {Si, Runnan and Song, John and Sun, Haijian and An, Zhenlin},
+  booktitle = {Proceedings of the IEEE International Conference on Network Protocols (ICNP)},
+  year      = {2026}
 }
 ```
 
