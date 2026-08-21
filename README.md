@@ -15,7 +15,38 @@ It ships as:
   executable, oracle) that scored the paper's results
 
 Paper: **[AutoNetSim: Intent-Driven Wireless Network Experimentation
-with Self-Evolving Agents](main.pdf)** (submission #125).
+with Self-Evolving Agents](main.pdf)**  
+Runnan Si\*, John Song\*, Haijian Sun, Zhenlin An — University of Georgia  
+**IEEE ICNP 2026** · [Project page](https://pervasive-intelligence-lab.github.io/agentic-sionna/)
+
+## Abstract
+
+Wireless network simulation and optimization are difficult because they
+require solving a complex cross-layer configuration problem while
+interacting with complex 3D radio environments. For decades, engineers
+have relied on channel models, channel simulators, and extensive
+standards to guide this process, but using them correctly still requires
+substantial domain expertise and engineering effort. Recent
+language-model agents can automate parts of wireless reasoning and code
+generation, yet they are not trained for the cross-layer setting in
+which an agent must construct a 3D radio environment, bind it to radio
+and network assumptions, and run simulations inside it. We present
+**AutoNetSim**, a self-evolving language-agent system for intent-driven
+wireless network simulation. Given a natural-language request, it
+constructs an executable *radio environment* that combines a 3D scene
+with a cross-layer wireless-system configuration and optimization. The
+system uses a multi-agent architecture with specialized scene-building,
+simulation, reflection, planning, and skill-learning agents. It learns
+from previous tutorials, worked examples, prior simulation results, and
+its own failed trajectories, then updates a procedural skill and
+knowledge base through verifier-driven optimization. We evaluate the
+system on benchmark suites covering 3D radio environment generation,
+wireless simulation, and token efficiency across multiple indoor and
+outdoor scenarios. On 3D radio environment generation, AutoNetSim
+reaches 72.5% held-out pass rate, whereas both baselines fail to solve
+any test task. Across ten ray-tracing, physical-layer, and
+network/system-level simulation families, it averages 95.5% pass rate,
+while both baselines stay below 70.0%.
 
 ---
 
@@ -23,8 +54,8 @@ with Self-Evolving Agents](main.pdf)** (submission #125).
 
 ```bash
 # 1. Clone
-git clone https://github.com/Pervasive-Intelligence-Lab/sionna-skill.git
-cd sionna-skill
+git clone https://github.com/Pervasive-Intelligence-Lab/agentic-sionna.git
+cd agentic-sionna
 
 # 2. Install (creates conda env `sionna`, installs deps)
 bash install.sh
