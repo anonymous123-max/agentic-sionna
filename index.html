@@ -8,6 +8,7 @@
   <meta property="og:title" content="AutoNetSim">
   <meta property="og:description" content="Natural-language radio environments, executable Sionna simulations, and self-evolving wireless agents.">
   <meta property="og:image" content="assets/sionna_dashboard.png">
+  <link rel="canonical" href="https://pervasive-intelligence-lab.github.io/agentic-sionna/">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='%230C6B70' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='16' cy='21' r='2.6' fill='%230C6B70' stroke='none'/%3E%3Cpath d='M9.5 14.5a9.2 9.2 0 0 1 13 0'/%3E%3Cpath d='M5.5 10.5a15 15 0 0 1 21 0'/%3E%3C/g%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -186,6 +187,27 @@
       font-weight: 400;
       line-height: 1.3;
       color: var(--ink);
+    }
+
+    .authors {
+      margin: 26px auto 0;
+      font-size: clamp(17px, 2vw, 20px);
+    }
+
+    .authors sup {
+      color: var(--accent);
+      font-size: 0.7em;
+    }
+
+    .affiliation {
+      margin: 8px auto 0;
+      font-size: 15.5px;
+      color: var(--muted);
+    }
+
+    .affiliation em {
+      font-style: normal;
+      color: var(--faint);
     }
 
     .hero-copy {
@@ -721,14 +743,16 @@
 
   <header class="hero" id="top">
     <div class="wrap">
-      <p class="eyebrow rise rise-1">Anonymous project page · Under review</p>
+      <p class="eyebrow rise rise-1">Accepted at IEEE ICNP 2026</p>
       <h1 class="rise rise-2">AutoNetSim</h1>
       <p class="subtitle rise rise-3">Intent-driven wireless network experimentation with <span style="white-space: nowrap;">self-evolving agents.</span></p>
+      <p class="authors rise rise-3">Runnan Si<sup>*</sup>, John Song<sup>*</sup>, Haijian Sun, Zhenlin An</p>
+      <p class="affiliation rise rise-4">University of Georgia&ensp;·&ensp;<em><sup>*</sup>Equal contribution</em></p>
       <p class="hero-copy rise rise-4">AutoNetSim turns natural-language wireless intents into executable radio environments, Sionna simulations, coverage diagnostics, and reusable simulation skills.</p>
       <div class="actions rise rise-5" aria-label="Project links">
         <a class="button primary" href="assets/paper.pdf">Paper PDF</a>
         <a class="button" href="#demo">View demo</a>
-        <a class="button" href="https://github.com/nobody13579/sionna-skill">Code</a>
+        <a class="button" href="https://github.com/Pervasive-Intelligence-Lab/agentic-sionna">Code</a>
         <a class="button" href="#bibtex">BibTeX</a>
       </div>
     </div>
@@ -889,14 +913,15 @@
             <p class="kicker">Citation</p>
             <h2>BibTeX</h2>
           </div>
-          <p class="lead">Use this temporary anonymous entry during review. Replace it with the final author list and venue after publication.</p>
+          <p class="lead">AutoNetSim appears in the Proceedings of the IEEE International Conference on Network Protocols (ICNP) 2026.</p>
         </div>
         <div class="bibtex-block">
-          <pre id="bibtex-code"><code>@article{anonymous2026autonetsim,
-  title   = {AutoNetSim: Intent-Driven Wireless Network Experimentation with Self-Evolving Agents},
-  author  = {Anonymous Authors},
-  year    = {2026},
-  url     = {https://anonymous123-max.github.io/agentic-sionna/}
+          <pre id="bibtex-code"><code>@inproceedings{si2026autonetsim,
+  title     = {AutoNetSim: Intent-Driven Wireless Network Experimentation with Self-Evolving Agents},
+  author    = {Si, Runnan and Song, John and Sun, Haijian and An, Zhenlin},
+  booktitle = {Proceedings of the IEEE International Conference on Network Protocols (ICNP)},
+  year      = {2026},
+  url       = {https://pervasive-intelligence-lab.github.io/agentic-sionna/}
 }</code></pre>
           <button class="button copy-btn" id="copy-bibtex" type="button">Copy</button>
         </div>
@@ -905,7 +930,7 @@
   </main>
 
   <footer>
-    AutoNetSim — anonymous project page · static site, no tracking.
+    AutoNetSim — IEEE ICNP 2026 · University of Georgia.
   </footer>
 
   <script>
