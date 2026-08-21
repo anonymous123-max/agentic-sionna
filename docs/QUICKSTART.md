@@ -15,8 +15,8 @@ Full setup, ~10 minutes.
 ## 1. Clone + install
 
 ```bash
-git clone https://github.com/Pervasive-Intelligence-Lab/sionna-skill.git
-cd sionna-skill
+git clone https://github.com/Pervasive-Intelligence-Lab/agentic-sionna.git
+cd agentic-sionna
 bash install.sh
 ```
 
