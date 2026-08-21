@@ -1,0 +1,89 @@
+{
+  "version": "1.0",
+  "tier": "S_system_level",
+  "design": "System-level wireless evaluation on simple_street_canyon. 4 tasks (one per S-type) covering aggregate throughput, scheduler behavior, joint multi-cell beamforming, and RB-allocation Pareto. All four require per-(AP, UE) path gains from Sionna RT; the rest is closed-form network arithmetic on top.",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_rt_used) + Layer C (s{1,2,3,4}_oracle: per-user-rate validity + sum throughput within 15-20%, Jain's fairness within 0.10-0.15, plus self-consistency of fairness recomputation. S3 additionally checks best-config in own sweep; S4 additionally checks pareto_set non-domination.)",
+  "count": 4,
+  "tasks": [
+    {
+      "id": "S1_fixed_deployment",
+      "tier": "S_system_level",
+      "capability": "system_throughput",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/s1_s4/s1.json",
+      "prompt": "Two access points are deployed in the simple_street_canyon scene at (-15, 0, 15) m and (+15, 0, 15) m, both with omnidirectional isotropic antennas at +0 dBm. Four users sit on the ground at (-20, 0, 1.5), (-5, 0, 1.5), (+5, 0, 1.5), and (+20, 0, 1.5) m. Each user associates with the access point that delivers the highest received power. Compute per-user SINR (treating other-AP signal as interference), per-user Shannon rate, total system throughput, and Jain's fairness index across the four users.",
+      "required_artifacts": ["simulation.py", "simulation_result.json"],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_result_json",   "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check",   "type": "code_contains"},
+          {"metric": "s1_oracle_check",        "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "S2_fixed_scheduler",
+      "tier": "S_system_level",
+      "capability": "scheduler_trace",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/s1_s4/s2.json",
+      "prompt": "A single access point is deployed in simple_street_canyon at (0, 0, 15) m with an omnidirectional antenna at +0 dBm. Four users sit at (-20, 0, 1.5), (-5, 0, 1.5), (+5, 0, 1.5), and (+20, 0, 1.5) m. Apply a proportional-fair scheduler with smoothing factor alpha=0.1 over T=10 time slots, scheduling one user per slot to use the full bandwidth. Report the per-user instantaneous SINR, the scheduling decision per slot, the average per-user throughput, total throughput, and Jain's fairness index.",
+      "required_artifacts": ["simulation.py", "simulation_result.json"],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_result_json",   "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check",   "type": "code_contains"},
+          {"metric": "s2_oracle_check",        "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "S3_joint_beamforming",
+      "tier": "S_system_level",
+      "capability": "joint_optimization",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/s1_s4/s3.json",
+      "prompt": "Two access points at (-15, 0, 15) m and (+15, 0, 15) m serve two users at (-10, 0, 1.5) m and (+10, 0, 1.5) m respectively, in simple_street_canyon. Each access point uses a 3GPP tr38901 directional antenna and can independently steer its azimuth among {-45, 0, +45} degrees. Sweep the 3x3 joint configuration, compute the per-user SINR (with the other AP as interference) and rate at each (az1, az2), and report the configuration that maximises the sum rate.",
+      "required_artifacts": ["simulation.py", "simulation_result.json"],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_result_json",   "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check",   "type": "code_contains"},
+          {"metric": "s3_oracle_check",        "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "S4_rb_pareto",
+      "tier": "S_system_level",
+      "capability": "rb_allocation",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/s1_s4/s4.json",
+      "prompt": "A single access point at (0, 0, 15) m serves four users at (-20, 0, 1.5), (-5, 0, 1.5), (+5, 0, 1.5), and (+20, 0, 1.5) m in simple_street_canyon. There are 50 resource blocks to allocate across the four users. Evaluate five allocation strategies (equal, max-rate, max-min, proportional-fair, and weighted), compute the resulting (sum-throughput, Jain's-fairness) pair for each, and report the Pareto frontier between throughput and fairness.",
+      "required_artifacts": ["simulation.py", "simulation_result.json"],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_result_json",   "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check",   "type": "code_contains"},
+          {"metric": "s4_oracle_check",        "type": "code_contains"}
+        ]
+      }
+    }
+  ]
+}

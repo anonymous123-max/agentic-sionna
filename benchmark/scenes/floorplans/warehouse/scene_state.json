@@ -1,0 +1,9 @@
+{
+  "room": {
+    "width": 20.0,
+    "length": 15.0,
+    "height": 4.0,
+    "furniture": []
+  },
+  "transmitters": []
+}

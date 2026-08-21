@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "task_family_enum": ["S1_fixed_deployment", "S2_fixed_scheduler",
+                       "S3_joint_beamforming", "S4_rb_pareto"],
+  "task_family": null,
+  "scene_name": "simple_street_canyon",
+  "frequency_hz": 5000000000,
+  "noise_dbm": -85.0,
+  "tx_power_dbm": null,
+  "method": "sionna_rt",
+  "$method_required": "sionna_rt",
+  "ap_positions_or_position": null,
+  "ue_positions": null,
+  "path_gain_db": null,
+  "$notes_s1": "S1: include serving_ap (per-UE int), sinr_db, per_user_rate_bps_hz (len=4), sum_throughput_bps_hz, mean_throughput_bps_hz, fairness_index.",
+  "$notes_s2": "S2: include scheduler='proportional_fair', alpha, num_slots, instantaneous_rate_bps_hz (len=4), scheduled_ue (len=T), per_user_throughput_bps_hz (len=4), sum_throughput_bps_hz, fairness_index.",
+  "$notes_s3": "S3: include az_grid_deg (3 values), sweep_table (9 rows with az1_deg, az2_deg, rate_ue1, rate_ue2, sum_rate), best (az1_deg, az2_deg, sum_rate).",
+  "$notes_s4": "S4: include total_rb, per_user_se_bps_hz (len=4), sweep_table (5 rows with strategy, allocation (len=4), per_user_rate_bps_hz, sum_rate, fairness), pareto_set (list of integer indices).",
+  "$notes_all": "All four S* tasks MUST call sionna.rt.PathSolver to get per-(AP, UE) path gain. SINR / scheduling / Pareto math is closed-form on top of those gains; sionna.phy is NOT required (network-level, not PHY-link)."
+}

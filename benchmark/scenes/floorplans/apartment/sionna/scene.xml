@@ -1,0 +1,42 @@
+<scene version="2.1.0">
+<!-- Materials -->
+  <bsdf type="itu-radio-material" id="concrete">
+    <string name="type" value="concrete"/>
+    <float name="thickness" value="0.15"/>
+  </bsdf>
+  <bsdf type="itu-radio-material" id="plasterboard">
+    <string name="type" value="plasterboard"/>
+    <float name="thickness" value="0.12"/>
+  </bsdf>
+<!-- Shapes -->
+  <shape type="ply" id="mesh-floor">
+    <string name="filename" value="meshes/floor.ply"/>
+    <boolean name="face_normals" value="true"/>
+    <ref id="concrete" name="bsdf"/>
+  </shape>
+  <shape type="ply" id="mesh-ceiling">
+    <string name="filename" value="meshes/ceiling.ply"/>
+    <boolean name="face_normals" value="true"/>
+    <ref id="plasterboard" name="bsdf"/>
+  </shape>
+  <shape type="ply" id="mesh-wall_s">
+    <string name="filename" value="meshes/wall_s.ply"/>
+    <boolean name="face_normals" value="true"/>
+    <ref id="concrete" name="bsdf"/>
+  </shape>
+  <shape type="ply" id="mesh-wall_n">
+    <string name="filename" value="meshes/wall_n.ply"/>
+    <boolean name="face_normals" value="true"/>
+    <ref id="concrete" name="bsdf"/>
+  </shape>
+  <shape type="ply" id="mesh-wall_w">
+    <string name="filename" value="meshes/wall_w.ply"/>
+    <boolean name="face_normals" value="true"/>
+    <ref id="concrete" name="bsdf"/>
+  </shape>
+  <shape type="ply" id="mesh-wall_e">
+    <string name="filename" value="meshes/wall_e.ply"/>
+    <boolean name="face_normals" value="true"/>
+    <ref id="concrete" name="bsdf"/>
+  </shape>
+</scene>

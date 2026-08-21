@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "task_type": "rt_coverage",
+  "status": "success",
+  "scene": {
+    "name": null,
+    "bounds_m": null,
+    "tx_position": null,
+    "tx_power_dbm": null,
+    "carrier_ghz": null
+  },
+  "numerical_metrics": {
+    "coverage_pct": null,
+    "target_coverage_pct": null,
+    "target_threshold_dbm": null,
+    "path_loss_db": [],
+    "mean_path_loss_db": null,
+    "path_loss_range_db": [null, null],
+    "rss_dbm_range": [null, null],
+    "num_paths_per_rx": null,
+    "los_fraction": null,
+    "ris_gain_db": null,
+    "coverage_boundary_db": null
+  },
+  "visual_outputs": {
+    "heatmap_path": "coverage_heatmap.png",
+    "radio_map_npy": "coverage_map.npy"
+  },
+  "timing": { "simulate_sec": 0.0 },
+  "warnings": [],
+  "$warnings_schema": {
+    "description": "List of caveat objects. Empty means no fallbacks/defaults/degradations/assumptions applied.",
+    "items": {"kind": "fallback|default|degraded|assumption", "source": "module.path or 'agent'", "message": "free-form string"},
+    "required_keys": ["kind", "source", "message"]
+  }
+}

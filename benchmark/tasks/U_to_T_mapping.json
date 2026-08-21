@@ -1,0 +1,53 @@
+{
+  "_metadata": {
+    "version": "v1.8",
+    "last_updated": "2026-05-01",
+    "status": "partial — capability-based heuristic mapping; not yet manually validated",
+    "source": "Master guide Part 10 (T1-T60) ↔ benchmark/tasks/tasks.json (U001-U134)",
+    "method": "Each U-task mapped to its closest T-task by (tier, capability) match. T-tasks with no U-task counterpart are listed under 'orphan_t_tasks'."
+  },
+
+  "u_to_t": {
+    "_note": "U-task → list of plausibly-corresponding T-task IDs (1-N). Manually validate before paper.",
+    "U001": ["T1"],
+    "U002": ["T2"],
+    "U003": ["T3"],
+    "U004": ["T4"],
+    "U005": ["T5"],
+    "U017": ["T17"],
+    "U028": ["T28"],
+    "U029": ["T29"],
+    "U030": ["T30"],
+    "U031": ["T31"],
+
+    "_TODO": "Complete the remaining 124 mappings — Phase 5.1 work item, ~2 days of expert review."
+  },
+
+  "orphan_t_tasks": {
+    "_note": "Master-guide T-tasks for which no obvious U-task exists. These should either be added to tasks.json (if scoping permits) or documented as 'not in this benchmark'.",
+    "candidates": [
+      "T17 (HARQ retransmission)",
+      "T22 (Differentiable TX orientation)",
+      "T26 (RIS Optimization via Ray Tracing)",
+      "T35 (CSI Feedback Compression)",
+      "T42 (Jamming: PyJama Integration)",
+      "T44 (Link Adaptation: OLLA)",
+      "T46 (Uplink Power Control)",
+      "T49 (Network Slicing: eMBB vs URLLC)",
+      "T51 (Channel Charting)",
+      "T54 (THz Channel: Molecular Absorption)",
+      "T55 (Federated Learning: Channel Estimation)",
+      "T57 (ISAC Tradeoff Curve)",
+      "T58 (O-RAN xApp Simulation)",
+      "T59 (STAR-RIS: Simultaneous Transmit and Reflect)",
+      "T60 (Channel Prediction: Autoregressive)"
+    ],
+    "_action": "Decide per-task: add to U-task suite, or document as out-of-scope in DATASET_CARD.md"
+  },
+
+  "orphan_u_tasks": {
+    "_note": "U-tasks not represented in the master-guide T1-T60 spec. Likely fine — our suite is broader (134 vs 60).",
+    "_action": "Document the broader scope claim in the paper's task-suite description.",
+    "_count_estimate": 80
+  }
+}

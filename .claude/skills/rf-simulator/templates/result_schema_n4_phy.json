@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "task_type": "phy_link",
+  "status": "success",
+  "modulation": null,
+  "$modulation_enum": ["BPSK", "QPSK", "16-QAM", "64-QAM", "256-QAM"],
+  "codec": null,
+  "$codec_enum": ["uncoded", "ldpc", "polar"],
+  "code_rate": null,
+  "channel": "AWGN",
+  "metric_type": null,
+  "$metric_type_enum": ["ber", "bler", "throughput"],
+  "eb_n0_db": null,
+  "metric_values": null,
+  "num_bits_per_point": null,
+  "method": "sionna_phy",
+  "$method_required": "sionna_phy",
+  "$notes": "PHY link tasks use template_ber.py (BER/BLER/throughput). MUST call sionna.phy.mapping.Mapper, sionna.phy.channel.AWGN, sionna.phy.utils.ebnodb2no in a Monte-Carlo loop. scipy.special.erfc is a verifier reference, NOT a computation shortcut. Output files: {ber|bler|throughput}_curve.npy (shape (N,2): [Eb/N0_dB, value]), corresponding .png (semilogy for BER/BLER, linear for throughput), simulation_result.json."
+}

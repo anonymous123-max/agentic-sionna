@@ -1,0 +1,23 @@
+{
+  "task_id": "N4_throughput_ldpc_qpsk_awgn",
+  "metric_type": "throughput",
+  "modulation": "QPSK",
+  "codec": "ldpc",
+  "code_rate": 0.5,
+  "channel": "AWGN",
+  "eb_n0_db": [
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    2.5
+  ],
+  "metric_values": [
+    0.027800023555755615,
+    0.5288000106811523,
+    0.9793999996036291,
+    0.9996000000101048,
+    0.9999999
+  ],
+  "source": "derived from BLER above: (k/n) * log2(M) * (1 - BLER)"
+}

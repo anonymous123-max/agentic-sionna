@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoNetSim Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }}
+    </script>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/panes.css">
+</head>
+<body>
+    <header>
+        <div class="app-title">
+            <div class="app-icon">RF</div>
+            <span>AUTONETSIM DASHBOARD</span>
+        </div>
+
+        <div class="scene-tabs" id="scene-type-label">
+            <div class="scene-tab active" style="cursor:default">Indoor</div>
+        </div>
+
+        <div class="status-indicators">
+            <div class="status-item"><a href="/skills" style="color:var(--text-secondary);text-decoration:none;font-size:12px;">Skills</a></div>
+            <div class="status-item">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">Ready</span>
+            </div>
+            <div class="status-item"><span>v5.0</span></div>
+        </div>
+    </header>
+
+    <div class="main-area">
+        <aside class="sidebar">
+            <!-- Sidebar Tab Switcher -->
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab-btn active" data-sidebar-tab="scene" onclick="window._switchSidebarTab('scene')">Scene</button>
+                <button class="sidebar-tab-btn" data-sidebar-tab="analysis" onclick="window._switchSidebarTab('analysis')">Analysis</button>
+            </div>
+
+            <!-- ==================== SCENE TAB ==================== -->
+            <div id="tab-scene" class="tab-content active">
+                <!-- Scene Browser -->
+                <div class="control-group">
+                    <div class="group-header">
+                        <span class="uppercase" style="color: var(--text-secondary)">Scene Browser</span>
+                    </div>
+                    <div class="scene-browser-row" style="grid-template-columns: 1fr 28px;">
+                        <select class="input-field" id="scene-select" onchange="window._loadSelectedScene()">
+                            <option value="">-- Select scene --</option>
+                        </select>
+                        <button class="btn-icon" onclick="window._deleteSelectedScene()" title="Delete scene" style="font-size:15px;color:var(--text-tertiary);">&#x1F5D1;</button>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Scene Config -->
+                <div class="control-group">
+                    <div class="group-header">
+                        <span class="uppercase" style="color: var(--text-secondary)">Scene Configuration</span>
+                    </div>
+
+                    <div class="input-row" id="indoor-dims">
+                        <label style="color: var(--text-secondary)">Room Size</label>
+                        <input type="text" class="input-field" id="room-dims" value="5 x 4" placeholder="W x L">
+                    </div>
+
+                    <div class="input-row" id="outdoor-bbox" style="display:none">
+                        <label style="color: var(--text-secondary)">Scene Size</label>
+                        <input type="text" class="input-field" id="scene-size" value="200 x 200">
+                    </div>
+
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Polygon</label>
+                        <input type="text" class="input-field" id="polygon-input" value="" placeholder="(0,0),(4,0),...">
+                    </div>
+
+                    <button class="btn-secondary" id="btn-create" onclick="window._createScene()">New Scene</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- OSM Config Panel (outdoor only) -->
+                <div class="control-group" id="osm-config-panel" style="display:none">
+                    <div class="group-header">
+                        <span class="uppercase" style="color: var(--text-secondary)">OSM Location</span>
+                    </div>
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Location</label>
+                        <input type="text" class="input-field" id="osm-location" value="" placeholder="lat,lon or place">
+                    </div>
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Radius (m)</label>
+                        <input type="number" class="input-field" id="osm-radius" value="200" min="50" max="2000" step="50">
+                    </div>
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Ground</label>
+                        <select class="input-field" id="osm-ground-material">
+                            <option value="wet_ground">Wet Ground</option>
+                            <option value="medium_dry_ground">Medium Dry</option>
+                            <option value="very_dry_ground">Very Dry</option>
+                        </select>
+                    </div>
+                    <button class="btn-secondary" onclick="window._fetchOSMScene()">Fetch from OSM</button>
+                </div>
+
+                <!-- Furniture Panel -->
+                <div class="control-group" id="furniture-panel">
+                    <div class="group-header">
+                        <span class="uppercase" style="color: var(--text-secondary)">Add Furniture</span>
+                    </div>
+                    <div class="furniture-search">
+                        <span class="search-icon">&#x1F50D;</span>
+                        <input type="text" id="furniture-search-input" placeholder="Search furniture (e.g. chair, sofa, modern...)" autocomplete="off">
+                        <div class="search-results" id="furniture-search-results"></div>
+                    </div>
+
+                    <div class="group-header">
+                        <span class="uppercase" style="color: var(--text-secondary)">Placed Items</span>
+                        <span style="color: var(--text-tertiary); font-size: 10px;" id="placed-count">0</span>
+                    </div>
+                    <div id="placed-furniture-list" style="display: flex; flex-direction: column; gap: 4px;"></div>
+                </div>
+            </div>
+
+            <!-- ==================== ANALYSIS TAB ==================== -->
+            <div id="tab-analysis" class="tab-content">
+                <!-- TX Config -->
+                <div class="control-group">
+                    <div class="group-header">
+                        <span class="uppercase" style="color: var(--text-secondary)">Transmitter (TX)</span>
+                        <span style="color: var(--accent-beige); font-size: 10px;">ACTIVE</span>
+                    </div>
+
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Frequency</label>
+                        <select class="input-field" id="frequency">
+                            <option value="3.5e9">3.5 GHz</option>
+                            <option value="28e9">28 GHz</option>
+                            <option value="60e9" selected>60 GHz</option>
+                            <option value="300e9">300 GHz</option>
+                        </select>
+                    </div>
+
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Power (dBm)</label>
+                        <input type="text" class="input-field" id="tx-power" value="23">
+                    </div>
+
+                    <div class="modal-section-label">Antenna</div>
+                    <div class="antenna-summary">
+                        <span class="antenna-summary-text" id="antenna-summary-text">8x8 tr38901</span>
+                        <button class="antenna-summary-btn" onclick="window._openAntennaModal()">Configure</button>
+                    </div>
+
+                    <div class="input-row three-col">
+                        <label style="color: var(--text-secondary)">TX Position</label>
+                        <input type="text" class="input-field" id="tx-x" value="2.5" placeholder="x">
+                        <input type="text" class="input-field" id="tx-y" value="2.0" placeholder="y">
+                    </div>
+
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">TX Height (m)</label>
+                        <input type="text" class="input-field" id="tx-height" value="2.5" data-draggable="true">
+                    </div>
+                    <div style="font-size:10px; color:var(--text-tertiary); line-height:1.3; margin-top:-4px;">Indoor: 2.5m (ceiling AP). Outdoor: 10m+ (cell tower). Upward-escaping rays are physically correct.</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Coverage Config -->
+                <div class="control-group">
+                    <div class="group-header">
+                        <span class="uppercase" style="color: var(--text-secondary)">Coverage</span>
+                    </div>
+
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Z Height (m)</label>
+                        <input type="text" class="input-field" id="z-height" value="1.5">
+                    </div>
+
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Max Depth</label>
+                        <input type="text" class="input-field" id="max-depth" value="5">
+                    </div>
+
+                    <div class="input-row">
+                        <label style="color: var(--text-secondary)">Cell Size (m)</label>
+                        <input type="text" class="input-field" id="cell-size" value="0.2">
+                    </div>
+
+                    <!-- Z Slider moved to viewport overlay -->
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Layers -->
+                <div class="control-group">
+                    <div class="group-header">
+                        <span class="uppercase" style="color: var(--text-secondary)">Layers</span>
+                    </div>
+
+                    <div class="layer-toggle active" onclick="window._toggleLayer(this, 'heatmap')">
+                        <span style="color: var(--text-secondary)">Coverage Heatmap</span>
+                        <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                    </div>
+                    <div class="layer-toggle active" onclick="window._toggleLayer(this, 'walls')">
+                        <span style="color: var(--text-secondary)">Walls / Buildings</span>
+                        <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                    </div>
+                    <div class="layer-toggle active" onclick="window._toggleLayer(this, 'furniture')">
+                        <span style="color: var(--text-secondary)">Furniture</span>
+                        <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                    </div>
+                    <div class="layer-toggle active" onclick="window._toggleLayer(this, 'tx')">
+                        <span style="color: var(--text-secondary)">TX Marker</span>
+                        <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                    </div>
+                    <div class="layer-toggle" onclick="window._toggleLayer(this, 'rays')">
+                        <span style="color: var(--text-secondary)">Ray Paths</span>
+                        <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                    </div>
+                    <div style="height:4px"></div>
+                    <div class="layer-toggle" onclick="window._toggleRealistic(this)">
+                        <span style="color: var(--accent-beige)">Realistic View</span>
+                        <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Pinned action buttons at bottom of sidebar -->
+            <div class="sidebar-actions">
+                <button class="btn-secondary" onclick="window._openExportModal()" style="width:100%">Export Scene</button>
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <button class="btn-primary" id="btn-animate-rays" onclick="window._generateAndAnimateRays()" style="flex:1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        ANIMATE RAYS
+                    </button>
+                    <input type="number" class="input-field" id="num-rays" value="24" min="4" max="200" style="width:56px; text-align:center; font-size:11px; padding:8px 4px" title="Number of rays">
+                </div>
+                <button class="btn-secondary" id="btn-compute" onclick="window._computeCoverage()" style="display:none">COMPUTE</button>
+                <div class="progress-bar-wrap" id="progress-wrap">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-label" id="progress-label"></div>
+            </div>
+        </aside>
+
+        <!-- Antenna Config Modal -->
+        <div class="modal-overlay" id="antenna-modal">
+            <div class="modal-panel">
+                <div class="modal-header">
+                    <h3>Antenna Configuration</h3>
+                    <button class="modal-close" onclick="window._closeAntennaModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="modal-section-label">Radiation Pattern</div>
+                        <div class="antenna-pattern-cards">
+                            <div class="antenna-pattern-card" data-pattern="iso" onclick="window._selectPattern(this, 'iso')">
+                                <svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="none" stroke="var(--accent-beige)" stroke-width="1.5" opacity="0.6"/><circle cx="24" cy="24" r="10" fill="none" stroke="var(--accent-beige)" stroke-width="1.5" opacity="0.8"/><circle cx="24" cy="24" r="3" fill="var(--accent-beige)"/></svg>
+                                <div class="ap-label">Isotropic</div>
+                            </div>
+                            <div class="antenna-pattern-card" data-pattern="dipole" onclick="window._selectPattern(this, 'dipole')">
+                                <svg width="48" height="48" viewBox="0 0 48 48"><ellipse cx="24" cy="14" rx="8" ry="12" fill="none" stroke="var(--accent-beige)" stroke-width="1.5" opacity="0.7"/><ellipse cx="24" cy="34" rx="8" ry="12" fill="none" stroke="var(--accent-beige)" stroke-width="1.5" opacity="0.7"/><circle cx="24" cy="24" r="2" fill="var(--accent-beige)"/></svg>
+                                <div class="ap-label">Dipole</div>
+                            </div>
+                            <div class="antenna-pattern-card active" data-pattern="tr38901" onclick="window._selectPattern(this, 'tr38901')">
+                                <svg width="48" height="48" viewBox="0 0 48 48"><path d="M24 4 C32 12, 36 18, 36 24 C36 30, 32 36, 24 44 C20 36, 18 30, 18 24 C18 18, 20 12, 24 4Z" fill="none" stroke="var(--accent-beige)" stroke-width="1.5" opacity="0.7"/><circle cx="24" cy="24" r="2" fill="var(--accent-beige)"/></svg>
+                                <div class="ap-label">3GPP 38.901</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="modal-section-label">Polarization</div>
+                        <div class="pol-buttons">
+                            <button class="pol-btn" data-pol="V" onclick="window._selectPol(this, 'V')">V</button>
+                            <button class="pol-btn" data-pol="H" onclick="window._selectPol(this, 'H')">H</button>
+                            <button class="pol-btn" data-pol="VH" onclick="window._selectPol(this, 'VH')">VH</button>
+                            <button class="pol-btn active" data-pol="cross" onclick="window._selectPol(this, 'cross')">Cross</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="modal-section-label">Array Size</div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <label style="color:var(--text-secondary); font-size:12px;">Rows</label>
+                            <input type="number" class="input-field" id="ant-rows" value="8" min="1" max="64" style="width:70px; text-align:center;">
+                            <span style="color:var(--text-tertiary);">&times;</span>
+                            <label style="color:var(--text-secondary); font-size:12px;">Cols</label>
+                            <input type="number" class="input-field" id="ant-cols" value="8" min="1" max="64" style="width:70px; text-align:center;">
+                            <span style="color:var(--text-tertiary); font-size:11px;" id="ant-total">= 64 elements</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="modal-section-label">Orientation <span style="font-weight:normal; color:var(--text-tertiary); font-size:10px;">(drag to adjust)</span></div>
+                        <input type="hidden" id="ant-azimuth" value="0">
+                        <input type="hidden" id="ant-elevation" value="0">
+                        <div style="display:flex; gap:12px; align-items:flex-start;">
+                            <div style="text-align:center;">
+                                <canvas id="antenna-preview-top" width="140" height="140" style="background:var(--bg-surface); border-radius:var(--radius-md); cursor:grab;"></canvas>
+                                <div style="font-size:9px; color:var(--text-tertiary); margin-top:4px;">Azimuth: <span id="ant-az-val" style="color:var(--text-primary);">0°</span></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <canvas id="antenna-preview-side" width="140" height="140" style="background:var(--bg-surface); border-radius:var(--radius-md); cursor:grab;"></canvas>
+                                <div style="font-size:9px; color:var(--text-tertiary); margin-top:4px;">Elevation: <span id="ant-el-val" style="color:var(--text-primary);">0°</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="window._closeAntennaModal()">Cancel</button>
+                    <button class="btn-primary" onclick="window._applyAntennaConfig()" style="padding:8px 24px;">Apply</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Modal -->
+        <div class="modal-overlay" id="export-modal">
+            <div class="modal-panel" style="width:400px;">
+                <div class="modal-header">
+                    <h3>Export Scene</h3>
+                    <button class="modal-close" onclick="window._closeExportModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-section-label">Choose Format</div>
+                    <div class="export-format-cards">
+                        <div class="export-format-card" onclick="window._exportScene('glb')">
+                            <div class="ef-ext">.glb</div>
+                            <div class="ef-desc">3D binary glTF for viewers &amp; engines</div>
+                        </div>
+                        <div class="export-format-card" onclick="window._exportScene('obj')">
+                            <div class="ef-ext">.obj</div>
+                            <div class="ef-desc">Wavefront OBJ for CAD &amp; modeling</div>
+                        </div>
+                        <div class="export-format-card" onclick="window._exportScene('xml')">
+                            <div class="ef-ext">.xml</div>
+                            <div class="ef-desc">Mitsuba/Sionna scene format</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="workspace">
+            <div class="viewport">
+                <button class="back-btn" id="back-btn" onclick="window._backToOutdoor()">&#8592; Back to outdoor</button>
+                <div class="furniture-selected-hint" id="furniture-move-hint">Drag to move. Drag ring to rotate. Del to remove. Ctrl+Z undo. Ctrl+Shift+Z redo.</div>
+                <div class="building-tooltip" id="building-tooltip"></div>
+                <div class="viewport-loader" id="viewport-loader">
+                    <div class="spinner"></div>
+                    <div class="loader-text" id="loader-text">Loading...</div>
+                </div>
+                <canvas id="viewport-canvas"></canvas>
+                <div class="colorbar-overlay" id="colorbar-overlay">
+                    <canvas id="colorbar-canvas" width="20" height="160"></canvas>
+                    <div class="cb-ticks" id="cb-ticks"></div>
+                    <div class="cb-label">dBm</div>
+                </div>
+                <!-- Vertical Z-slider overlay -->
+                <div class="z-slider-overlay" id="z-slider-overlay">
+                    <div class="z-ticks" id="z-ticks"></div>
+                    <div class="z-slider-col">
+                        <div class="z-value" id="z-slider-value">1.5</div>
+                        <input type="range" id="z-slider" min="0" max="2.7" value="1.35" step="0.01">
+                        <div class="z-label">Z (m)</div>
+                    </div>
+                </div>
+
+                <div class="viewport-overlay">
+                    <div class="metric-big" id="peak-signal">-- <span class="metric-unit">dBm</span></div>
+                    <div class="metric-label">Peak Signal Strength</div>
+                </div>
+
+                <!-- Chat moved to right-side .chat-panel column (see below). -->
+
+                <!-- Dynamic agent-output panes (BER curves, scenes, tables,
+                     code, JSON). Populated by static/js/pane-router.js when
+                     /api/chat returns a `panes` array. Hidden by default. -->
+                <div id="panes-root">
+                    <div class="panes-header">
+                        <span class="panes-title">Agent Output</span>
+                        <button class="panes-close" type="button" onclick="window._clearPanes && window._clearPanes()">Dismiss</button>
+                    </div>
+                    <div class="panes-grid"></div>
+                </div>
+            </div>
+
+            <div class="analysis-panel">
+                <!-- BER Panel -->
+                <div class="panel-section">
+                    <div class="panel-title"><span>BER vs SNR</span></div>
+                    <div class="panel-chart" id="ber-chart"></div>
+                </div>
+
+                <!-- Coverage Histogram -->
+                <div class="panel-section">
+                    <div class="panel-title"><span>Coverage Dist.</span></div>
+                    <div class="panel-chart" id="coverage-hist"></div>
+                </div>
+
+                <!-- PDP / OFDM -->
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <div style="display: flex; gap: 12px;">
+                            <span id="tab-pdp" style="cursor: pointer; color: var(--text-primary)" onclick="window._showSubPanel('pdp')">PDP</span>
+                            <span id="tab-ofdm" style="cursor: pointer; color: var(--text-tertiary)" onclick="window._showSubPanel('ofdm')">OFDM</span>
+                        </div>
+                    </div>
+                    <div class="panel-chart" id="pdp-chart"></div>
+                </div>
+
+                <!-- Stats -->
+                <div class="panel-section">
+                    <div class="panel-title"><span>Global Stats</span></div>
+                    <table class="data-table" id="stats-table">
+                        <tr><td>Mean Loss</td><td id="stat-mean">-- dB</td></tr>
+                        <tr><td>Peak Signal</td><td id="stat-peak">-- dBm</td></tr>
+                        <tr><td>Coverage</td><td id="stat-cov">--%</td></tr>
+                        <tr><td>Engine</td><td id="stat-engine">--</td></tr>
+                        <tr><td>Frequency</td><td id="stat-freq">60 GHz</td></tr>
+                        <tr><td>Array</td><td id="stat-array">8x8</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {% if chat_enabled %}
+        <aside class="chat-panel">
+            <div class="chat-panel-header">
+                <span>AI ASSISTANT</span>
+                <span class="chat-model-tag" id="chat-model-tag">Sonnet 4.6</span>
+            </div>
+            <div class="chat-messages chat-panel-messages" id="chat-messages">
+                <div class="chat-msg system">Ask me about Sionna, RF propagation, coverage, BER, or the current scene.</div>
+            </div>
+            <div class="chat-inline chat-panel-input" id="chat-inline">
+                <input type="text" id="chat-input"
+                       placeholder="Message the agent…"
+                       autocomplete="off"
+                       onkeydown="if(event.key==='Enter')window._sendChat()">
+                <button id="chat-send" onclick="window._sendChat()">&#9654;</button>
+            </div>
+        </aside>
+        {% endif %}
+    </div>
+
+<script type="module" src="/static/js/pane-router.js"></script>
+<script type="module" src="/static/js/dashboard.js"></script>
+</body>
+</html>

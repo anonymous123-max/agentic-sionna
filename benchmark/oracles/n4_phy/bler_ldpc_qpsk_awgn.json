@@ -1,0 +1,23 @@
+{
+  "task_id": "N4_bler_ldpc_qpsk_awgn",
+  "metric_type": "bler",
+  "modulation": "QPSK",
+  "codec": "ldpc",
+  "code_rate": 0.5,
+  "channel": "AWGN",
+  "eb_n0_db": [
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    2.5
+  ],
+  "metric_values": [
+    0.9721999764442444,
+    0.47119998931884766,
+    0.020600000396370888,
+    0.00039999998989515007,
+    1e-07
+  ],
+  "source": "Sionna 2.0 LDPC5GEncoder/Decoder, k=1024, n=2048, batch=5000 codewords"
+}

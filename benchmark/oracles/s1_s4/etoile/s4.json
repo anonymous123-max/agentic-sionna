@@ -1,0 +1,142 @@
+{
+  "task_family": "S4_rb_pareto",
+  "scene_name": "etoile",
+  "ap_position": [
+    0.0,
+    0.0,
+    30.0
+  ],
+  "ue_positions": [
+    [
+      -70.0,
+      0.0,
+      1.5
+    ],
+    [
+      -20.0,
+      0.0,
+      1.5
+    ],
+    [
+      20.0,
+      0.0,
+      1.5
+    ],
+    [
+      70.0,
+      0.0,
+      1.5
+    ]
+  ],
+  "tx_power_dbm": 10.0,
+  "noise_dbm": -85.0,
+  "total_rb": 50,
+  "path_gain_db": [
+    -83.946,
+    -76.802,
+    -76.712,
+    -89.348
+  ],
+  "per_user_se_bps_hz": [
+    3.781,
+    6.0669,
+    6.0964,
+    2.2248
+  ],
+  "sweep_table": [
+    {
+      "strategy": "equal",
+      "allocation": [
+        13,
+        13,
+        12,
+        12
+      ],
+      "per_user_rate_bps_hz": [
+        0.9831,
+        1.5774,
+        1.4631,
+        0.534
+      ],
+      "sum_rate": 4.5576,
+      "fairness": 0.8831
+    },
+    {
+      "strategy": "max_rate",
+      "allocation": [
+        0,
+        0,
+        50,
+        0
+      ],
+      "per_user_rate_bps_hz": [
+        0.0,
+        0.0,
+        6.0964,
+        0.0
+      ],
+      "sum_rate": 6.0964,
+      "fairness": 0.25
+    },
+    {
+      "strategy": "max_min",
+      "allocation": [
+        13,
+        8,
+        8,
+        21
+      ],
+      "per_user_rate_bps_hz": [
+        0.9831,
+        0.9707,
+        0.9754,
+        0.9344
+      ],
+      "sum_rate": 3.8636,
+      "fairness": 0.9996
+    },
+    {
+      "strategy": "proportional_fair",
+      "allocation": [
+        10,
+        17,
+        17,
+        6
+      ],
+      "per_user_rate_bps_hz": [
+        0.7562,
+        2.0628,
+        2.0728,
+        0.267
+      ],
+      "sum_rate": 5.1587,
+      "fairness": 0.7236
+    },
+    {
+      "strategy": "weighted",
+      "allocation": [
+        7,
+        15,
+        25,
+        3
+      ],
+      "per_user_rate_bps_hz": [
+        0.5293,
+        1.8201,
+        3.0482,
+        0.1335
+      ],
+      "sum_rate": 5.5311,
+      "fairness": 0.5928
+    }
+  ],
+  "pareto_set": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "method": "sionna_rt",
+  "sionna_version": "2.0.1"
+}

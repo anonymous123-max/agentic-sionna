@@ -1,0 +1,543 @@
+{
+  "findings": [
+    {
+      "id": "U001",
+      "origin_id": "T01",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "Simulate uncoded QPSK over AWGN for Eb/N0 from -2 to 10 dB. Plot BER vs Eb/N0 on log-scale y-axis and overlay the theoretical QPSK curve.",
+      "leaked_tokens": [
+        "10 db",
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U003",
+      "origin_id": "T03",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "Plot BPSK, QPSK, 16-QAM, 64-QAM BER vs Eb/N0 over AWGN (uncoded) on a single figure. Annotate each curve.",
+      "leaked_tokens": [
+        "16-qam",
+        "64-qam",
+        "bpsk",
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U004",
+      "origin_id": "T04",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "Build SISO OFDM (14 symbols, FFT=76, 15kHz SCS, Kronecker pilots at symbols [2,11]), flat Rayleigh, LS estimation, LMMSE equalization, QPSK.",
+      "leaked_tokens": [
+        "10db",
+        "14 symbols",
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U005",
+      "origin_id": "T05",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "QPSK-OFDM over CDL-C with 5G NR LDPC. Compare BLER with and without coding on same plot.",
+      "leaked_tokens": [
+        "cdl-c",
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U006",
+      "origin_id": "T06",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "2 base stations, 4 users \u2014 set up channel model for uplink. Then single-user comparison with 1 TX, 1 RX.",
+      "leaked_tokens": [
+        "1 rx",
+        "1 tx"
+      ]
+    },
+    {
+      "id": "U007",
+      "origin_id": "T07",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "CDL-A at 60km/h, 3.5GHz. Plot channel magnitude across 14 OFDM symbols. Report Doppler frequency.",
+      "leaked_tokens": [
+        "cdl-a"
+      ]
+    },
+    {
+      "id": "U008",
+      "origin_id": "T08",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "4x4 MIMO OFDM, CDL-B, LMMSE equalization, ZF precoding, 16-QAM, no coding. BER at SNR=15dB.",
+      "leaked_tokens": [
+        "15db",
+        "16-qam",
+        "cdl-b"
+      ]
+    },
+    {
+      "id": "U010",
+      "origin_id": "T10",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "64-antenna BS (8x4 dual-pol), 4 UEs, UMa, downlink, RZF precoding. Sum rate at 20dB SNR.",
+      "leaked_tokens": [
+        "uma"
+      ]
+    },
+    {
+      "id": "U013",
+      "origin_id": "T13",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "64-QAM AWGN with LDPC. Verify soft APP demapping produces lower BLER than hard demapping.",
+      "leaked_tokens": [
+        "64-qam"
+      ]
+    },
+    {
+      "id": "U014",
+      "origin_id": "T14",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "NF=7dB, BW=20MHz. Compute thermal noise power (dBm). Simulate QPSK BER=1e-3, report minimum Prx.",
+      "leaked_tokens": [
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U015",
+      "origin_id": "T15",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "Use sim_ber() for QPSK-AWGN, 0-8dB, 100 min block errors per point. Compare runtime to manual loop.",
+      "leaked_tokens": [
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U017",
+      "origin_id": "T17",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "2x2 MIMO OFDM, 64-QAM, rate 0.75. Compute peak SE. Simulate effective throughput at SNR=25dB.",
+      "leaked_tokens": [
+        "64-qam"
+      ]
+    },
+    {
+      "id": "U018",
+      "origin_id": "T18",
+      "tier": "T1_phy_link_level",
+      "prompt_excerpt": "HARQ Type-I (max 4 TX) for LDPC-QPSK AWGN. Plot BLER per retransmission round.",
+      "leaked_tokens": [
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U019",
+      "origin_id": "T19",
+      "tier": "T2_ray_tracing",
+      "prompt_excerpt": "Load Munich scene. TX at [0,0,25], 5 random RX at z=1.5m. Compute paths, report count per RX.",
+      "leaked_tokens": [
+        "1.5m"
+      ]
+    },
+    {
+      "id": "U020",
+      "origin_id": "T20",
+      "tier": "T2_ray_tracing",
+      "prompt_excerpt": "Munich scene, 1 TX/RX. Compute CIR, verify shape. Convert to CFR for OFDM (FFT=76, SCS=15kHz).",
+      "leaked_tokens": [
+        "1 tx"
+      ]
+    },
+    {
+      "id": "U021",
+      "origin_id": "T21",
+      "tier": "T2_ray_tracing",
+      "prompt_excerpt": "Generate path loss radio map for urban scene, TX at 25m, 2.4GHz. Plot heatmap. Identify 3dB boundary.",
+      "leaked_tokens": [
+        "25m",
+        "3db"
+      ]
+    },
+    {
+      "id": "U024",
+      "origin_id": "T24",
+      "tier": "T2_ray_tracing",
+      "prompt_excerpt": "RT CIR \u2192 OFDM link-level sim (16-QAM, LS). Compare BER to CDL-C at same mean SNR.",
+      "leaked_tokens": [
+        "16-qam",
+        "cdl-c"
+      ]
+    },
+    {
+      "id": "U028",
+      "origin_id": "T28",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "Replace Demapper with 3-layer MLP (128 hidden). Train on QPSK-AWGN, 200 steps. Compare BER to classical.",
+      "leaked_tokens": [
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U029",
+      "origin_id": "T29",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "Neural estimator for SISO OFDM CDL-C. Train on 1000 realizations. Report NVE. LS baseline \u2248 94.",
+      "leaked_tokens": [
+        "cdl-c"
+      ]
+    },
+    {
+      "id": "U030",
+      "origin_id": "T30",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "Train estimator for 2x2 MIMO CDL-A. Plot NMSE vs SNR. Compare to LS and LMMSE. Target: NMSE < -10dB at SNR=10dB.",
+      "leaked_tokens": [
+        "10db",
+        "cdl-a"
+      ]
+    },
+    {
+      "id": "U031",
+      "origin_id": "T31",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "(7,4) autoencoder over AWGN. Train 500 epochs. Plot learned constellation. Compare BER to 16-QAM.",
+      "leaked_tokens": [
+        "16-qam"
+      ]
+    },
+    {
+      "id": "U033",
+      "origin_id": "T33",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "5-iteration unfolded LDPC with learnable scaling factors. Train on CDL-C. Compare to 20-iteration classical.",
+      "leaked_tokens": [
+        "cdl-c"
+      ]
+    },
+    {
+      "id": "U034",
+      "origin_id": "T34",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "Train neural equalizer on CDL-A. Test on CDL-C (mismatch). Compare degradation to LMMSE under same mismatch.",
+      "leaked_tokens": [
+        "cdl-a",
+        "cdl-c"
+      ]
+    },
+    {
+      "id": "U035",
+      "origin_id": "T35",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "CsiNet-style autoencoder: compress H [32,32] to 32 values. Train on UMi. Report reconstruction NMSE.",
+      "leaked_tokens": [
+        "umi"
+      ]
+    },
+    {
+      "id": "U039",
+      "origin_id": "T39",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "OFDM with data + sensing subcarriers. CDL-A, scatterer at 100m. Report BER and ranging RMSE.",
+      "leaked_tokens": [
+        "cdl-a"
+      ]
+    },
+    {
+      "id": "U042",
+      "origin_id": "T42",
+      "tier": "T3_ml_neural",
+      "prompt_excerpt": "Barrage jammer 0-20dBm against LDPC-QPSK. Sweep power. Compare to learned jammer (same budget).",
+      "leaked_tokens": [
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U045",
+      "origin_id": "T45",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "PF scheduling for 4 users (SNR 5,10,15,20 dB). Compare Jain fairness to round-robin.",
+      "leaked_tokens": [
+        "20 db"
+      ]
+    },
+    {
+      "id": "U047",
+      "origin_id": "T47",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Map SINR [-5,0,5,10,15,20]dB to BLER for 16-QAM rate 0.5. Plot curve.",
+      "leaked_tokens": [
+        "16-qam"
+      ]
+    },
+    {
+      "id": "U048",
+      "origin_id": "T48",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "RT radio map \u2192 SNR for 20 users \u2192 system-level throughput. Compare to stochastic UMi model.",
+      "leaked_tokens": [
+        "umi"
+      ]
+    },
+    {
+      "id": "U054",
+      "origin_id": "T54",
+      "tier": "T5_emerging",
+      "prompt_excerpt": "300GHz link over 10m indoor. Include molecular absorption. Compare total path loss to 28GHz.",
+      "leaked_tokens": [
+        "10m"
+      ]
+    },
+    {
+      "id": "U060",
+      "origin_id": "T60",
+      "tier": "T5_emerging",
+      "prompt_excerpt": "LSTM predicting next channel from 5 past observations. CDL-A 60km/h. NMSE at 1,2,5,10 steps ahead.",
+      "leaked_tokens": [
+        "cdl-a"
+      ]
+    },
+    {
+      "id": "U061",
+      "origin_id": "B01",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Generate a coverage map for a single AP at 3.5 GHz in a 10x8m conference room",
+      "leaked_tokens": [
+        "3.5 ghz"
+      ]
+    },
+    {
+      "id": "U064",
+      "origin_id": "B04",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Compare coverage at different AP heights: 1.5m, 2.0m, and ceiling in a bedroom",
+      "leaked_tokens": [
+        "1.5m"
+      ]
+    },
+    {
+      "id": "U066",
+      "origin_id": "B06",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Coverage in a small bathroom, 3x2.5m, AP in adjacent bedroom",
+      "leaked_tokens": [
+        "5m"
+      ]
+    },
+    {
+      "id": "U067",
+      "origin_id": "B07",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Map coverage at 28 GHz mmWave in a 20x15m factory floor",
+      "leaked_tokens": [
+        "28 ghz"
+      ]
+    },
+    {
+      "id": "U070",
+      "origin_id": "B10",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Signal strength at desk height (0.75m) vs standing height (1.5m) in an office",
+      "leaked_tokens": [
+        "1.5m"
+      ]
+    },
+    {
+      "id": "U071",
+      "origin_id": "B11",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Coverage map for a corridor, 20m long, 2m wide, AP at one end",
+      "leaked_tokens": [
+        "20m",
+        "2m"
+      ]
+    },
+    {
+      "id": "U072",
+      "origin_id": "B12",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Show WiFi 6E coverage at 6 GHz in a studio apartment with kitchen island",
+      "leaked_tokens": [
+        "6 ghz"
+      ]
+    },
+    {
+      "id": "U075",
+      "origin_id": "B15",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Coverage analysis at 60 GHz in a 4x3m meeting room",
+      "leaked_tokens": [
+        "60 ghz"
+      ]
+    },
+    {
+      "id": "U076",
+      "origin_id": "B16",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Generate a coverage map at 3.5 GHz for an outdoor urban canyon: 100x50m street bounded by 20m tall buildings on both sides, AP on the south ",
+      "leaked_tokens": [
+        "20m",
+        "3.5 ghz"
+      ]
+    },
+    {
+      "id": "U077",
+      "origin_id": "B17",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Show me 28 GHz mmWave outdoor coverage with a rooftop AP serving a 200x200m block around it",
+      "leaked_tokens": [
+        "28 ghz"
+      ]
+    },
+    {
+      "id": "U078",
+      "origin_id": "B18",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Map SINR for two co-channel APs 15m apart in a 20x15m open office at 3.5 GHz, showing interference-limited zones",
+      "leaked_tokens": [
+        "15m",
+        "3.5 ghz"
+      ]
+    },
+    {
+      "id": "U099",
+      "origin_id": "E01",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Find the optimal AP position to maximize coverage above -70 dBm",
+      "leaked_tokens": [
+        "70 dbm"
+      ]
+    },
+    {
+      "id": "U100",
+      "origin_id": "E02",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Achieve 85% coverage above -70 dBm in this L-shaped room",
+      "leaked_tokens": [
+        "70 dbm"
+      ]
+    },
+    {
+      "id": "U114",
+      "origin_id": "E16",
+      "tier": "T4_system_level",
+      "prompt_excerpt": "Optimize small-cell AP placement in a 200x200m outdoor campus with 3 buildings \u2014 find position that maximizes 5 GHz coverage above -75 dBm",
+      "leaked_tokens": [
+        "5 ghz"
+      ]
+    },
+    {
+      "id": "U126",
+      "origin_id": "F11",
+      "tier": "T2_ray_tracing",
+      "prompt_excerpt": "Site-specific link budget for a street-level user 100m from a rooftop AP in an outdoor urban canyon at 3.5 GHz",
+      "leaked_tokens": [
+        "3.5 ghz"
+      ]
+    },
+    {
+      "id": "U127",
+      "origin_id": "F12",
+      "tier": "T2_ray_tracing",
+      "prompt_excerpt": "Compute the uplink link budget for a 23 dBm UE at the cell edge (30m from AP) with NLOS conditions \u2014 report UL throughput",
+      "leaked_tokens": [
+        "23 dbm"
+      ]
+    },
+    {
+      "id": "U128",
+      "origin_id": "F13",
+      "tier": "T2_ray_tracing",
+      "prompt_excerpt": "Find the minimum TX power (dBm) needed to achieve 85% coverage above -70 dBm in this scene, sweeping 10-30 dBm in 2 dB steps",
+      "leaked_tokens": [
+        "2 db",
+        "30 dbm",
+        "70 dbm"
+      ]
+    },
+    {
+      "id": "U129",
+      "origin_id": "G01",
+      "tier": "T6_anchor",
+      "prompt_excerpt": "Compute BER for LDPC rate 1/2 with QPSK over AWGN from 0 to 10 dB SNR. Use Sionna's LDPC5GEncoder with k=1024, n=2048.",
+      "leaked_tokens": [
+        "10 db",
+        "qpsk"
+      ]
+    },
+    {
+      "id": "U130",
+      "origin_id": "G02",
+      "tier": "T6_anchor",
+      "prompt_excerpt": "Load Sionna's built-in 'box' scene, place a TX at (2,2,2.5), compute coverage at height 1.5m with cell_size 0.5m at 3.5 GHz",
+      "leaked_tokens": [
+        "0.5m",
+        "1.5m",
+        "3.5 ghz"
+      ]
+    },
+    {
+      "id": "U131",
+      "origin_id": "G03",
+      "tier": "T6_anchor",
+      "prompt_excerpt": "Create a 4x4 MIMO-OFDM resource grid with 14 symbols, 128 FFT size, 30 kHz SCS, and compute BER with LDPC at 10 dB SNR",
+      "leaked_tokens": [
+        "10 db",
+        "14 symbols",
+        "30 khz"
+      ]
+    },
+    {
+      "id": "U133",
+      "origin_id": "G05",
+      "tier": "T6_anchor",
+      "prompt_excerpt": "Compute and display a radio map for the Munich scene at 28 GHz with a TX on a rooftop",
+      "leaked_tokens": [
+        "28 ghz"
+      ]
+    },
+    {
+      "id": "U134",
+      "origin_id": "G06",
+      "tier": "T6_anchor",
+      "prompt_excerpt": "Load the 'etoile' (Place de l'\u00c9toile, Paris) scene, place a TX at (0, 0, 25), compute a radio map at 3.5 GHz at receiver height 1.5m, and re",
+      "leaked_tokens": [
+        "1.5m",
+        "3.5 ghz"
+      ]
+    }
+  ],
+  "token_counts": {
+    "10 db": 3,
+    "qpsk": 10,
+    "16-qam": 5,
+    "64-qam": 3,
+    "bpsk": 1,
+    "10db": 2,
+    "14 symbols": 2,
+    "cdl-c": 5,
+    "1 rx": 1,
+    "1 tx": 2,
+    "cdl-a": 5,
+    "15db": 1,
+    "cdl-b": 1,
+    "uma": 1,
+    "1.5m": 5,
+    "25m": 1,
+    "3db": 1,
+    "umi": 2,
+    "20 db": 1,
+    "10m": 1,
+    "3.5 ghz": 6,
+    "5m": 1,
+    "28 ghz": 3,
+    "20m": 2,
+    "2m": 1,
+    "6 ghz": 1,
+    "60 ghz": 1,
+    "15m": 1,
+    "70 dbm": 3,
+    "5 ghz": 1,
+    "23 dbm": 1,
+    "2 db": 1,
+    "30 dbm": 1,
+    "0.5m": 1,
+    "30 khz": 1
+  }
+}

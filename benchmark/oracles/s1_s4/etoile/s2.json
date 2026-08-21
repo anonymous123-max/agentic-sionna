@@ -1,0 +1,77 @@
+{
+  "task_family": "S2_fixed_scheduler",
+  "scene_name": "etoile",
+  "ap_position": [
+    0.0,
+    0.0,
+    30.0
+  ],
+  "ue_positions": [
+    [
+      -70.0,
+      0.0,
+      1.5
+    ],
+    [
+      -20.0,
+      0.0,
+      1.5
+    ],
+    [
+      20.0,
+      0.0,
+      1.5
+    ],
+    [
+      70.0,
+      0.0,
+      1.5
+    ]
+  ],
+  "tx_power_dbm": 10.0,
+  "noise_dbm": -85.0,
+  "frequency_hz": 5000000000.0,
+  "scheduler": "proportional_fair",
+  "alpha": 0.1,
+  "num_slots": 10,
+  "path_gain_db": [
+    -83.946,
+    -76.802,
+    -76.712,
+    -89.348
+  ],
+  "sinr_db": [
+    11.05,
+    18.2,
+    18.29,
+    5.65
+  ],
+  "instantaneous_rate_bps_hz": [
+    3.781,
+    6.0669,
+    6.0964,
+    2.2248
+  ],
+  "scheduled_ue": [
+    2,
+    1,
+    0,
+    3,
+    2,
+    1,
+    0,
+    3,
+    2,
+    1
+  ],
+  "per_user_throughput_bps_hz": [
+    0.7562,
+    1.8201,
+    1.8289,
+    0.445
+  ],
+  "sum_throughput_bps_hz": 4.8502,
+  "fairness_index": 0.7918,
+  "method": "sionna_rt",
+  "sionna_version": "2.0.1"
+}

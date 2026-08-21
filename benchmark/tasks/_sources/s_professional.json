@@ -1,0 +1,600 @@
+{
+  "version": "1.0_professional",
+  "tier": "S_system_level",
+  "design": "All 16 S-tasks (S1-S4 x 4 scenes) with old-style 'professional' prompts (TASK / PARAMETERS / COMPUTATION / OUTPUT FILES / CONSTRAINTS structure). All implementation plumbing \u2014 API names, solver settings, output schema \u2014 is written into the prompt. This is the fairness-control experiment.",
+  "count": 16,
+  "tasks": [
+    {
+      "id": "S1_box_one_screen",
+      "tier": "S_system_level",
+      "capability": "s1_professional",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "oracle_path": "benchmark/oracles/s1_s4/box_one_screen/s1.json",
+      "prompt": "TASK: Compute system-level downlink metrics for a 2-AP / 4-UE deployment on the Sionna built-in scene \"box_one_screen\" (indoor small room) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_one_screen\n- AP positions: AP0=(-2.0, +0.0, +4.5), AP1=(+2.0, +0.0, +4.5) m\n- UE positions: (-2.0, -1.5, +1.5), (-2.0, +1.5, +1.5), (+2.0, -1.5, +1.5), (+2.0, +1.5, +1.5) m\n- Frequency: 5 GHz; TX power per AP: -25.0 dBm; thermal noise floor: -85 dBm\n- TX/RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n\nCOMPUTATION:\n1. For each (AP_i, UE_j) pair (2x4 = 8), call sionna.rt.PathSolver()(scene, max_depth=3, samples_per_src=500000) and compute path_gain_db[i][j] = 10*log10(sum |a|^2 over valid paths), where paths.a = (a_re, a_im).\n2. serving_ap[j] = argmax_i (tx_power_dbm + path_gain_db[i][j]).\n3. Per UE_j, sinr_linear = signal / (other-AP interference + thermal_noise_linear); sinr_db[j] = 10*log10(sinr_linear).\n4. per_user_rate_bps_hz[j] = log2(1 + sinr_linear).\n5. sum_throughput_bps_hz = sum; mean_throughput_bps_hz = mean.\n6. fairness_index = (sum r)^2 / (4 * sum r^2)   (Jain's index).\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S1_fixed_deployment\", \"scene_name\": \"box_one_screen\",\n   \"ap_positions\": [[..],[..]] (2x3), \"ue_positions\": [[..],..,[..]] (4x3),\n   \"tx_power_dbm\": -25.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"path_gain_db\": [[..],[..]] (2x4),\n   \"serving_ap\": [...] (length-4 ints),\n   \"sinr_db\": [...] (length 4),\n   \"per_user_rate_bps_hz\": [...] (length 4),\n   \"sum_throughput_bps_hz\": float, \"mean_throughput_bps_hz\": float,\n   \"fairness_index\": float, \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S1_box_two_screens",
+      "tier": "S_system_level",
+      "capability": "s1_professional",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "oracle_path": "benchmark/oracles/s1_s4/box_two_screens/s1.json",
+      "prompt": "TASK: Compute system-level downlink metrics for a 2-AP / 4-UE deployment on the Sionna built-in scene \"box_two_screens\" (indoor room with two interior screens) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_two_screens\n- AP positions: AP0=(-2.0, +0.0, +4.5), AP1=(+2.0, +0.0, +4.5) m\n- UE positions: (-2.0, -1.5, +1.5), (-2.0, +1.5, +1.5), (+2.0, -1.5, +1.5), (+2.0, +1.5, +1.5) m\n- Frequency: 5 GHz; TX power per AP: -25.0 dBm; thermal noise floor: -85 dBm\n- TX/RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n\nCOMPUTATION:\n1. For each (AP_i, UE_j) pair (2x4 = 8), call sionna.rt.PathSolver()(scene, max_depth=3, samples_per_src=500000) and compute path_gain_db[i][j] = 10*log10(sum |a|^2 over valid paths), where paths.a = (a_re, a_im).\n2. serving_ap[j] = argmax_i (tx_power_dbm + path_gain_db[i][j]).\n3. Per UE_j, sinr_linear = signal / (other-AP interference + thermal_noise_linear); sinr_db[j] = 10*log10(sinr_linear).\n4. per_user_rate_bps_hz[j] = log2(1 + sinr_linear).\n5. sum_throughput_bps_hz = sum; mean_throughput_bps_hz = mean.\n6. fairness_index = (sum r)^2 / (4 * sum r^2)   (Jain's index).\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S1_fixed_deployment\", \"scene_name\": \"box_two_screens\",\n   \"ap_positions\": [[..],[..]] (2x3), \"ue_positions\": [[..],..,[..]] (4x3),\n   \"tx_power_dbm\": -25.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"path_gain_db\": [[..],[..]] (2x4),\n   \"serving_ap\": [...] (length-4 ints),\n   \"sinr_db\": [...] (length 4),\n   \"per_user_rate_bps_hz\": [...] (length 4),\n   \"sum_throughput_bps_hz\": float, \"mean_throughput_bps_hz\": float,\n   \"fairness_index\": float, \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S1_simple_street_canyon",
+      "tier": "S_system_level",
+      "capability": "s1_professional",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/s1_s4/simple_street_canyon/s1.json",
+      "prompt": "TASK: Compute system-level downlink metrics for a 2-AP / 4-UE deployment on the Sionna built-in scene \"simple_street_canyon\" (outdoor street canyon ~186x121 m) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.simple_street_canyon\n- AP positions: AP0=(-15.0, +0.0, +15.0), AP1=(+15.0, +0.0, +15.0) m\n- UE positions: (-20.0, +0.0, +1.5), (-5.0, +0.0, +1.5), (+5.0, +0.0, +1.5), (+20.0, +0.0, +1.5) m\n- Frequency: 5 GHz; TX power per AP: 0.0 dBm; thermal noise floor: -85 dBm\n- TX/RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n\nCOMPUTATION:\n1. For each (AP_i, UE_j) pair (2x4 = 8), call sionna.rt.PathSolver()(scene, max_depth=3, samples_per_src=500000) and compute path_gain_db[i][j] = 10*log10(sum |a|^2 over valid paths), where paths.a = (a_re, a_im).\n2. serving_ap[j] = argmax_i (tx_power_dbm + path_gain_db[i][j]).\n3. Per UE_j, sinr_linear = signal / (other-AP interference + thermal_noise_linear); sinr_db[j] = 10*log10(sinr_linear).\n4. per_user_rate_bps_hz[j] = log2(1 + sinr_linear).\n5. sum_throughput_bps_hz = sum; mean_throughput_bps_hz = mean.\n6. fairness_index = (sum r)^2 / (4 * sum r^2)   (Jain's index).\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S1_fixed_deployment\", \"scene_name\": \"simple_street_canyon\",\n   \"ap_positions\": [[..],[..]] (2x3), \"ue_positions\": [[..],..,[..]] (4x3),\n   \"tx_power_dbm\": 0.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"path_gain_db\": [[..],[..]] (2x4),\n   \"serving_ap\": [...] (length-4 ints),\n   \"sinr_db\": [...] (length 4),\n   \"per_user_rate_bps_hz\": [...] (length 4),\n   \"sum_throughput_bps_hz\": float, \"mean_throughput_bps_hz\": float,\n   \"fairness_index\": float, \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S1_etoile",
+      "tier": "S_system_level",
+      "capability": "s1_professional",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "etoile",
+      "oracle_path": "benchmark/oracles/s1_s4/etoile/s1.json",
+      "prompt": "TASK: Compute system-level downlink metrics for a 2-AP / 4-UE deployment on the Sionna built-in scene \"etoile\" (large outdoor scene ~854x676 m around Place de l'Etoile, Paris) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.etoile\n- AP positions: AP0=(-50.0, +0.0, +30.0), AP1=(+50.0, +0.0, +30.0) m\n- UE positions: (-70.0, +0.0, +1.5), (-20.0, +0.0, +1.5), (+20.0, +0.0, +1.5), (+70.0, +0.0, +1.5) m\n- Frequency: 5 GHz; TX power per AP: 10.0 dBm; thermal noise floor: -85 dBm\n- TX/RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n\nCOMPUTATION:\n1. For each (AP_i, UE_j) pair (2x4 = 8), call sionna.rt.PathSolver()(scene, max_depth=3, samples_per_src=500000) and compute path_gain_db[i][j] = 10*log10(sum |a|^2 over valid paths), where paths.a = (a_re, a_im).\n2. serving_ap[j] = argmax_i (tx_power_dbm + path_gain_db[i][j]).\n3. Per UE_j, sinr_linear = signal / (other-AP interference + thermal_noise_linear); sinr_db[j] = 10*log10(sinr_linear).\n4. per_user_rate_bps_hz[j] = log2(1 + sinr_linear).\n5. sum_throughput_bps_hz = sum; mean_throughput_bps_hz = mean.\n6. fairness_index = (sum r)^2 / (4 * sum r^2)   (Jain's index).\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S1_fixed_deployment\", \"scene_name\": \"etoile\",\n   \"ap_positions\": [[..],[..]] (2x3), \"ue_positions\": [[..],..,[..]] (4x3),\n   \"tx_power_dbm\": 10.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"path_gain_db\": [[..],[..]] (2x4),\n   \"serving_ap\": [...] (length-4 ints),\n   \"sinr_db\": [...] (length 4),\n   \"per_user_rate_bps_hz\": [...] (length 4),\n   \"sum_throughput_bps_hz\": float, \"mean_throughput_bps_hz\": float,\n   \"fairness_index\": float, \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S2_box_one_screen",
+      "tier": "S_system_level",
+      "capability": "s2_professional",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "oracle_path": "benchmark/oracles/s1_s4/box_one_screen/s2.json",
+      "prompt": "TASK: Single-AP proportional-fair scheduler trace for 4 UEs on the Sionna built-in scene \"box_one_screen\" (indoor small room) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_one_screen\n- AP position: (+0.0, +0.0, +4.5) m (single base station)\n- UE positions: (-2.0, -1.5, +1.5), (-2.0, +1.5, +1.5), (+2.0, -1.5, +1.5), (+2.0, +1.5, +1.5) m\n- Frequency: 5 GHz; TX power: -25.0 dBm; thermal noise floor: -85 dBm\n- Antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Scheduler: proportional-fair (PF), smoothing factor alpha=0.1, T=10 time slots, one UE scheduled per slot using the full bandwidth\n\nCOMPUTATION:\n1. For each UE_j (4 total), call sionna.rt.PathSolver() and compute path_gain_db[j] from the (a_re, a_im) coefficients.\n2. sinr_lin[j] = 10**((tx_power_dbm + path_gain_db[j] - noise_dbm)/10);   inst_rate_bps_hz[j] = log2(1 + sinr_lin[j]).\n3. Run T=10 PF slots: at each slot t, ue* = argmax_j (inst_rate[j] / avg_rate[j]) using exponential-moving-average avg_rate (init to small constant, decay alpha=0.1). Record scheduled_ue[t].\n4. per_user_throughput_bps_hz[j] = (sum of inst_rate[j] over slots where ue*==j) / T.\n5. sum_throughput_bps_hz, fairness_index (Jain's) computed across 4 UEs.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S2_fixed_scheduler\", \"scene_name\": \"box_one_screen\",\n   \"ap_position\": [..], \"ue_positions\": [[..],..,[..]],\n   \"tx_power_dbm\": -25.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"scheduler\": \"proportional_fair\", \"alpha\": 0.1, \"num_slots\": 10,\n   \"path_gain_db\": [..] (length 4),\n   \"sinr_db\": [..] (length 4),\n   \"instantaneous_rate_bps_hz\": [..] (length 4),\n   \"scheduled_ue\": [...] (length 10 ints, each 0..3),\n   \"per_user_throughput_bps_hz\": [...] (length 4),\n   \"sum_throughput_bps_hz\": float, \"fairness_index\": float,\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S2_box_two_screens",
+      "tier": "S_system_level",
+      "capability": "s2_professional",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "oracle_path": "benchmark/oracles/s1_s4/box_two_screens/s2.json",
+      "prompt": "TASK: Single-AP proportional-fair scheduler trace for 4 UEs on the Sionna built-in scene \"box_two_screens\" (indoor room with two interior screens) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_two_screens\n- AP position: (+0.0, +0.0, +4.5) m (single base station)\n- UE positions: (-2.0, -1.5, +1.5), (-2.0, +1.5, +1.5), (+2.0, -1.5, +1.5), (+2.0, +1.5, +1.5) m\n- Frequency: 5 GHz; TX power: -25.0 dBm; thermal noise floor: -85 dBm\n- Antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Scheduler: proportional-fair (PF), smoothing factor alpha=0.1, T=10 time slots, one UE scheduled per slot using the full bandwidth\n\nCOMPUTATION:\n1. For each UE_j (4 total), call sionna.rt.PathSolver() and compute path_gain_db[j] from the (a_re, a_im) coefficients.\n2. sinr_lin[j] = 10**((tx_power_dbm + path_gain_db[j] - noise_dbm)/10);   inst_rate_bps_hz[j] = log2(1 + sinr_lin[j]).\n3. Run T=10 PF slots: at each slot t, ue* = argmax_j (inst_rate[j] / avg_rate[j]) using exponential-moving-average avg_rate (init to small constant, decay alpha=0.1). Record scheduled_ue[t].\n4. per_user_throughput_bps_hz[j] = (sum of inst_rate[j] over slots where ue*==j) / T.\n5. sum_throughput_bps_hz, fairness_index (Jain's) computed across 4 UEs.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S2_fixed_scheduler\", \"scene_name\": \"box_two_screens\",\n   \"ap_position\": [..], \"ue_positions\": [[..],..,[..]],\n   \"tx_power_dbm\": -25.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"scheduler\": \"proportional_fair\", \"alpha\": 0.1, \"num_slots\": 10,\n   \"path_gain_db\": [..] (length 4),\n   \"sinr_db\": [..] (length 4),\n   \"instantaneous_rate_bps_hz\": [..] (length 4),\n   \"scheduled_ue\": [...] (length 10 ints, each 0..3),\n   \"per_user_throughput_bps_hz\": [...] (length 4),\n   \"sum_throughput_bps_hz\": float, \"fairness_index\": float,\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S2_simple_street_canyon",
+      "tier": "S_system_level",
+      "capability": "s2_professional",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/s1_s4/simple_street_canyon/s2.json",
+      "prompt": "TASK: Single-AP proportional-fair scheduler trace for 4 UEs on the Sionna built-in scene \"simple_street_canyon\" (outdoor street canyon ~186x121 m) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.simple_street_canyon\n- AP position: (+0.0, +0.0, +15.0) m (single base station)\n- UE positions: (-20.0, +0.0, +1.5), (-5.0, +0.0, +1.5), (+5.0, +0.0, +1.5), (+20.0, +0.0, +1.5) m\n- Frequency: 5 GHz; TX power: 0.0 dBm; thermal noise floor: -85 dBm\n- Antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Scheduler: proportional-fair (PF), smoothing factor alpha=0.1, T=10 time slots, one UE scheduled per slot using the full bandwidth\n\nCOMPUTATION:\n1. For each UE_j (4 total), call sionna.rt.PathSolver() and compute path_gain_db[j] from the (a_re, a_im) coefficients.\n2. sinr_lin[j] = 10**((tx_power_dbm + path_gain_db[j] - noise_dbm)/10);   inst_rate_bps_hz[j] = log2(1 + sinr_lin[j]).\n3. Run T=10 PF slots: at each slot t, ue* = argmax_j (inst_rate[j] / avg_rate[j]) using exponential-moving-average avg_rate (init to small constant, decay alpha=0.1). Record scheduled_ue[t].\n4. per_user_throughput_bps_hz[j] = (sum of inst_rate[j] over slots where ue*==j) / T.\n5. sum_throughput_bps_hz, fairness_index (Jain's) computed across 4 UEs.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S2_fixed_scheduler\", \"scene_name\": \"simple_street_canyon\",\n   \"ap_position\": [..], \"ue_positions\": [[..],..,[..]],\n   \"tx_power_dbm\": 0.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"scheduler\": \"proportional_fair\", \"alpha\": 0.1, \"num_slots\": 10,\n   \"path_gain_db\": [..] (length 4),\n   \"sinr_db\": [..] (length 4),\n   \"instantaneous_rate_bps_hz\": [..] (length 4),\n   \"scheduled_ue\": [...] (length 10 ints, each 0..3),\n   \"per_user_throughput_bps_hz\": [...] (length 4),\n   \"sum_throughput_bps_hz\": float, \"fairness_index\": float,\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S2_etoile",
+      "tier": "S_system_level",
+      "capability": "s2_professional",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "etoile",
+      "oracle_path": "benchmark/oracles/s1_s4/etoile/s2.json",
+      "prompt": "TASK: Single-AP proportional-fair scheduler trace for 4 UEs on the Sionna built-in scene \"etoile\" (large outdoor scene ~854x676 m around Place de l'Etoile, Paris) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.etoile\n- AP position: (+0.0, +0.0, +30.0) m (single base station)\n- UE positions: (-70.0, +0.0, +1.5), (-20.0, +0.0, +1.5), (+20.0, +0.0, +1.5), (+70.0, +0.0, +1.5) m\n- Frequency: 5 GHz; TX power: 10.0 dBm; thermal noise floor: -85 dBm\n- Antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Scheduler: proportional-fair (PF), smoothing factor alpha=0.1, T=10 time slots, one UE scheduled per slot using the full bandwidth\n\nCOMPUTATION:\n1. For each UE_j (4 total), call sionna.rt.PathSolver() and compute path_gain_db[j] from the (a_re, a_im) coefficients.\n2. sinr_lin[j] = 10**((tx_power_dbm + path_gain_db[j] - noise_dbm)/10);   inst_rate_bps_hz[j] = log2(1 + sinr_lin[j]).\n3. Run T=10 PF slots: at each slot t, ue* = argmax_j (inst_rate[j] / avg_rate[j]) using exponential-moving-average avg_rate (init to small constant, decay alpha=0.1). Record scheduled_ue[t].\n4. per_user_throughput_bps_hz[j] = (sum of inst_rate[j] over slots where ue*==j) / T.\n5. sum_throughput_bps_hz, fairness_index (Jain's) computed across 4 UEs.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S2_fixed_scheduler\", \"scene_name\": \"etoile\",\n   \"ap_position\": [..], \"ue_positions\": [[..],..,[..]],\n   \"tx_power_dbm\": 10.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"scheduler\": \"proportional_fair\", \"alpha\": 0.1, \"num_slots\": 10,\n   \"path_gain_db\": [..] (length 4),\n   \"sinr_db\": [..] (length 4),\n   \"instantaneous_rate_bps_hz\": [..] (length 4),\n   \"scheduled_ue\": [...] (length 10 ints, each 0..3),\n   \"per_user_throughput_bps_hz\": [...] (length 4),\n   \"sum_throughput_bps_hz\": float, \"fairness_index\": float,\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S3_box_one_screen",
+      "tier": "S_system_level",
+      "capability": "s3_professional",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "oracle_path": "benchmark/oracles/s1_s4/box_one_screen/s3.json",
+      "prompt": "TASK: Joint multi-cell beamforming sweep (3x3 azimuth grid) on the Sionna built-in scene \"box_one_screen\" (indoor small room) using sionna.rt.PathSolver with the tr38901 directional element.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_one_screen\n- AP positions: AP0=(-2.0, +0.0, +4.5), AP1=(+2.0, +0.0, +4.5) m\n- UE positions: UE0=(-2.0, -2.0, +1.5), UE1=(+2.0, +2.0, +1.5) m (AP_i serves UE_i)\n- Frequency: 5 GHz; TX power per AP: -15.0 dBm; thermal noise floor: -85 dBm\n- TX antenna: PlanarArray(1, 1, pattern=\"tr38901\", polarization=\"V\") -- directional\n- RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Azimuth grid per AP: [-45, 0, +45] degrees (3 values). Joint sweep: 3 x 3 = 9 configurations.\n- Orientation API: tx.orientation = [math.radians(az_deg), -math.radians(0), 0.0]  (yaw = az, pitch = -downtilt; downtilt fixed at 0)\n\nCOMPUTATION:\nFor each (az1, az2) in the 3x3 grid:\n  1. Set AP0 orientation to az1, AP1 to az2; PathSolver per (AP_i, UE_j) -> path_gain_db (2x2 matrix).\n  2. AP_i serves UE_i; the other AP is interference.\n  3. sinr_db_ue0, sinr_db_ue1; rate_ue0 = log2(1+sinr0_lin); rate_ue1 = ...; sum_rate = rate_ue0 + rate_ue1.\nReport the (az1, az2) that maximizes sum_rate, plus the 9-row sweep_table.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S3_joint_beamforming\", \"scene_name\": \"box_one_screen\",\n   \"ap_positions\": [[..],[..]], \"ue_positions\": [[..],[..]],\n   \"tx_power_dbm\": -15.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"antenna_pattern\": \"tr38901\", \"az_grid_deg\": [-45.0, 0.0, 45.0],\n   \"sweep_table\": [\n      {\"az1_deg\": .., \"az2_deg\": .., \"path_gain_db\": [[..],[..]], \n        \"sinr_db_ue1\": .., \"sinr_db_ue2\": .., \n        \"rate_ue1\": .., \"rate_ue2\": .., \"sum_rate\": ..},\n      ...   // 9 rows\n   ],\n   \"best\": {\"az1_deg\": .., \"az2_deg\": .., \"sum_rate\": ..},\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.\n- The reported \"best\" entry must appear in your own sweep_table (matching az1/az2 within 0.5 deg and sum_rate within 0.05).",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s3_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S3_box_two_screens",
+      "tier": "S_system_level",
+      "capability": "s3_professional",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "oracle_path": "benchmark/oracles/s1_s4/box_two_screens/s3.json",
+      "prompt": "TASK: Joint multi-cell beamforming sweep (3x3 azimuth grid) on the Sionna built-in scene \"box_two_screens\" (indoor room with two interior screens) using sionna.rt.PathSolver with the tr38901 directional element.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_two_screens\n- AP positions: AP0=(-2.0, +0.0, +4.5), AP1=(+2.0, +0.0, +4.5) m\n- UE positions: UE0=(-2.0, -2.0, +1.5), UE1=(+2.0, +2.0, +1.5) m (AP_i serves UE_i)\n- Frequency: 5 GHz; TX power per AP: -15.0 dBm; thermal noise floor: -85 dBm\n- TX antenna: PlanarArray(1, 1, pattern=\"tr38901\", polarization=\"V\") -- directional\n- RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Azimuth grid per AP: [-45, 0, +45] degrees (3 values). Joint sweep: 3 x 3 = 9 configurations.\n- Orientation API: tx.orientation = [math.radians(az_deg), -math.radians(0), 0.0]  (yaw = az, pitch = -downtilt; downtilt fixed at 0)\n\nCOMPUTATION:\nFor each (az1, az2) in the 3x3 grid:\n  1. Set AP0 orientation to az1, AP1 to az2; PathSolver per (AP_i, UE_j) -> path_gain_db (2x2 matrix).\n  2. AP_i serves UE_i; the other AP is interference.\n  3. sinr_db_ue0, sinr_db_ue1; rate_ue0 = log2(1+sinr0_lin); rate_ue1 = ...; sum_rate = rate_ue0 + rate_ue1.\nReport the (az1, az2) that maximizes sum_rate, plus the 9-row sweep_table.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S3_joint_beamforming\", \"scene_name\": \"box_two_screens\",\n   \"ap_positions\": [[..],[..]], \"ue_positions\": [[..],[..]],\n   \"tx_power_dbm\": -15.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"antenna_pattern\": \"tr38901\", \"az_grid_deg\": [-45.0, 0.0, 45.0],\n   \"sweep_table\": [\n      {\"az1_deg\": .., \"az2_deg\": .., \"path_gain_db\": [[..],[..]], \n        \"sinr_db_ue1\": .., \"sinr_db_ue2\": .., \n        \"rate_ue1\": .., \"rate_ue2\": .., \"sum_rate\": ..},\n      ...   // 9 rows\n   ],\n   \"best\": {\"az1_deg\": .., \"az2_deg\": .., \"sum_rate\": ..},\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.\n- The reported \"best\" entry must appear in your own sweep_table (matching az1/az2 within 0.5 deg and sum_rate within 0.05).",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s3_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S3_simple_street_canyon",
+      "tier": "S_system_level",
+      "capability": "s3_professional",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/s1_s4/simple_street_canyon/s3.json",
+      "prompt": "TASK: Joint multi-cell beamforming sweep (3x3 azimuth grid) on the Sionna built-in scene \"simple_street_canyon\" (outdoor street canyon ~186x121 m) using sionna.rt.PathSolver with the tr38901 directional element.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.simple_street_canyon\n- AP positions: AP0=(-15.0, +0.0, +15.0), AP1=(+15.0, +0.0, +15.0) m\n- UE positions: UE0=(-10.0, +0.0, +1.5), UE1=(+10.0, +0.0, +1.5) m (AP_i serves UE_i)\n- Frequency: 5 GHz; TX power per AP: 5.0 dBm; thermal noise floor: -85 dBm\n- TX antenna: PlanarArray(1, 1, pattern=\"tr38901\", polarization=\"V\") -- directional\n- RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Azimuth grid per AP: [-45, 0, +45] degrees (3 values). Joint sweep: 3 x 3 = 9 configurations.\n- Orientation API: tx.orientation = [math.radians(az_deg), -math.radians(0), 0.0]  (yaw = az, pitch = -downtilt; downtilt fixed at 0)\n\nCOMPUTATION:\nFor each (az1, az2) in the 3x3 grid:\n  1. Set AP0 orientation to az1, AP1 to az2; PathSolver per (AP_i, UE_j) -> path_gain_db (2x2 matrix).\n  2. AP_i serves UE_i; the other AP is interference.\n  3. sinr_db_ue0, sinr_db_ue1; rate_ue0 = log2(1+sinr0_lin); rate_ue1 = ...; sum_rate = rate_ue0 + rate_ue1.\nReport the (az1, az2) that maximizes sum_rate, plus the 9-row sweep_table.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S3_joint_beamforming\", \"scene_name\": \"simple_street_canyon\",\n   \"ap_positions\": [[..],[..]], \"ue_positions\": [[..],[..]],\n   \"tx_power_dbm\": 5.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"antenna_pattern\": \"tr38901\", \"az_grid_deg\": [-45.0, 0.0, 45.0],\n   \"sweep_table\": [\n      {\"az1_deg\": .., \"az2_deg\": .., \"path_gain_db\": [[..],[..]], \n        \"sinr_db_ue1\": .., \"sinr_db_ue2\": .., \n        \"rate_ue1\": .., \"rate_ue2\": .., \"sum_rate\": ..},\n      ...   // 9 rows\n   ],\n   \"best\": {\"az1_deg\": .., \"az2_deg\": .., \"sum_rate\": ..},\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.\n- The reported \"best\" entry must appear in your own sweep_table (matching az1/az2 within 0.5 deg and sum_rate within 0.05).",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s3_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S3_etoile",
+      "tier": "S_system_level",
+      "capability": "s3_professional",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "oracle_path": "benchmark/oracles/s1_s4/etoile/s3.json",
+      "prompt": "TASK: Joint multi-cell beamforming sweep (3x3 azimuth grid) on the Sionna built-in scene \"etoile\" (large outdoor scene ~854x676 m around Place de l'Etoile, Paris) using sionna.rt.PathSolver with the tr38901 directional element.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.etoile\n- AP positions: AP0=(-30.0, +0.0, +30.0), AP1=(+30.0, +0.0, +30.0) m\n- UE positions: UE0=(-15.0, +0.0, +1.5), UE1=(+15.0, +0.0, +1.5) m (AP_i serves UE_i)\n- Frequency: 5 GHz; TX power per AP: 15.0 dBm; thermal noise floor: -85 dBm\n- TX antenna: PlanarArray(1, 1, pattern=\"tr38901\", polarization=\"V\") -- directional\n- RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Azimuth grid per AP: [-45, 0, +45] degrees (3 values). Joint sweep: 3 x 3 = 9 configurations.\n- Orientation API: tx.orientation = [math.radians(az_deg), -math.radians(0), 0.0]  (yaw = az, pitch = -downtilt; downtilt fixed at 0)\n\nCOMPUTATION:\nFor each (az1, az2) in the 3x3 grid:\n  1. Set AP0 orientation to az1, AP1 to az2; PathSolver per (AP_i, UE_j) -> path_gain_db (2x2 matrix).\n  2. AP_i serves UE_i; the other AP is interference.\n  3. sinr_db_ue0, sinr_db_ue1; rate_ue0 = log2(1+sinr0_lin); rate_ue1 = ...; sum_rate = rate_ue0 + rate_ue1.\nReport the (az1, az2) that maximizes sum_rate, plus the 9-row sweep_table.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S3_joint_beamforming\", \"scene_name\": \"etoile\",\n   \"ap_positions\": [[..],[..]], \"ue_positions\": [[..],[..]],\n   \"tx_power_dbm\": 15.0, \"noise_dbm\": -85.0, \"frequency_hz\": 5e9,\n   \"antenna_pattern\": \"tr38901\", \"az_grid_deg\": [-45.0, 0.0, 45.0],\n   \"sweep_table\": [\n      {\"az1_deg\": .., \"az2_deg\": .., \"path_gain_db\": [[..],[..]], \n        \"sinr_db_ue1\": .., \"sinr_db_ue2\": .., \n        \"rate_ue1\": .., \"rate_ue2\": .., \"sum_rate\": ..},\n      ...   // 9 rows\n   ],\n   \"best\": {\"az1_deg\": .., \"az2_deg\": .., \"sum_rate\": ..},\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.\n- The reported \"best\" entry must appear in your own sweep_table (matching az1/az2 within 0.5 deg and sum_rate within 0.05).",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s3_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S4_box_one_screen",
+      "tier": "S_system_level",
+      "capability": "s4_professional",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "oracle_path": "benchmark/oracles/s1_s4/box_one_screen/s4.json",
+      "prompt": "TASK: RB-allocation Pareto frontier (5 strategies) for a 1-AP / 4-UE system on the Sionna built-in scene \"box_one_screen\" (indoor small room) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_one_screen\n- AP position: (+0.0, +0.0, +4.5) m\n- UE positions: (-2.0, -1.5, +1.5), (-2.0, +1.5, +1.5), (+2.0, -1.5, +1.5), (+2.0, +1.5, +1.5) m\n- Frequency: 5 GHz; TX power: -25.0 dBm; thermal noise floor: -85 dBm\n- Antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Total resource blocks: 50, allocated across 4 UEs\n\nCOMPUTATION:\n1. PathSolver per UE -> path_gain_db[j] (4 values); sinr_lin[j] = 10**((tx_power + pg - noise)/10); spectral efficiency se[j] = log2(1 + sinr_lin[j]) bps/Hz per UE if it got all 50 RBs.\n2. Define 5 allocation strategies (each is a length-4 int list summing to 50):\n   - equal: split 50 evenly (13, 13, 12, 12 or similar)\n   - max_rate: all 50 to the highest-se UE\n   - max_min: weights ~ 1/se, normalized; rounded to ints summing to 50\n   - proportional_fair: weights ~ se, normalized\n   - weighted: [25, 15, 7, 3] assigned in descending-se order\n3. For each strategy, per_user_rate[j] = (alloc[j] / 50) * se[j]. Compute sum_rate = sum, fairness = (sum)^2 / (4 * sum_of_squares).\n4. Compute the Pareto frontier in (max sum_rate, max fairness) space: pareto_set = indices into sweep_table that are not dominated.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S4_rb_pareto\", \"scene_name\": \"box_one_screen\",\n   \"ap_position\": [..], \"ue_positions\": [[..],..,[..]],\n   \"tx_power_dbm\": -25.0, \"noise_dbm\": -85.0, \"total_rb\": 50,\n   \"path_gain_db\": [..] (length 4),\n   \"per_user_se_bps_hz\": [..] (length 4),\n   \"sweep_table\": [\n      {\"strategy\": \"equal\",             \"allocation\": [..,..,..,..], \"per_user_rate_bps_hz\": [..,..,..,..], \"sum_rate\": .., \"fairness\": ..},\n      {\"strategy\": \"max_rate\",          ...},\n      {\"strategy\": \"max_min\",           ...},\n      {\"strategy\": \"proportional_fair\", ...},\n      {\"strategy\": \"weighted\",          ...}\n   ],\n   \"pareto_set\": [list of integer indices into sweep_table that are not dominated],\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.\n- Every index in your pareto_set must be truly non-dominated within your own sweep_table (no row dominates it in both sum_rate and fairness).",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s4_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S4_box_two_screens",
+      "tier": "S_system_level",
+      "capability": "s4_professional",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "oracle_path": "benchmark/oracles/s1_s4/box_two_screens/s4.json",
+      "prompt": "TASK: RB-allocation Pareto frontier (5 strategies) for a 1-AP / 4-UE system on the Sionna built-in scene \"box_two_screens\" (indoor room with two interior screens) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_two_screens\n- AP position: (+0.0, +0.0, +4.5) m\n- UE positions: (-2.0, -1.5, +1.5), (-2.0, +1.5, +1.5), (+2.0, -1.5, +1.5), (+2.0, +1.5, +1.5) m\n- Frequency: 5 GHz; TX power: -25.0 dBm; thermal noise floor: -85 dBm\n- Antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Total resource blocks: 50, allocated across 4 UEs\n\nCOMPUTATION:\n1. PathSolver per UE -> path_gain_db[j] (4 values); sinr_lin[j] = 10**((tx_power + pg - noise)/10); spectral efficiency se[j] = log2(1 + sinr_lin[j]) bps/Hz per UE if it got all 50 RBs.\n2. Define 5 allocation strategies (each is a length-4 int list summing to 50):\n   - equal: split 50 evenly (13, 13, 12, 12 or similar)\n   - max_rate: all 50 to the highest-se UE\n   - max_min: weights ~ 1/se, normalized; rounded to ints summing to 50\n   - proportional_fair: weights ~ se, normalized\n   - weighted: [25, 15, 7, 3] assigned in descending-se order\n3. For each strategy, per_user_rate[j] = (alloc[j] / 50) * se[j]. Compute sum_rate = sum, fairness = (sum)^2 / (4 * sum_of_squares).\n4. Compute the Pareto frontier in (max sum_rate, max fairness) space: pareto_set = indices into sweep_table that are not dominated.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S4_rb_pareto\", \"scene_name\": \"box_two_screens\",\n   \"ap_position\": [..], \"ue_positions\": [[..],..,[..]],\n   \"tx_power_dbm\": -25.0, \"noise_dbm\": -85.0, \"total_rb\": 50,\n   \"path_gain_db\": [..] (length 4),\n   \"per_user_se_bps_hz\": [..] (length 4),\n   \"sweep_table\": [\n      {\"strategy\": \"equal\",             \"allocation\": [..,..,..,..], \"per_user_rate_bps_hz\": [..,..,..,..], \"sum_rate\": .., \"fairness\": ..},\n      {\"strategy\": \"max_rate\",          ...},\n      {\"strategy\": \"max_min\",           ...},\n      {\"strategy\": \"proportional_fair\", ...},\n      {\"strategy\": \"weighted\",          ...}\n   ],\n   \"pareto_set\": [list of integer indices into sweep_table that are not dominated],\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.\n- Every index in your pareto_set must be truly non-dominated within your own sweep_table (no row dominates it in both sum_rate and fairness).",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s4_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S4_simple_street_canyon",
+      "tier": "S_system_level",
+      "capability": "s4_professional",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/s1_s4/simple_street_canyon/s4.json",
+      "prompt": "TASK: RB-allocation Pareto frontier (5 strategies) for a 1-AP / 4-UE system on the Sionna built-in scene \"simple_street_canyon\" (outdoor street canyon ~186x121 m) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.simple_street_canyon\n- AP position: (+0.0, +0.0, +15.0) m\n- UE positions: (-20.0, +0.0, +1.5), (-5.0, +0.0, +1.5), (+5.0, +0.0, +1.5), (+20.0, +0.0, +1.5) m\n- Frequency: 5 GHz; TX power: 0.0 dBm; thermal noise floor: -85 dBm\n- Antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Total resource blocks: 50, allocated across 4 UEs\n\nCOMPUTATION:\n1. PathSolver per UE -> path_gain_db[j] (4 values); sinr_lin[j] = 10**((tx_power + pg - noise)/10); spectral efficiency se[j] = log2(1 + sinr_lin[j]) bps/Hz per UE if it got all 50 RBs.\n2. Define 5 allocation strategies (each is a length-4 int list summing to 50):\n   - equal: split 50 evenly (13, 13, 12, 12 or similar)\n   - max_rate: all 50 to the highest-se UE\n   - max_min: weights ~ 1/se, normalized; rounded to ints summing to 50\n   - proportional_fair: weights ~ se, normalized\n   - weighted: [25, 15, 7, 3] assigned in descending-se order\n3. For each strategy, per_user_rate[j] = (alloc[j] / 50) * se[j]. Compute sum_rate = sum, fairness = (sum)^2 / (4 * sum_of_squares).\n4. Compute the Pareto frontier in (max sum_rate, max fairness) space: pareto_set = indices into sweep_table that are not dominated.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S4_rb_pareto\", \"scene_name\": \"simple_street_canyon\",\n   \"ap_position\": [..], \"ue_positions\": [[..],..,[..]],\n   \"tx_power_dbm\": 0.0, \"noise_dbm\": -85.0, \"total_rb\": 50,\n   \"path_gain_db\": [..] (length 4),\n   \"per_user_se_bps_hz\": [..] (length 4),\n   \"sweep_table\": [\n      {\"strategy\": \"equal\",             \"allocation\": [..,..,..,..], \"per_user_rate_bps_hz\": [..,..,..,..], \"sum_rate\": .., \"fairness\": ..},\n      {\"strategy\": \"max_rate\",          ...},\n      {\"strategy\": \"max_min\",           ...},\n      {\"strategy\": \"proportional_fair\", ...},\n      {\"strategy\": \"weighted\",          ...}\n   ],\n   \"pareto_set\": [list of integer indices into sweep_table that are not dominated],\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.\n- Every index in your pareto_set must be truly non-dominated within your own sweep_table (no row dominates it in both sum_rate and fairness).",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s4_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S4_etoile",
+      "tier": "S_system_level",
+      "capability": "s4_professional",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "oracle_path": "benchmark/oracles/s1_s4/etoile/s4.json",
+      "prompt": "TASK: RB-allocation Pareto frontier (5 strategies) for a 1-AP / 4-UE system on the Sionna built-in scene \"etoile\" (large outdoor scene ~854x676 m around Place de l'Etoile, Paris) using sionna.rt.PathSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.etoile\n- AP position: (+0.0, +0.0, +30.0) m\n- UE positions: (-70.0, +0.0, +1.5), (-20.0, +0.0, +1.5), (+20.0, +0.0, +1.5), (+70.0, +0.0, +1.5) m\n- Frequency: 5 GHz; TX power: 10.0 dBm; thermal noise floor: -85 dBm\n- Antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3; samples_per_src: 500000\n- Total resource blocks: 50, allocated across 4 UEs\n\nCOMPUTATION:\n1. PathSolver per UE -> path_gain_db[j] (4 values); sinr_lin[j] = 10**((tx_power + pg - noise)/10); spectral efficiency se[j] = log2(1 + sinr_lin[j]) bps/Hz per UE if it got all 50 RBs.\n2. Define 5 allocation strategies (each is a length-4 int list summing to 50):\n   - equal: split 50 evenly (13, 13, 12, 12 or similar)\n   - max_rate: all 50 to the highest-se UE\n   - max_min: weights ~ 1/se, normalized; rounded to ints summing to 50\n   - proportional_fair: weights ~ se, normalized\n   - weighted: [25, 15, 7, 3] assigned in descending-se order\n3. For each strategy, per_user_rate[j] = (alloc[j] / 50) * se[j]. Compute sum_rate = sum, fairness = (sum)^2 / (4 * sum_of_squares).\n4. Compute the Pareto frontier in (max sum_rate, max fairness) space: pareto_set = indices into sweep_table that are not dominated.\n\nOUTPUT FILES: simulation.py, simulation_result.json with schema {\n   \"task_family\": \"S4_rb_pareto\", \"scene_name\": \"etoile\",\n   \"ap_position\": [..], \"ue_positions\": [[..],..,[..]],\n   \"tx_power_dbm\": 10.0, \"noise_dbm\": -85.0, \"total_rb\": 50,\n   \"path_gain_db\": [..] (length 4),\n   \"per_user_se_bps_hz\": [..] (length 4),\n   \"sweep_table\": [\n      {\"strategy\": \"equal\",             \"allocation\": [..,..,..,..], \"per_user_rate_bps_hz\": [..,..,..,..], \"sum_rate\": .., \"fairness\": ..},\n      {\"strategy\": \"max_rate\",          ...},\n      {\"strategy\": \"max_min\",           ...},\n      {\"strategy\": \"proportional_fair\", ...},\n      {\"strategy\": \"weighted\",          ...}\n   ],\n   \"pareto_set\": [list of integer indices into sweep_table that are not dominated],\n   \"method\": \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + sionna.rt.PathSolver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3 simulation.py`.\n- paths.a is a (a_re, a_im) tuple, NOT polarization. |a|^2 = a_re^2 + a_im^2.\n- Every index in your pareto_set must be truly non-dominated within your own sweep_table (no row dominates it in both sum_rate and fairness).",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "s4_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}

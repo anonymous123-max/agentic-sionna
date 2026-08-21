@@ -1,0 +1,77 @@
+{
+  "task_family": "S2_fixed_scheduler",
+  "scene_name": "box_one_screen",
+  "ap_position": [
+    0.0,
+    0.0,
+    4.5
+  ],
+  "ue_positions": [
+    [
+      -2.0,
+      -1.5,
+      1.5
+    ],
+    [
+      -2.0,
+      1.5,
+      1.5
+    ],
+    [
+      2.0,
+      -1.5,
+      1.5
+    ],
+    [
+      2.0,
+      1.5,
+      1.5
+    ]
+  ],
+  "tx_power_dbm": -25.0,
+  "noise_dbm": -85.0,
+  "frequency_hz": 5000000000.0,
+  "scheduler": "proportional_fair",
+  "alpha": 0.1,
+  "num_slots": 10,
+  "path_gain_db": [
+    -51.023,
+    -51.023,
+    -53.078,
+    -53.078
+  ],
+  "sinr_db": [
+    8.98,
+    8.98,
+    6.92,
+    6.92
+  ],
+  "instantaneous_rate_bps_hz": [
+    3.154,
+    3.154,
+    2.5662,
+    2.5662
+  ],
+  "scheduled_ue": [
+    0,
+    1,
+    2,
+    3,
+    0,
+    1,
+    2,
+    3,
+    0,
+    1
+  ],
+  "per_user_throughput_bps_hz": [
+    0.9462,
+    0.9462,
+    0.5132,
+    0.5132
+  ],
+  "sum_throughput_bps_hz": 2.9189,
+  "fairness_index": 0.9191,
+  "method": "sionna_rt",
+  "sionna_version": "2.0.1"
+}

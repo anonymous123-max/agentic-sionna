@@ -1,0 +1,605 @@
+[
+  {
+    "id": "U079",
+    "origin": "corpus",
+    "origin_id": "D01",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "easy",
+    "name": "D_scene_generation: Create a small bedroom with a bed, nightstand, and wardrobe",
+    "prompt": "Create a small bedroom with a bed, nightstand, and wardrobe",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "composite",
+      "subchecks": [
+        {
+          "type": "file_exists",
+          "key": "must_create_scene_state"
+        },
+        {
+          "type": "code_contains",
+          "metric": "collision_free_check"
+        },
+        {
+          "type": "code_contains",
+          "metric": "in_bounds_check"
+        },
+        {
+          "type": "file_exists",
+          "key": "must_have_rf_materials"
+        }
+      ]
+    },
+    "assertions": [
+      "must create scene state",
+      "must be collision free",
+      "must be in bounds",
+      "must have rf materials",
+      "expect expected_furniture=['bed', 'nightstand', 'wardrobe']",
+      "expect min_furniture=3",
+      "expect room_dims_range={'width': [3, 6], 'depth': [3, 5]}"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U080",
+    "origin": "corpus",
+    "origin_id": "D02",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "easy",
+    "name": "D_scene_generation: Generate a 6x5m office with 4 desks and 4 chairs",
+    "prompt": "Generate a 6x5m office with 4 desks and 4 chairs",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "composite",
+      "subchecks": [
+        {
+          "type": "file_exists",
+          "key": "must_create_scene_state"
+        },
+        {
+          "type": "code_contains",
+          "metric": "collision_free_check"
+        }
+      ]
+    },
+    "assertions": [
+      "must create scene state",
+      "must match dimensions",
+      "must be collision free",
+      "expect expected_furniture=['desk', 'chair']",
+      "expect min_furniture=6",
+      "expect room_width=6",
+      "expect room_depth=5"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U081",
+    "origin": "corpus",
+    "origin_id": "D03",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "medium",
+    "name": "D_scene_generation: Create an L-shaped living room with a sofa, coffee table, an",
+    "prompt": "Create an L-shaped living room with a sofa, coffee table, and TV stand",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "composite",
+      "subchecks": [
+        {
+          "type": "file_exists",
+          "key": "must_create_scene_state"
+        },
+        {
+          "type": "code_contains",
+          "metric": "collision_free_check"
+        }
+      ]
+    },
+    "assertions": [
+      "must create scene state",
+      "must be l shaped",
+      "must be collision free",
+      "expect expected_furniture=['sofa', 'coffee table', 'tv stand']",
+      "expect polygon_vertices_gt_4=True"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U082",
+    "origin": "corpus",
+    "origin_id": "D04",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "easy",
+    "name": "D_scene_generation: Design a 10x8m conference room with a large table and 8 chai",
+    "prompt": "Design a 10x8m conference room with a large table and 8 chairs",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "must match dimensions",
+      "expect expected_furniture=['table', 'chair']",
+      "expect min_furniture=6",
+      "expect room_width=10",
+      "expect room_depth=8"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U083",
+    "origin": "corpus",
+    "origin_id": "D05",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "medium",
+    "name": "D_scene_generation: Make a studio apartment with kitchen area, bed, desk, and bo",
+    "prompt": "Make a studio apartment with kitchen area, bed, desk, and bookshelf",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "composite",
+      "subchecks": [
+        {
+          "type": "file_exists",
+          "key": "must_create_scene_state"
+        },
+        {
+          "type": "code_contains",
+          "metric": "collision_free_check"
+        }
+      ]
+    },
+    "assertions": [
+      "must create scene state",
+      "must be collision free",
+      "expect expected_furniture=['bed', 'desk', 'bookshelf']",
+      "expect min_furniture=4"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "test"
+  },
+  {
+    "id": "U084",
+    "origin": "corpus",
+    "origin_id": "D06",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "medium",
+    "name": "D_scene_generation: Create a bedroom with the bed against the north wall and des",
+    "prompt": "Create a bedroom with the bed against the north wall and desk near the window",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "must place furniture as requested",
+      "expect expected_furniture=['bed', 'desk']",
+      "expect bed_near_north=True"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "test"
+  },
+  {
+    "id": "U085",
+    "origin": "corpus",
+    "origin_id": "D07",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "hard",
+    "name": "D_scene_generation: Generate a 3-room apartment: living room, bedroom, kitchen",
+    "prompt": "Generate a 3-room apartment: living room, bedroom, kitchen",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "composite",
+      "subchecks": [
+        {
+          "type": "file_exists",
+          "key": "must_create_scene_state"
+        },
+        {
+          "type": "file_exists",
+          "key": "must_have_multiple_rooms"
+        }
+      ]
+    },
+    "assertions": [
+      "must create scene state",
+      "must have multiple rooms",
+      "expect room_count=3"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U086",
+    "origin": "corpus",
+    "origin_id": "D08",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "hard",
+    "name": "D_scene_generation: Create a hospital ward with 4 beds and privacy curtains",
+    "prompt": "Create a hospital ward with 4 beds and privacy curtains",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "expect expected_furniture=['bed']",
+      "expect min_furniture=4"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U087",
+    "origin": "corpus",
+    "origin_id": "D09",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "medium",
+    "name": "D_scene_generation: Make a small cafe with 6 tables and a counter",
+    "prompt": "Make a small cafe with 6 tables and a counter",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "expect expected_furniture=['table']",
+      "expect min_furniture=4"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U088",
+    "origin": "corpus",
+    "origin_id": "D10",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "easy",
+    "name": "D_scene_generation: Design a home office with standing desk, bookcase, and filin",
+    "prompt": "Design a home office with standing desk, bookcase, and filing cabinet",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "composite",
+      "subchecks": [
+        {
+          "type": "file_exists",
+          "key": "must_create_scene_state"
+        },
+        {
+          "type": "code_contains",
+          "metric": "collision_free_check"
+        }
+      ]
+    },
+    "assertions": [
+      "must create scene state",
+      "must be collision free",
+      "expect expected_furniture=['desk', 'bookcase', 'cabinet']",
+      "expect min_furniture=3"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U089",
+    "origin": "corpus",
+    "origin_id": "D11",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "hard",
+    "name": "D_scene_generation: Create a large open-plan office, 20x15m, with 10 workstation",
+    "prompt": "Create a large open-plan office, 20x15m, with 10 workstations",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "must match dimensions",
+      "expect min_furniture=8",
+      "expect room_width=20",
+      "expect room_depth=15"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U090",
+    "origin": "corpus",
+    "origin_id": "D12",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "hard",
+    "name": "D_scene_generation: Generate a hotel room with king bed, desk, TV stand, and en-",
+    "prompt": "Generate a hotel room with king bed, desk, TV stand, and en-suite bathroom",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "expect expected_furniture=['bed', 'desk', 'tv stand']",
+      "expect min_furniture=3"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "test"
+  },
+  {
+    "id": "U091",
+    "origin": "corpus",
+    "origin_id": "D13",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "hard",
+    "name": "D_scene_generation: Make a classroom with 20 desks in rows facing a whiteboard",
+    "prompt": "Make a classroom with 20 desks in rows facing a whiteboard",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "expect expected_furniture=['desk']",
+      "expect min_furniture=10"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "test"
+  },
+  {
+    "id": "U092",
+    "origin": "corpus",
+    "origin_id": "D14",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "medium",
+    "name": "D_scene_generation: Create a retail store, 12x8m, with shelving units along the ",
+    "prompt": "Create a retail store, 12x8m, with shelving units along the walls",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "must match dimensions",
+      "expect min_furniture=3",
+      "expect room_width=12",
+      "expect room_depth=8"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U093",
+    "origin": "corpus",
+    "origin_id": "D15",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "medium",
+    "name": "D_scene_generation: Design a server room, 5x4m, with 3 server racks",
+    "prompt": "Design a server room, 5x4m, with 3 server racks",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "expect expected_furniture=['server rack', 'cabinet', 'rack']",
+      "expect min_furniture=3"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "test"
+  },
+  {
+    "id": "U094",
+    "origin": "corpus",
+    "origin_id": "D16",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "easy",
+    "name": "D_scene_generation: Create a dining room with a table for 6 and a sideboard",
+    "prompt": "Create a dining room with a table for 6 and a sideboard",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "composite",
+      "subchecks": [
+        {
+          "type": "file_exists",
+          "key": "must_create_scene_state"
+        },
+        {
+          "type": "code_contains",
+          "metric": "collision_free_check"
+        }
+      ]
+    },
+    "assertions": [
+      "must create scene state",
+      "must be collision free",
+      "expect expected_furniture=['table', 'chair']",
+      "expect min_furniture=4"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "test"
+  },
+  {
+    "id": "U095",
+    "origin": "corpus",
+    "origin_id": "D17",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "medium",
+    "name": "D_scene_generation: Generate a gym with treadmills and weight benches",
+    "prompt": "Generate a gym with treadmills and weight benches",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "expect min_furniture=3"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U096",
+    "origin": "corpus",
+    "origin_id": "D18",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "medium",
+    "name": "D_scene_generation: Make a library reading room with bookshelves and study desks",
+    "prompt": "Make a library reading room with bookshelves and study desks",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "expect expected_furniture=['bookshelf', 'bookcase', 'desk']",
+      "expect min_furniture=3"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "test"
+  },
+  {
+    "id": "U097",
+    "origin": "corpus",
+    "origin_id": "D19",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "hard",
+    "name": "D_scene_generation: Create a factory floor, 30x20m, with assembly tables and sto",
+    "prompt": "Create a factory floor, 30x20m, with assembly tables and storage cabinets",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "file_exists",
+      "key": "must_create_scene_state"
+    },
+    "assertions": [
+      "must create scene state",
+      "must match dimensions",
+      "expect min_furniture=4",
+      "expect room_width=30",
+      "expect room_depth=20"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "train"
+  },
+  {
+    "id": "U098",
+    "origin": "corpus",
+    "origin_id": "D20",
+    "tier": "T0_scene_gen",
+    "capability": "scene_indoor",
+    "difficulty": "easy",
+    "name": "D_scene_generation: Design a reception area with a front desk, waiting chairs, a",
+    "prompt": "Design a reception area with a front desk, waiting chairs, and coffee table",
+    "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+    "scene_path": null,
+    "verifier": {
+      "type": "composite",
+      "subchecks": [
+        {
+          "type": "file_exists",
+          "key": "must_create_scene_state"
+        },
+        {
+          "type": "code_contains",
+          "metric": "collision_free_check"
+        }
+      ]
+    },
+    "assertions": [
+      "must create scene state",
+      "must be collision free",
+      "expect expected_furniture=['desk', 'chair', 'table']",
+      "expect min_furniture=3"
+    ],
+    "required_artifacts": [
+      "scene_state.json"
+    ],
+    "split": "test"
+  }
+]

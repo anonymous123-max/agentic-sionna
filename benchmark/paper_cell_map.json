@@ -1,0 +1,23 @@
+{
+  "_comment": "Maps each paper Table IV/VI cell to the study directory that produced it. Numbers on the right are the paper's reported pass rate for reference.",
+  "Sim_simple_N1": {"study": "n1_v2_full", "tier": "N1", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 5, "with_skill": 80}},
+  "Sim_simple_N2": {"study": "n2_v2_full", "tier": "N2", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 90}},
+  "Sim_simple_N3": {"study": "n3_v1_full", "tier": "N3", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 85}},
+  "Sim_simple_N4": {"study": "n4_v1_full", "tier": "N4", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 75}},
+
+  "Sim_enhanced_N1": {"study": "n1_full_v10", "tier": "N1", "prompt": "enhanced", "paper_pct": {"no_skill": 35, "self_gen": 40, "with_skill": 95}},
+  "Sim_enhanced_N2": {"study": "n2_full_v10", "tier": "N2", "prompt": "enhanced", "paper_pct": {"no_skill": 35, "self_gen": 55, "with_skill": 100}},
+
+  "Opt_simple_P1": {"study": "p1_v1_v2_full", "tier": "P1", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 75}},
+  "Opt_simple_P2": {"study": "p2_v1_v2_full", "tier": "P2", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 75}},
+
+  "Sys_simple_S1": {"study": "s_v2_full", "tier": "S1", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 100}},
+  "Sys_simple_S2": {"study": "s_v2_full", "tier": "S2", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 100}},
+  "Sys_simple_S3": {"study": "s_v2_full", "tier": "S3", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 45}},
+  "Sys_simple_S4": {"study": "s_v2_full", "tier": "S4", "prompt": "simple", "paper_pct": {"no_skill": 0, "self_gen": 0, "with_skill": 50}},
+
+  "Sys_enhanced_S1": {"study": "s_v2_l2_all", "tier": "S1", "prompt": "enhanced", "paper_pct": {"no_skill": 95, "self_gen": 100, "with_skill": 95}},
+  "Sys_enhanced_S2": {"study": "s_v2_l2_all", "tier": "S2", "prompt": "enhanced", "paper_pct": {"no_skill": 100, "self_gen": 100, "with_skill": 100}},
+  "Sys_enhanced_S3": {"study": "s_v2_l2_all", "tier": "S3", "prompt": "enhanced", "paper_pct": {"no_skill": 35, "self_gen": 55, "with_skill": 90}},
+  "Sys_enhanced_S4": {"study": "s_v2_l2_all", "tier": "S4", "prompt": "enhanced", "paper_pct": {"no_skill": 70, "self_gen": 90, "with_skill": 95}}
+}

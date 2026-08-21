@@ -1,0 +1,195 @@
+/* Dynamic result panes rendered by /static/js/pane-router.js.
+   Uses the dashboard.css design tokens (:root). Keep tokens in sync.
+
+   Layout strategy:
+   - Default: CSS grid auto-fit, min column width 360px.
+   - Override via inline grid-template-columns when the agent supplies a
+     `layout.cols` hint (e.g. "compare 3 scenes side-by-side"). */
+
+#panes-root {
+    /* Anchored above the analysis-panel strip, below the viewport. Drawer-
+       style so it doesn't displace existing chrome until used. */
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none; /* let the viewport receive interactions */
+    display: none;        /* shown when populated via .has-panes */
+    flex-direction: column;
+    background: rgba(5, 5, 5, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+#panes-root.has-panes {
+    display: flex;
+    pointer-events: auto;
+}
+
+.panes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-panel);
+}
+
+.panes-header .panes-title {
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.panes-header .panes-close {
+    background: none;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.panes-header .panes-close:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-beige);
+}
+
+.panes-grid {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 12px;
+    padding: 16px;
+}
+
+.pane {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 260px;
+    max-height: 70vh;
+}
+
+.pane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.pane-title {
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pane-type-chip {
+    color: var(--accent-beige);
+    font-size: 10px;
+    font-family: monospace;
+    background: rgba(230, 224, 212, 0.08);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+}
+
+.pane-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 12px;
+    color: var(--text-primary);
+    font-size: 12px;
+}
+
+.pane-body pre,
+.pane-body code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--text-primary);
+}
+
+.pane-body pre {
+    background: var(--bg-surface);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.pane[data-pane-type="text"] .pane-body {
+    color: var(--text-primary);
+    line-height: 1.55;
+    font-size: 13px;
+    white-space: pre-wrap;
+}
+
+.pane[data-pane-type="ber_curve"] .pane-body,
+.pane[data-pane-type="image"] .pane-body,
+.pane[data-pane-type="scene"] .pane-body {
+    padding: 0;
+}
+
+.pane[data-pane-type="image"] img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: var(--bg-deep);
+}
+
+.pane-scene-canvas {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-deep);
+    display: block;
+}
+
+.pane-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.pane-table td,
+.pane-table th {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--border-subtle);
+    text-align: left;
+    color: var(--text-secondary);
+}
+
+.pane-table th {
+    color: var(--text-primary);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+}
+
+.pane-table tr:last-child td {
+    border-bottom: none;
+}
+
+.pane-empty {
+    color: var(--text-tertiary);
+    font-style: italic;
+    text-align: center;
+    padding: 24px;
+}
+
+/* Code pane: monospace, scrollable, syntax-friendly indent. */
+.pane[data-pane-type="code"] .pane-body pre {
+    margin: 0;
+    height: 100%;
+    background: var(--bg-deep);
+}

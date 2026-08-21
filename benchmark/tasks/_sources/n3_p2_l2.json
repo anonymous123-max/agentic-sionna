@@ -1,0 +1,852 @@
+{
+  "version": "1.0_l2",
+  "tier": "mixed",
+  "design": "L2 (intermediate) prompts for N3, N4, P1, P2 \u2014 16 tasks total. Gives Sionna API names + setup parameters + output schema + constraints, but does NOT pre-decide algorithm steps, batch sizes, sweep heuristics, or strategy names. Companion to s_v2_l2.json.",
+  "count": 16,
+  "tasks": [
+    {
+      "id": "N3_2ap_box_two_screens",
+      "tier": "N3_multi_ap_sim",
+      "capability": "rt_multi_ap_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "prompt": "TASK: Compute the joint coverage of two access points on the Sionna built-in scene \"box_two_screens\" (indoor).\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_two_screens\n- AP positions: AP0=(-3, 0, 4.5) m, AP1=(3, 0, 4.5) m\n- TX power per AP: 20 dBm; frequency: 5 GHz\n- TX/RX antenna: isotropic, vertically polarized\n- Ray-tracing solver: sionna.rt.RadioMapSolver\n\nREQUIRED OUTPUTS:\n- Per-AP coverage map in dBm (NaN where no path)\n- Joint best-server map (per-cell max RSS across the two APs)\n- Per-cell serving-AP assignment (0, 1, or -1 when no AP covers the cell)\n- Per-AP and best-server RSS statistics; per-AP fraction of cells served\n\nOUTPUT FILES (current working directory):\n  simulation.py\n  coverage_ap_0.npy          per-AP RSS in dBm (NaN where no path)\n  coverage_ap_1.npy\n  coverage_best_server.npy   element-wise NaN-aware max across APs\n  serving_ap_map.npy         int8 per cell (0, 1, or -1)\n  coverage_summary.png       2x2 panel (AP0 / AP1 / best_server / serving_ap)\n  simulation_result.json with at least these fields:\n    task_family (\"N3_multi_ap_sim\"), scene_name, num_aps=2, ap_positions,\n    tx_power_dbm=20.0, frequency_hz=5e9,\n    per_ap_metrics (list with ap_id, rss_dbm_min/max/mean),\n    best_server_metrics (rss_dbm_min/max/mean),\n    serving_ap_fractions (list of length 2),\n    method=\"sionna_rt\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_ap_0.npy",
+        "coverage_ap_1.npy",
+        "coverage_best_server.npy",
+        "serving_ap_map.npy",
+        "coverage_summary.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_coverage_ap_0",
+            "type": "file_exists",
+            "path": "coverage_ap_0.npy"
+          },
+          {
+            "key": "must_create_coverage_ap_1",
+            "type": "file_exists",
+            "path": "coverage_ap_1.npy"
+          },
+          {
+            "key": "must_create_coverage_best_server",
+            "type": "file_exists",
+            "path": "coverage_best_server.npy"
+          },
+          {
+            "key": "must_create_serving_ap_map",
+            "type": "file_exists",
+            "path": "serving_ap_map.npy"
+          },
+          {
+            "key": "must_create_coverage_summary",
+            "type": "file_exists",
+            "path": "coverage_summary.png"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n3_multi_ap_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      },
+      "oracle_dir": "benchmark/oracles/n3_multi_ap/box_two_screens"
+    },
+    {
+      "id": "N3_2ap_box_one_screen",
+      "tier": "N3_multi_ap_sim",
+      "capability": "rt_multi_ap_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "prompt": "TASK: Compute the joint coverage of two access points on the Sionna built-in scene \"box_one_screen\" (indoor).\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_one_screen\n- AP positions: AP0=(-3, 0, 4.5) m, AP1=(3, 0, 4.5) m\n- TX power per AP: 20 dBm; frequency: 5 GHz\n- TX/RX antenna: isotropic, vertically polarized\n- Ray-tracing solver: sionna.rt.RadioMapSolver\n\nREQUIRED OUTPUTS:\n- Per-AP coverage map in dBm (NaN where no path)\n- Joint best-server map (per-cell max RSS across the two APs)\n- Per-cell serving-AP assignment (0, 1, or -1 when no AP covers the cell)\n- Per-AP and best-server RSS statistics; per-AP fraction of cells served\n\nOUTPUT FILES (current working directory):\n  simulation.py\n  coverage_ap_0.npy          per-AP RSS in dBm (NaN where no path)\n  coverage_ap_1.npy\n  coverage_best_server.npy   element-wise NaN-aware max across APs\n  serving_ap_map.npy         int8 per cell (0, 1, or -1)\n  coverage_summary.png       2x2 panel (AP0 / AP1 / best_server / serving_ap)\n  simulation_result.json with at least these fields:\n    task_family (\"N3_multi_ap_sim\"), scene_name, num_aps=2, ap_positions,\n    tx_power_dbm=20.0, frequency_hz=5e9,\n    per_ap_metrics (list with ap_id, rss_dbm_min/max/mean),\n    best_server_metrics (rss_dbm_min/max/mean),\n    serving_ap_fractions (list of length 2),\n    method=\"sionna_rt\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_ap_0.npy",
+        "coverage_ap_1.npy",
+        "coverage_best_server.npy",
+        "serving_ap_map.npy",
+        "coverage_summary.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_coverage_ap_0",
+            "type": "file_exists",
+            "path": "coverage_ap_0.npy"
+          },
+          {
+            "key": "must_create_coverage_ap_1",
+            "type": "file_exists",
+            "path": "coverage_ap_1.npy"
+          },
+          {
+            "key": "must_create_coverage_best_server",
+            "type": "file_exists",
+            "path": "coverage_best_server.npy"
+          },
+          {
+            "key": "must_create_serving_ap_map",
+            "type": "file_exists",
+            "path": "serving_ap_map.npy"
+          },
+          {
+            "key": "must_create_coverage_summary",
+            "type": "file_exists",
+            "path": "coverage_summary.png"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n3_multi_ap_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      },
+      "oracle_dir": "benchmark/oracles/n3_multi_ap/box_one_screen"
+    },
+    {
+      "id": "N3_2ap_simple_street_canyon",
+      "tier": "N3_multi_ap_sim",
+      "capability": "rt_multi_ap_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "prompt": "TASK: Compute the joint coverage of two access points on the Sionna built-in scene \"simple_street_canyon\" (outdoor).\n\nPARAMETERS:\n- Scene: sionna.rt.scene.simple_street_canyon\n- AP positions: AP0=(-40, 0, 15) m, AP1=(40, 0, 15) m\n- TX power per AP: 20 dBm; frequency: 5 GHz\n- TX/RX antenna: isotropic, vertically polarized\n- Ray-tracing solver: sionna.rt.RadioMapSolver\n\nREQUIRED OUTPUTS:\n- Per-AP coverage map in dBm (NaN where no path)\n- Joint best-server map (per-cell max RSS across the two APs)\n- Per-cell serving-AP assignment (0, 1, or -1 when no AP covers the cell)\n- Per-AP and best-server RSS statistics; per-AP fraction of cells served\n\nOUTPUT FILES (current working directory):\n  simulation.py\n  coverage_ap_0.npy          per-AP RSS in dBm (NaN where no path)\n  coverage_ap_1.npy\n  coverage_best_server.npy   element-wise NaN-aware max across APs\n  serving_ap_map.npy         int8 per cell (0, 1, or -1)\n  coverage_summary.png       2x2 panel (AP0 / AP1 / best_server / serving_ap)\n  simulation_result.json with at least these fields:\n    task_family (\"N3_multi_ap_sim\"), scene_name, num_aps=2, ap_positions,\n    tx_power_dbm=20.0, frequency_hz=5e9,\n    per_ap_metrics (list with ap_id, rss_dbm_min/max/mean),\n    best_server_metrics (rss_dbm_min/max/mean),\n    serving_ap_fractions (list of length 2),\n    method=\"sionna_rt\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_ap_0.npy",
+        "coverage_ap_1.npy",
+        "coverage_best_server.npy",
+        "serving_ap_map.npy",
+        "coverage_summary.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_coverage_ap_0",
+            "type": "file_exists",
+            "path": "coverage_ap_0.npy"
+          },
+          {
+            "key": "must_create_coverage_ap_1",
+            "type": "file_exists",
+            "path": "coverage_ap_1.npy"
+          },
+          {
+            "key": "must_create_coverage_best_server",
+            "type": "file_exists",
+            "path": "coverage_best_server.npy"
+          },
+          {
+            "key": "must_create_serving_ap_map",
+            "type": "file_exists",
+            "path": "serving_ap_map.npy"
+          },
+          {
+            "key": "must_create_coverage_summary",
+            "type": "file_exists",
+            "path": "coverage_summary.png"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n3_multi_ap_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      },
+      "oracle_dir": "benchmark/oracles/n3_multi_ap/simple_street_canyon"
+    },
+    {
+      "id": "N3_2ap_etoile",
+      "tier": "N3_multi_ap_sim",
+      "capability": "rt_multi_ap_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "etoile",
+      "prompt": "TASK: Compute the joint coverage of two access points on the Sionna built-in scene \"etoile\" (outdoor).\n\nPARAMETERS:\n- Scene: sionna.rt.scene.etoile\n- AP positions: AP0=(-150, 0, 30) m, AP1=(150, 0, 30) m\n- TX power per AP: 20 dBm; frequency: 5 GHz\n- TX/RX antenna: isotropic, vertically polarized\n- Ray-tracing solver: sionna.rt.RadioMapSolver\n\nREQUIRED OUTPUTS:\n- Per-AP coverage map in dBm (NaN where no path)\n- Joint best-server map (per-cell max RSS across the two APs)\n- Per-cell serving-AP assignment (0, 1, or -1 when no AP covers the cell)\n- Per-AP and best-server RSS statistics; per-AP fraction of cells served\n\nOUTPUT FILES (current working directory):\n  simulation.py\n  coverage_ap_0.npy          per-AP RSS in dBm (NaN where no path)\n  coverage_ap_1.npy\n  coverage_best_server.npy   element-wise NaN-aware max across APs\n  serving_ap_map.npy         int8 per cell (0, 1, or -1)\n  coverage_summary.png       2x2 panel (AP0 / AP1 / best_server / serving_ap)\n  simulation_result.json with at least these fields:\n    task_family (\"N3_multi_ap_sim\"), scene_name, num_aps=2, ap_positions,\n    tx_power_dbm=20.0, frequency_hz=5e9,\n    per_ap_metrics (list with ap_id, rss_dbm_min/max/mean),\n    best_server_metrics (rss_dbm_min/max/mean),\n    serving_ap_fractions (list of length 2),\n    method=\"sionna_rt\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_ap_0.npy",
+        "coverage_ap_1.npy",
+        "coverage_best_server.npy",
+        "serving_ap_map.npy",
+        "coverage_summary.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_coverage_ap_0",
+            "type": "file_exists",
+            "path": "coverage_ap_0.npy"
+          },
+          {
+            "key": "must_create_coverage_ap_1",
+            "type": "file_exists",
+            "path": "coverage_ap_1.npy"
+          },
+          {
+            "key": "must_create_coverage_best_server",
+            "type": "file_exists",
+            "path": "coverage_best_server.npy"
+          },
+          {
+            "key": "must_create_serving_ap_map",
+            "type": "file_exists",
+            "path": "serving_ap_map.npy"
+          },
+          {
+            "key": "must_create_coverage_summary",
+            "type": "file_exists",
+            "path": "coverage_summary.png"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n3_multi_ap_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      },
+      "oracle_dir": "benchmark/oracles/n3_multi_ap/etoile"
+    },
+    {
+      "id": "N4_ber_qpsk_awgn",
+      "tier": "N4_phy_link",
+      "metric_type": "ber",
+      "modulation": "QPSK",
+      "codec": "uncoded",
+      "code_rate": null,
+      "channel": "AWGN",
+      "eb_n0_db": [
+        0,
+        2,
+        4,
+        6,
+        8
+      ],
+      "oracle_path": "benchmark/oracles/n4_phy/ber_qpsk_awgn.json",
+      "capability": "phy_link_l2",
+      "difficulty": "easy",
+      "split": "train",
+      "prompt": "TASK: Compute the AWGN BER curve for uncoded QPSK over Eb/N0 = [0, 2, 4, 6, 8] dB.\n\nPARAMETERS:\n- Modulation: QPSK (2 bits/symbol); channel: AWGN; coding: uncoded\n- Eb/N0 grid (dB): [0, 2, 4, 6, 8]\n- Sionna PHY APIs needed: sionna.phy.mapping.Mapper, sionna.phy.mapping.Demapper, sionna.phy.channel.AWGN, sionna.phy.utils.ebnodb2no\n- Monte-Carlo budget: choose enough samples to get ~1e6 bits (or >=1000 codewords for LDPC) per Eb/N0 point\n\nREQUIRED OUTPUTS:\n- BER value at each of the 5 Eb/N0 points\n\nOUTPUT FILES (current working directory):\n  simulation.py\n  ber_curve.npy                 (N, 2) numpy array with columns [Eb/N0_dB, ber_value]\n  ber_curve.png                 semilogy plot\n  simulation_result.json with at least these fields:\n    metric_type=\"ber\", modulation=\"QPSK\",\n    codec=\"uncoded\", code_rate=null,\n    channel=\"AWGN\", eb_n0_db=[0, 2, 4, 6, 8],\n    metric_values (list of 5 floats matching the curve),\n    method=\"sionna_phy\".\n\nCONSTRAINTS:\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json",
+        "ber_curve.npy",
+        "ber_curve.png"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "key": "must_create_ber_curve",
+            "type": "file_exists",
+            "path": "ber_curve.npy"
+          },
+          {
+            "key": "must_create_ber_curve",
+            "type": "file_exists",
+            "path": "ber_curve.png"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n4_phy_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N4_ber_16qam_awgn",
+      "tier": "N4_phy_link",
+      "metric_type": "ber",
+      "modulation": "16-QAM",
+      "codec": "uncoded",
+      "code_rate": null,
+      "channel": "AWGN",
+      "eb_n0_db": [
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "oracle_path": "benchmark/oracles/n4_phy/ber_16qam_awgn.json",
+      "capability": "phy_link_l2",
+      "difficulty": "easy",
+      "split": "train",
+      "prompt": "TASK: Compute the AWGN BER curve for uncoded 16-QAM over Eb/N0 = [4, 6, 8, 10, 12] dB.\n\nPARAMETERS:\n- Modulation: 16-QAM (4 bits/symbol); channel: AWGN; coding: uncoded\n- Eb/N0 grid (dB): [4, 6, 8, 10, 12]\n- Sionna PHY APIs needed: sionna.phy.mapping.Mapper, sionna.phy.mapping.Demapper, sionna.phy.channel.AWGN, sionna.phy.utils.ebnodb2no\n- Monte-Carlo budget: choose enough samples to get ~1e6 bits (or >=1000 codewords for LDPC) per Eb/N0 point\n\nREQUIRED OUTPUTS:\n- BER value at each of the 5 Eb/N0 points\n\nOUTPUT FILES (current working directory):\n  simulation.py\n  ber_curve.npy                 (N, 2) numpy array with columns [Eb/N0_dB, ber_value]\n  ber_curve.png                 semilogy plot\n  simulation_result.json with at least these fields:\n    metric_type=\"ber\", modulation=\"16-QAM\",\n    codec=\"uncoded\", code_rate=null,\n    channel=\"AWGN\", eb_n0_db=[4, 6, 8, 10, 12],\n    metric_values (list of 5 floats matching the curve),\n    method=\"sionna_phy\".\n\nCONSTRAINTS:\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json",
+        "ber_curve.npy",
+        "ber_curve.png"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "key": "must_create_ber_curve",
+            "type": "file_exists",
+            "path": "ber_curve.npy"
+          },
+          {
+            "key": "must_create_ber_curve",
+            "type": "file_exists",
+            "path": "ber_curve.png"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n4_phy_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N4_bler_ldpc_qpsk_awgn",
+      "tier": "N4_phy_link",
+      "metric_type": "bler",
+      "modulation": "QPSK",
+      "codec": "ldpc",
+      "code_rate": 0.5,
+      "channel": "AWGN",
+      "eb_n0_db": [
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        2.5
+      ],
+      "oracle_path": "benchmark/oracles/n4_phy/bler_ldpc_qpsk_awgn.json",
+      "capability": "phy_link_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "prompt": "TASK: Compute the AWGN BLER curve for 5G LDPC-coded QPSK (k=1024, n=2048, rate 1/2) over Eb/N0 = [0.5, 1.0, 1.5, 2.0, 2.5] dB.\n\nPARAMETERS:\n- Modulation: QPSK (2 bits/symbol); channel: AWGN; coding: ldpc\n- Code rate: 0.5\n- Eb/N0 grid (dB): [0.5, 1.0, 1.5, 2.0, 2.5]\n- Sionna PHY APIs needed: sionna.phy.mapping.Mapper, sionna.phy.mapping.Demapper, sionna.phy.channel.AWGN, sionna.phy.utils.ebnodb2no, sionna.phy.fec.LDPC5GEncoder, sionna.phy.fec.LDPC5GDecoder\n- Monte-Carlo budget: choose enough samples to get ~1e6 bits (or >=1000 codewords for LDPC) per Eb/N0 point\n\nREQUIRED OUTPUTS:\n- BLER value at each of the 5 Eb/N0 points\n\nOUTPUT FILES (current working directory):\n  simulation.py\n  bler_curve.npy                 (N, 2) numpy array with columns [Eb/N0_dB, bler_value]\n  bler_curve.png                 semilogy plot\n  simulation_result.json with at least these fields:\n    metric_type=\"bler\", modulation=\"QPSK\",\n    codec=\"ldpc\", code_rate=0.5,\n    channel=\"AWGN\", eb_n0_db=[0.5, 1.0, 1.5, 2.0, 2.5],\n    metric_values (list of 5 floats matching the curve),\n    method=\"sionna_phy\".\n\nCONSTRAINTS:\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json",
+        "bler_curve.npy",
+        "bler_curve.png"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "key": "must_create_bler_curve",
+            "type": "file_exists",
+            "path": "bler_curve.npy"
+          },
+          {
+            "key": "must_create_bler_curve",
+            "type": "file_exists",
+            "path": "bler_curve.png"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n4_phy_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N4_throughput_ldpc_qpsk_awgn",
+      "tier": "N4_phy_link",
+      "metric_type": "throughput",
+      "modulation": "QPSK",
+      "codec": "ldpc",
+      "code_rate": 0.5,
+      "channel": "AWGN",
+      "eb_n0_db": [
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        2.5
+      ],
+      "oracle_path": "benchmark/oracles/n4_phy/throughput_ldpc_qpsk_awgn.json",
+      "capability": "phy_link_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "prompt": "TASK: Compute the AWGN THROUGHPUT curve for 5G LDPC-coded QPSK (k=1024, n=2048, rate 1/2) over Eb/N0 = [0.5, 1.0, 1.5, 2.0, 2.5] dB.\n\nPARAMETERS:\n- Modulation: QPSK (2 bits/symbol); channel: AWGN; coding: ldpc\n- Code rate: 0.5\n- Eb/N0 grid (dB): [0.5, 1.0, 1.5, 2.0, 2.5]\n- Sionna PHY APIs needed: sionna.phy.mapping.Mapper, sionna.phy.mapping.Demapper, sionna.phy.channel.AWGN, sionna.phy.utils.ebnodb2no, sionna.phy.fec.LDPC5GEncoder, sionna.phy.fec.LDPC5GDecoder\n- Monte-Carlo budget: choose enough samples to get ~1e6 bits (or >=1000 codewords for LDPC) per Eb/N0 point\n\nREQUIRED OUTPUTS:\n- THROUGHPUT value at each of the 5 Eb/N0 points\n\nOUTPUT FILES (current working directory):\n  simulation.py\n  throughput_curve.npy                 (N, 2) numpy array with columns [Eb/N0_dB, throughput_value]\n  throughput_curve.png                 linear plot\n  simulation_result.json with at least these fields:\n    metric_type=\"throughput\", modulation=\"QPSK\",\n    codec=\"ldpc\", code_rate=0.5,\n    channel=\"AWGN\", eb_n0_db=[0.5, 1.0, 1.5, 2.0, 2.5],\n    metric_values (list of 5 floats matching the curve),\n    method=\"sionna_phy\".\n\nCONSTRAINTS:\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json",
+        "throughput_curve.npy",
+        "throughput_curve.png"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "key": "must_create_throughput_curve",
+            "type": "file_exists",
+            "path": "throughput_curve.npy"
+          },
+          {
+            "key": "must_create_throughput_curve",
+            "type": "file_exists",
+            "path": "throughput_curve.png"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n4_phy_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P1_box_one_screen",
+      "tier": "P1_optimize",
+      "capability": "rt_optimize_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "kind": "indoor",
+      "oracle_path": "benchmark/oracles/p1_optimize/box_one_screen/oracle.json",
+      "prompt": "TASK: Sweep antenna orientation (5 azimuth x 3 downtilt = 15 configurations) on the Sionna built-in scene \"box_one_screen\" (indoor) and report the orientation that maximises a single UE's downlink throughput.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_one_screen\n- AP position: (-2, 0, 4.5) m\n- UE position: (2, 0, 1.5) m\n- TX power: -29.2 dBm; frequency: 5 GHz; thermal noise floor: -85 dBm\n- TX antenna: a single 3GPP tr38901 directional element (sionna.rt.PlanarArray pattern=\"tr38901\")\n- RX antenna: isotropic\n- Sweep grid:\n    azimuth_deg_grid  = [-90, -45, 0, +45, +90]\n    downtilt_deg_grid = [0, +45, +90]\n- Orientation API: tx.orientation = [yaw, pitch, roll] in radians\n- Ray-tracing solver: sionna.rt.PathSolver\n- Throughput model: 5G LDPC-coded QPSK rate 1/2 (sionna.phy.fec.LDPC5GEncoder/Decoder + Mapper/AWGN). Throughput = code_rate * num_bits_per_symbol * (1 - BLER) bits/symbol\n\nREQUIRED OUTPUTS:\n- Per-configuration path gain, SNR, throughput\n- The (azimuth, downtilt) pair that maximises throughput\n\nOUTPUT FILES:\n  simulation.py\n  simulation_result.json with at least these fields:\n    task_family (\"P1_optimize\"), scene_name, tx_position, ue_position,\n    tx_power_dbm, noise_dbm=-85.0, frequency_hz=5e9,\n    azimuth_deg_grid, downtilt_deg_grid,\n    sweep_table (15 rows; each with az_deg, dt_deg, path_gain_db, snr_db, ebn0_db, throughput),\n    best ({az_deg, dt_deg, throughput}),\n    method=\"sionna_rt + sionna_phy\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.\n- The reported \"best\" must appear in your own sweep_table (matching az/dt and throughput).\n- Throughput is (1 - BLER) for this QPSK 1/2 chain (max 1.0), NOT Shannon log2(1+SNR).\n\nPERFORMANCE GUIDANCE (use exactly these settings \u2014 they keep wall time under the harness budget while matching the verifier oracle within tolerance):\n- Ray-tracing solver: max_depth=3, samples_per_src=200_000  (NOT 500_000)\n- path_gain does NOT depend on TX power \u2014 cache PathSolver outputs per orientation/azimuth and reuse\n- LDPC PHY Monte-Carlo budget: 5-8 Eb/N0 points \u00d7 batch_size=300 codewords \u00d7 num_iter=10. This produces a BLER curve in ~10-15 seconds. Do NOT use batch=5000 or num_iter=20+.\n- Build the BLER curve ONCE at startup, then interpolate (np.interp) for each (az, dt) configuration. Do NOT re-run the LDPC chain per configuration.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P1_box_two_screens",
+      "tier": "P1_optimize",
+      "capability": "rt_optimize_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "kind": "indoor",
+      "oracle_path": "benchmark/oracles/p1_optimize/box_two_screens/oracle.json",
+      "prompt": "TASK: Sweep antenna orientation (5 azimuth x 3 downtilt = 15 configurations) on the Sionna built-in scene \"box_two_screens\" (indoor) and report the orientation that maximises a single UE's downlink throughput.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_two_screens\n- AP position: (-2, 0, 4.5) m\n- UE position: (2, 0, 1.5) m\n- TX power: -7.2 dBm; frequency: 5 GHz; thermal noise floor: -85 dBm\n- TX antenna: a single 3GPP tr38901 directional element (sionna.rt.PlanarArray pattern=\"tr38901\")\n- RX antenna: isotropic\n- Sweep grid:\n    azimuth_deg_grid  = [-90, -45, 0, +45, +90]\n    downtilt_deg_grid = [0, +45, +90]\n- Orientation API: tx.orientation = [yaw, pitch, roll] in radians\n- Ray-tracing solver: sionna.rt.PathSolver\n- Throughput model: 5G LDPC-coded QPSK rate 1/2 (sionna.phy.fec.LDPC5GEncoder/Decoder + Mapper/AWGN). Throughput = code_rate * num_bits_per_symbol * (1 - BLER) bits/symbol\n\nREQUIRED OUTPUTS:\n- Per-configuration path gain, SNR, throughput\n- The (azimuth, downtilt) pair that maximises throughput\n\nOUTPUT FILES:\n  simulation.py\n  simulation_result.json with at least these fields:\n    task_family (\"P1_optimize\"), scene_name, tx_position, ue_position,\n    tx_power_dbm, noise_dbm=-85.0, frequency_hz=5e9,\n    azimuth_deg_grid, downtilt_deg_grid,\n    sweep_table (15 rows; each with az_deg, dt_deg, path_gain_db, snr_db, ebn0_db, throughput),\n    best ({az_deg, dt_deg, throughput}),\n    method=\"sionna_rt + sionna_phy\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.\n- The reported \"best\" must appear in your own sweep_table (matching az/dt and throughput).\n- Throughput is (1 - BLER) for this QPSK 1/2 chain (max 1.0), NOT Shannon log2(1+SNR).\n\nPERFORMANCE GUIDANCE (use exactly these settings \u2014 they keep wall time under the harness budget while matching the verifier oracle within tolerance):\n- Ray-tracing solver: max_depth=3, samples_per_src=200_000  (NOT 500_000)\n- path_gain does NOT depend on TX power \u2014 cache PathSolver outputs per orientation/azimuth and reuse\n- LDPC PHY Monte-Carlo budget: 5-8 Eb/N0 points \u00d7 batch_size=300 codewords \u00d7 num_iter=10. This produces a BLER curve in ~10-15 seconds. Do NOT use batch=5000 or num_iter=20+.\n- Build the BLER curve ONCE at startup, then interpolate (np.interp) for each (az, dt) configuration. Do NOT re-run the LDPC chain per configuration.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P1_simple_street_canyon",
+      "tier": "P1_optimize",
+      "capability": "rt_optimize_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "kind": "outdoor",
+      "oracle_path": "benchmark/oracles/p1_optimize/simple_street_canyon/oracle.json",
+      "prompt": "TASK: Sweep antenna orientation (5 azimuth x 3 downtilt = 15 configurations) on the Sionna built-in scene \"simple_street_canyon\" (outdoor) and report the orientation that maximises a single UE's downlink throughput.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.simple_street_canyon\n- AP position: (-15, 0, 15) m\n- UE position: (15, 0, 1.5) m\n- TX power: -12.0 dBm; frequency: 5 GHz; thermal noise floor: -85 dBm\n- TX antenna: a single 3GPP tr38901 directional element (sionna.rt.PlanarArray pattern=\"tr38901\")\n- RX antenna: isotropic\n- Sweep grid:\n    azimuth_deg_grid  = [-90, -45, 0, +45, +90]\n    downtilt_deg_grid = [0, +45, +90]\n- Orientation API: tx.orientation = [yaw, pitch, roll] in radians\n- Ray-tracing solver: sionna.rt.PathSolver\n- Throughput model: 5G LDPC-coded QPSK rate 1/2 (sionna.phy.fec.LDPC5GEncoder/Decoder + Mapper/AWGN). Throughput = code_rate * num_bits_per_symbol * (1 - BLER) bits/symbol\n\nREQUIRED OUTPUTS:\n- Per-configuration path gain, SNR, throughput\n- The (azimuth, downtilt) pair that maximises throughput\n\nOUTPUT FILES:\n  simulation.py\n  simulation_result.json with at least these fields:\n    task_family (\"P1_optimize\"), scene_name, tx_position, ue_position,\n    tx_power_dbm, noise_dbm=-85.0, frequency_hz=5e9,\n    azimuth_deg_grid, downtilt_deg_grid,\n    sweep_table (15 rows; each with az_deg, dt_deg, path_gain_db, snr_db, ebn0_db, throughput),\n    best ({az_deg, dt_deg, throughput}),\n    method=\"sionna_rt + sionna_phy\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.\n- The reported \"best\" must appear in your own sweep_table (matching az/dt and throughput).\n- Throughput is (1 - BLER) for this QPSK 1/2 chain (max 1.0), NOT Shannon log2(1+SNR).\n\nPERFORMANCE GUIDANCE (use exactly these settings \u2014 they keep wall time under the harness budget while matching the verifier oracle within tolerance):\n- Ray-tracing solver: max_depth=3, samples_per_src=200_000  (NOT 500_000)\n- path_gain does NOT depend on TX power \u2014 cache PathSolver outputs per orientation/azimuth and reuse\n- LDPC PHY Monte-Carlo budget: 5-8 Eb/N0 points \u00d7 batch_size=300 codewords \u00d7 num_iter=10. This produces a BLER curve in ~10-15 seconds. Do NOT use batch=5000 or num_iter=20+.\n- Build the BLER curve ONCE at startup, then interpolate (np.interp) for each (az, dt) configuration. Do NOT re-run the LDPC chain per configuration.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P1_etoile",
+      "tier": "P1_optimize",
+      "capability": "rt_optimize_l2",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "etoile",
+      "kind": "outdoor",
+      "oracle_path": "benchmark/oracles/p1_optimize/etoile/oracle.json",
+      "prompt": "TASK: Sweep antenna orientation (5 azimuth x 3 downtilt = 15 configurations) on the Sionna built-in scene \"etoile\" (outdoor) and report the orientation that maximises a single UE's downlink throughput.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.etoile\n- AP position: (-50, 0, 30) m\n- UE position: (50, 0, 1.5) m\n- TX power: 0.1 dBm; frequency: 5 GHz; thermal noise floor: -85 dBm\n- TX antenna: a single 3GPP tr38901 directional element (sionna.rt.PlanarArray pattern=\"tr38901\")\n- RX antenna: isotropic\n- Sweep grid:\n    azimuth_deg_grid  = [-90, -45, 0, +45, +90]\n    downtilt_deg_grid = [0, +45, +90]\n- Orientation API: tx.orientation = [yaw, pitch, roll] in radians\n- Ray-tracing solver: sionna.rt.PathSolver\n- Throughput model: 5G LDPC-coded QPSK rate 1/2 (sionna.phy.fec.LDPC5GEncoder/Decoder + Mapper/AWGN). Throughput = code_rate * num_bits_per_symbol * (1 - BLER) bits/symbol\n\nREQUIRED OUTPUTS:\n- Per-configuration path gain, SNR, throughput\n- The (azimuth, downtilt) pair that maximises throughput\n\nOUTPUT FILES:\n  simulation.py\n  simulation_result.json with at least these fields:\n    task_family (\"P1_optimize\"), scene_name, tx_position, ue_position,\n    tx_power_dbm, noise_dbm=-85.0, frequency_hz=5e9,\n    azimuth_deg_grid, downtilt_deg_grid,\n    sweep_table (15 rows; each with az_deg, dt_deg, path_gain_db, snr_db, ebn0_db, throughput),\n    best ({az_deg, dt_deg, throughput}),\n    method=\"sionna_rt + sionna_phy\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.\n- The reported \"best\" must appear in your own sweep_table (matching az/dt and throughput).\n- Throughput is (1 - BLER) for this QPSK 1/2 chain (max 1.0), NOT Shannon log2(1+SNR).\n\nPERFORMANCE GUIDANCE (use exactly these settings \u2014 they keep wall time under the harness budget while matching the verifier oracle within tolerance):\n- Ray-tracing solver: max_depth=3, samples_per_src=200_000  (NOT 500_000)\n- path_gain does NOT depend on TX power \u2014 cache PathSolver outputs per orientation/azimuth and reuse\n- LDPC PHY Monte-Carlo budget: 5-8 Eb/N0 points \u00d7 batch_size=300 codewords \u00d7 num_iter=10. This produces a BLER curve in ~10-15 seconds. Do NOT use batch=5000 or num_iter=20+.\n- Build the BLER curve ONCE at startup, then interpolate (np.interp) for each (az, dt) configuration. Do NOT re-run the LDPC chain per configuration.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2_box_one_screen",
+      "tier": "P2_pareto",
+      "capability": "rt_pareto_l2",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "kind": "indoor",
+      "oracle_path": "benchmark/oracles/p2_pareto/box_one_screen/oracle.json",
+      "prompt": "TASK: Sweep (azimuth x TX power) over a 5 x 3 grid on the Sionna built-in scene \"box_one_screen\" (indoor) and report the Pareto-optimal trade-off between a single UE's downlink throughput and the AP's transmit power.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_one_screen\n- AP position: (-2, 0, 4.5) m; UE position: (2, 0, 1.5) m\n- Frequency: 5 GHz; thermal noise floor: -85 dBm\n- TX antenna: a single 3GPP tr38901 directional element; RX antenna: isotropic\n- Fixed downtilt for this sweep: 45.0 degrees\n- Azimuth grid (degrees): [-90, -45, 0, +45, +90]\n- TX-power grid (dBm): [-35, -31, -28]\n- Ray-tracing solver: sionna.rt.PathSolver\n- Throughput model: 5G LDPC-coded QPSK rate 1/2 (sionna.phy.fec.LDPC5GEncoder/Decoder + Mapper/AWGN). Throughput = code_rate * num_bits_per_symbol * (1 - BLER) bits/symbol\n\nREQUIRED OUTPUTS:\n- For every (az, P) in the 15-config grid: path gain, SNR, throughput, tx_power_mw = 10**(tx_power_dbm/10)\n- The Pareto-optimal subset in (maximize throughput, minimize tx_power_mw) space, given as indices into the sweep table\n\nOUTPUT FILES:\n  simulation.py\n  simulation_result.json with at least these fields:\n    task_family (\"P2_pareto\"), scene_name, tx_position, ue_position,\n    noise_dbm=-85.0, frequency_hz=5e9, downtilt_fixed_deg=45.0,\n    azimuth_deg_grid (5 values), tx_power_dbm_grid ([-35, -31, -28]),\n    sweep_table (15 rows; each with az_deg, tx_power_dbm, tx_power_mw, path_gain_db, snr_db, ebn0_db, throughput),\n    pareto_set (list of integer indices into sweep_table that are non-dominated under (max throughput, min tx_power_mw)),\n    method=\"sionna_rt + sionna_phy\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.\n- Every index in your pareto_set must be truly non-dominated within your own sweep_table.\n- tx_power_mw = 10**(tx_power_dbm/10) (the Pareto minimisation axis).\n- Throughput is (1 - BLER) for this QPSK 1/2 chain (max 1.0), NOT Shannon log2(1+SNR).\n\nPERFORMANCE GUIDANCE (use exactly these settings \u2014 they keep wall time under the harness budget while matching the verifier oracle within tolerance):\n- Ray-tracing solver: max_depth=3, samples_per_src=200_000  (NOT 500_000)\n- path_gain does NOT depend on TX power \u2014 cache PathSolver outputs per orientation/azimuth and reuse\n- LDPC PHY Monte-Carlo budget: 5-8 Eb/N0 points \u00d7 batch_size=300 codewords \u00d7 num_iter=10. This produces a BLER curve in ~10-15 seconds. Do NOT use batch=5000 or num_iter=20+.\n- Build the BLER curve ONCE at startup, then interpolate (np.interp) for each (az, dt) configuration. Do NOT re-run the LDPC chain per configuration.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2_box_two_screens",
+      "tier": "P2_pareto",
+      "capability": "rt_pareto_l2",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "kind": "indoor",
+      "oracle_path": "benchmark/oracles/p2_pareto/box_two_screens/oracle.json",
+      "prompt": "TASK: Sweep (azimuth x TX power) over a 5 x 3 grid on the Sionna built-in scene \"box_two_screens\" (indoor) and report the Pareto-optimal trade-off between a single UE's downlink throughput and the AP's transmit power.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_two_screens\n- AP position: (-2, 0, 4.5) m; UE position: (2, 0, 1.5) m\n- Frequency: 5 GHz; thermal noise floor: -85 dBm\n- TX antenna: a single 3GPP tr38901 directional element; RX antenna: isotropic\n- Fixed downtilt for this sweep: 0.0 degrees\n- Azimuth grid (degrees): [-90, -45, 0, +45, +90]\n- TX-power grid (dBm): [-13, -9, -6]\n- Ray-tracing solver: sionna.rt.PathSolver\n- Throughput model: 5G LDPC-coded QPSK rate 1/2 (sionna.phy.fec.LDPC5GEncoder/Decoder + Mapper/AWGN). Throughput = code_rate * num_bits_per_symbol * (1 - BLER) bits/symbol\n\nREQUIRED OUTPUTS:\n- For every (az, P) in the 15-config grid: path gain, SNR, throughput, tx_power_mw = 10**(tx_power_dbm/10)\n- The Pareto-optimal subset in (maximize throughput, minimize tx_power_mw) space, given as indices into the sweep table\n\nOUTPUT FILES:\n  simulation.py\n  simulation_result.json with at least these fields:\n    task_family (\"P2_pareto\"), scene_name, tx_position, ue_position,\n    noise_dbm=-85.0, frequency_hz=5e9, downtilt_fixed_deg=0.0,\n    azimuth_deg_grid (5 values), tx_power_dbm_grid ([-13, -9, -6]),\n    sweep_table (15 rows; each with az_deg, tx_power_dbm, tx_power_mw, path_gain_db, snr_db, ebn0_db, throughput),\n    pareto_set (list of integer indices into sweep_table that are non-dominated under (max throughput, min tx_power_mw)),\n    method=\"sionna_rt + sionna_phy\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.\n- Every index in your pareto_set must be truly non-dominated within your own sweep_table.\n- tx_power_mw = 10**(tx_power_dbm/10) (the Pareto minimisation axis).\n- Throughput is (1 - BLER) for this QPSK 1/2 chain (max 1.0), NOT Shannon log2(1+SNR).\n\nPERFORMANCE GUIDANCE (use exactly these settings \u2014 they keep wall time under the harness budget while matching the verifier oracle within tolerance):\n- Ray-tracing solver: max_depth=3, samples_per_src=200_000  (NOT 500_000)\n- path_gain does NOT depend on TX power \u2014 cache PathSolver outputs per orientation/azimuth and reuse\n- LDPC PHY Monte-Carlo budget: 5-8 Eb/N0 points \u00d7 batch_size=300 codewords \u00d7 num_iter=10. This produces a BLER curve in ~10-15 seconds. Do NOT use batch=5000 or num_iter=20+.\n- Build the BLER curve ONCE at startup, then interpolate (np.interp) for each (az, dt) configuration. Do NOT re-run the LDPC chain per configuration.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2_simple_street_canyon",
+      "tier": "P2_pareto",
+      "capability": "rt_pareto_l2",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "kind": "outdoor",
+      "oracle_path": "benchmark/oracles/p2_pareto/simple_street_canyon/oracle.json",
+      "prompt": "TASK: Sweep (azimuth x TX power) over a 5 x 3 grid on the Sionna built-in scene \"simple_street_canyon\" (outdoor) and report the Pareto-optimal trade-off between a single UE's downlink throughput and the AP's transmit power.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.simple_street_canyon\n- AP position: (-15, 0, 15) m; UE position: (15, 0, 1.5) m\n- Frequency: 5 GHz; thermal noise floor: -85 dBm\n- TX antenna: a single 3GPP tr38901 directional element; RX antenna: isotropic\n- Fixed downtilt for this sweep: 0.0 degrees\n- Azimuth grid (degrees): [-90, -45, 0, +45, +90]\n- TX-power grid (dBm): [-18, -14, -11]\n- Ray-tracing solver: sionna.rt.PathSolver\n- Throughput model: 5G LDPC-coded QPSK rate 1/2 (sionna.phy.fec.LDPC5GEncoder/Decoder + Mapper/AWGN). Throughput = code_rate * num_bits_per_symbol * (1 - BLER) bits/symbol\n\nREQUIRED OUTPUTS:\n- For every (az, P) in the 15-config grid: path gain, SNR, throughput, tx_power_mw = 10**(tx_power_dbm/10)\n- The Pareto-optimal subset in (maximize throughput, minimize tx_power_mw) space, given as indices into the sweep table\n\nOUTPUT FILES:\n  simulation.py\n  simulation_result.json with at least these fields:\n    task_family (\"P2_pareto\"), scene_name, tx_position, ue_position,\n    noise_dbm=-85.0, frequency_hz=5e9, downtilt_fixed_deg=0.0,\n    azimuth_deg_grid (5 values), tx_power_dbm_grid ([-18, -14, -11]),\n    sweep_table (15 rows; each with az_deg, tx_power_dbm, tx_power_mw, path_gain_db, snr_db, ebn0_db, throughput),\n    pareto_set (list of integer indices into sweep_table that are non-dominated under (max throughput, min tx_power_mw)),\n    method=\"sionna_rt + sionna_phy\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.\n- Every index in your pareto_set must be truly non-dominated within your own sweep_table.\n- tx_power_mw = 10**(tx_power_dbm/10) (the Pareto minimisation axis).\n- Throughput is (1 - BLER) for this QPSK 1/2 chain (max 1.0), NOT Shannon log2(1+SNR).\n\nPERFORMANCE GUIDANCE (use exactly these settings \u2014 they keep wall time under the harness budget while matching the verifier oracle within tolerance):\n- Ray-tracing solver: max_depth=3, samples_per_src=200_000  (NOT 500_000)\n- path_gain does NOT depend on TX power \u2014 cache PathSolver outputs per orientation/azimuth and reuse\n- LDPC PHY Monte-Carlo budget: 5-8 Eb/N0 points \u00d7 batch_size=300 codewords \u00d7 num_iter=10. This produces a BLER curve in ~10-15 seconds. Do NOT use batch=5000 or num_iter=20+.\n- Build the BLER curve ONCE at startup, then interpolate (np.interp) for each (az, dt) configuration. Do NOT re-run the LDPC chain per configuration.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2_etoile",
+      "tier": "P2_pareto",
+      "capability": "rt_pareto_l2",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "kind": "outdoor",
+      "oracle_path": "benchmark/oracles/p2_pareto/etoile/oracle.json",
+      "prompt": "TASK: Sweep (azimuth x TX power) over a 5 x 3 grid on the Sionna built-in scene \"etoile\" (outdoor) and report the Pareto-optimal trade-off between a single UE's downlink throughput and the AP's transmit power.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.etoile\n- AP position: (-50, 0, 30) m; UE position: (50, 0, 1.5) m\n- Frequency: 5 GHz; thermal noise floor: -85 dBm\n- TX antenna: a single 3GPP tr38901 directional element; RX antenna: isotropic\n- Fixed downtilt for this sweep: 0.0 degrees\n- Azimuth grid (degrees): [-90, -45, 0, +45, +90]\n- TX-power grid (dBm): [-6, -3, 1]\n- Ray-tracing solver: sionna.rt.PathSolver\n- Throughput model: 5G LDPC-coded QPSK rate 1/2 (sionna.phy.fec.LDPC5GEncoder/Decoder + Mapper/AWGN). Throughput = code_rate * num_bits_per_symbol * (1 - BLER) bits/symbol\n\nREQUIRED OUTPUTS:\n- For every (az, P) in the 15-config grid: path gain, SNR, throughput, tx_power_mw = 10**(tx_power_dbm/10)\n- The Pareto-optimal subset in (maximize throughput, minimize tx_power_mw) space, given as indices into the sweep table\n\nOUTPUT FILES:\n  simulation.py\n  simulation_result.json with at least these fields:\n    task_family (\"P2_pareto\"), scene_name, tx_position, ue_position,\n    noise_dbm=-85.0, frequency_hz=5e9, downtilt_fixed_deg=0.0,\n    azimuth_deg_grid (5 values), tx_power_dbm_grid ([-6, -3, 1]),\n    sweep_table (15 rows; each with az_deg, tx_power_dbm, tx_power_mw, path_gain_db, snr_db, ebn0_db, throughput),\n    pareto_set (list of integer indices into sweep_table that are non-dominated under (max throughput, min tx_power_mw)),\n    method=\"sionna_rt + sionna_phy\".\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + the appropriate solver). Do NOT fall back to FSPL or 3GPP TR 38.901 closed-form path loss.\n- Run scripts via `$RF_SIONNA_PY simulation.py`, NOT `python3`.\n- MUST run a Sionna PHY Monte-Carlo loop (sionna.phy.mapping.Mapper / sionna.phy.channel.AWGN / sionna.phy.utils.ebnodb2no, plus sionna.phy.fec.LDPC5GEncoder/Decoder for coded chains). Do NOT substitute scipy.special.erfc as the simulator.\n- Run scripts via `$RF_SIONNA_PY simulation.py`.\n- Every index in your pareto_set must be truly non-dominated within your own sweep_table.\n- tx_power_mw = 10**(tx_power_dbm/10) (the Pareto minimisation axis).\n- Throughput is (1 - BLER) for this QPSK 1/2 chain (max 1.0), NOT Shannon log2(1+SNR).\n\nPERFORMANCE GUIDANCE (use exactly these settings \u2014 they keep wall time under the harness budget while matching the verifier oracle within tolerance):\n- Ray-tracing solver: max_depth=3, samples_per_src=200_000  (NOT 500_000)\n- path_gain does NOT depend on TX power \u2014 cache PathSolver outputs per orientation/azimuth and reuse\n- LDPC PHY Monte-Carlo budget: 5-8 Eb/N0 points \u00d7 batch_size=300 codewords \u00d7 num_iter=10. This produces a BLER curve in ~10-15 seconds. Do NOT use batch=5000 or num_iter=20+.\n- Build the BLER curve ONCE at startup, then interpolate (np.interp) for each (az, dt) configuration. Do NOT re-run the LDPC chain per configuration.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_simulation_result",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}

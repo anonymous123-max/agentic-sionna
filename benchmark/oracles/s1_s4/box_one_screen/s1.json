@@ -1,0 +1,78 @@
+{
+  "task_family": "S1_fixed_deployment",
+  "scene_name": "box_one_screen",
+  "ap_positions": [
+    [
+      -2.0,
+      0.0,
+      4.5
+    ],
+    [
+      2.0,
+      0.0,
+      4.5
+    ]
+  ],
+  "ue_positions": [
+    [
+      -2.0,
+      -1.5,
+      1.5
+    ],
+    [
+      -2.0,
+      1.5,
+      1.5
+    ],
+    [
+      2.0,
+      -1.5,
+      1.5
+    ],
+    [
+      2.0,
+      1.5,
+      1.5
+    ]
+  ],
+  "tx_power_dbm": -25.0,
+  "noise_dbm": -85.0,
+  "frequency_hz": 5000000000.0,
+  "path_gain_db": [
+    [
+      -49.931,
+      -49.931,
+      -52.943,
+      -52.943
+    ],
+    [
+      -52.943,
+      -52.943,
+      -49.931,
+      -49.931
+    ]
+  ],
+  "serving_ap": [
+    0,
+    0,
+    1,
+    1
+  ],
+  "sinr_db": [
+    2.23,
+    2.23,
+    2.23,
+    2.23
+  ],
+  "per_user_rate_bps_hz": [
+    1.4177,
+    1.4177,
+    1.4177,
+    1.4177
+  ],
+  "sum_throughput_bps_hz": 5.6708,
+  "mean_throughput_bps_hz": 1.4177,
+  "fairness_index": 1.0,
+  "method": "sionna_rt",
+  "sionna_version": "2.0.1"
+}

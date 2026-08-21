@@ -1,0 +1,57 @@
+
+
+Write your simulation to the current working directory. Required output artifacts: {artifacts}.
+
+IMPORTANT — debug-and-retry rule:
+  • If your Python script errors, READ the stderr, fix the bug, and re-run. Don't end your turn after one failed attempt.
+  • The harness has pre-shipped simulation_result.json with the canonical field structure and null values. Overwrite it with REAL numbers — don't leave nulls.
+  • Sionna is INSTALLED and available via $RF_SIONNA_PY (an absolute interpreter path exported by the harness). Run all Sionna-touching scripts with `$RF_SIONNA_PY simulation.py`, NOT plain `python3`. Do NOT write a closed-form FSPL / 3GPP TR 38.901 / scipy.erfc fallback "in case sionna fails" — the verifier rejects any `simulation_result.json` whose `method` field contains `analytical`, `fspl`, `tr38901`-as-path-loss, `closed_form`, or `numpy_3gpp_*`. If your first `$RF_SIONNA_PY simulation.py` errors, READ the traceback and fix the Sionna call — do not switch to an analytical substitute.
+  • **Run simulation.py in the FOREGROUND, blocking** — i.e. call `Bash(command="$RF_SIONNA_PY simulation.py", run_in_background=false)` (or omit the flag; default is foreground). Do NOT set `run_in_background=true`. The harness session ends when you call `end_turn`, and any background subprocess is killed at that moment — leaving simulation_result.json as the harness-pre-shipped placeholder, which the verifier rejects. Always wait for `$RF_SIONNA_PY simulation.py` to return synchronously before ending your turn, even if it takes 10+ minutes.
+
+SIONNA 2.0 API REFERENCE (shared with all conditions — equivalent to having the Sionna docs open):
+
+  Namespaces:
+    sionna.rt           — ray tracing: load_scene, PathSolver, RadioMapSolver, PlanarArray, Transmitter, Receiver, scene.<builtin>
+    sionna.phy.fec      — channel coding: LDPC5GEncoder, LDPC5GDecoder
+    sionna.phy.mapping  — modulation: Mapper, Demapper
+    sionna.phy.channel  — channels: AWGN, FlatFadingChannel
+    sionna.phy.utils    — helpers: ebnodb2no(ebn0_db, num_bits_per_symbol, coderate)
+    (Old v1 paths like sionna.fec, sionna.channel, sionna.mimo, sionna.ofdm are GONE.)
+
+  Built-in scenes (load via `rt.load_scene(getattr(rt.scene, name))`):
+    box, box_one_screen, box_two_screens, simple_street_canyon, etoile, munich,
+    florence, simple_reflector, double_reflector, triple_reflector, simple_wedge.
+
+  Key calls (signatures, not recipes):
+
+    scene = rt.load_scene(getattr(rt.scene, "box_one_screen"))
+    scene.frequency = 5e9
+    scene.tx_array = rt.PlanarArray(num_rows=1, num_cols=1, pattern="iso", polarization="V")
+    scene.rx_array = rt.PlanarArray(num_rows=1, num_cols=1, pattern="iso", polarization="V")
+    scene.add(rt.Transmitter(name="tx", position=[x,y,z], power_dbm=20.0))
+    scene.add(rt.Receiver(name="rx", position=[x,y,z]))
+
+    paths = rt.PathSolver()(scene, max_depth=3, samples_per_src=500_000)
+    a_re, a_im = paths.a          # NOT (V-pol, H-pol). |a|^2 per path = a_re^2 + a_im^2.
+    valid = paths.valid           # boolean per path
+
+    cm = rt.RadioMapSolver()(scene, max_depth=3,
+                             cell_size=(0.25, 0.25), samples_per_tx=100_000)
+    rss = cm.rss.numpy()          # shape (num_tx, n_y, n_x), linear Watts
+
+  Antenna orientation (radians, applied AFTER scene.add):
+    tx.orientation = [yaw, pitch, roll]   # rotate boresight; tr38901 element is directional
+    pattern options for PlanarArray: "iso" (omnidirectional) or "tr38901" (3GPP directional)
+
+  PHY chain (5-line LDPC QPSK BLER MC):
+    enc = LDPC5GEncoder(k=1024, n=2048)
+    dec = LDPC5GDecoder(encoder=enc, num_iter=20)
+    mapper, demap = Mapper("qam", 2), Demapper("app", "qam", 2)
+    no = ebnodb2no(ebn0_db, num_bits_per_symbol=2, coderate=0.5)
+    bits = torch.randint(0, 2, (B, 1, 1, k), dtype=torch.float32)
+    llr = demap(AWGN()(mapper(enc(bits)), no), no)
+    cw_err = torch.any(torch.ne(bits, dec(llr)).flatten(start_dim=-1), dim=-1).float().mean()
+
+  To learn more (no WebFetch available; use local Sionna source):
+    $RF_SIONNA_PY -c "import sionna.rt; help(sionna.rt.PathSolver)"
+    $RF_SIONNA_PY -c "import sionna; print(sionna.__file__)"   # then grep that directory

@@ -1,0 +1,51 @@
+{
+  "scene_name": "simple_street_canyon",
+  "state": {
+    "freq": 5000000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      -30,
+      0,
+      15
+    ],
+    "antenna": "iso"
+  },
+  "cell_size": 1.0,
+  "max_depth": 2,
+  "samples_per_tx": 50000,
+  "grid_shape": [
+    122,
+    187
+  ],
+  "elapsed_s": 0.01,
+  "rss_dbm_min": -96.50985717773438,
+  "rss_dbm_max": -47.83174133300781,
+  "rss_dbm_mean": -59.46129608154297,
+  "valid_cells": 7955,
+  "total_cells": 22814,
+  "edit_type": "position",
+  "before_state": {
+    "freq": 5000000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      0,
+      0,
+      15
+    ],
+    "antenna": "iso"
+  },
+  "after_state": {
+    "freq": 5000000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      -30,
+      0,
+      15
+    ],
+    "antenna": "iso"
+  },
+  "before_ref": "benchmark/oracles/n1/simple_street_canyon.npy",
+  "delta_mean_db": 0.224,
+  "delta_std_db": 10.593,
+  "sionna_version": "2.0.1"
+}

@@ -1,0 +1,217 @@
+{
+  "task_family": "S3_joint_beamforming",
+  "scene_name": "simple_street_canyon",
+  "ap_positions": [
+    [
+      -15.0,
+      0.0,
+      15.0
+    ],
+    [
+      15.0,
+      0.0,
+      15.0
+    ]
+  ],
+  "ue_positions": [
+    [
+      -10.0,
+      0.0,
+      1.5
+    ],
+    [
+      10.0,
+      0.0,
+      1.5
+    ]
+  ],
+  "tx_power_dbm": 5.0,
+  "noise_dbm": -85.0,
+  "frequency_hz": 5000000000.0,
+  "antenna_pattern": "tr38901",
+  "az_grid_deg": [
+    -45.0,
+    0.0,
+    45.0
+  ],
+  "sweep_table": [
+    {
+      "az1_deg": -45.0,
+      "az2_deg": -45.0,
+      "path_gain_db": [
+        [
+          -80.085,
+          -73.744
+        ],
+        [
+          -94.846,
+          -89.219
+        ]
+      ],
+      "sinr_db_ue1": 8.68,
+      "sinr_db_ue2": -15.58,
+      "rate_ue1": 3.068,
+      "rate_ue2": 0.0394,
+      "sum_rate": 3.1074
+    },
+    {
+      "az1_deg": -45.0,
+      "az2_deg": 0.0,
+      "path_gain_db": [
+        [
+          -80.085,
+          -73.744
+        ],
+        [
+          -95.482,
+          -90.628
+        ]
+      ],
+      "sinr_db_ue1": 8.83,
+      "sinr_db_ue2": -16.99,
+      "rate_ue1": 3.1116,
+      "rate_ue2": 0.0286,
+      "sum_rate": 3.1401
+    },
+    {
+      "az1_deg": -45.0,
+      "az2_deg": 45.0,
+      "path_gain_db": [
+        [
+          -80.085,
+          -73.744
+        ],
+        [
+          -93.666,
+          -83.066
+        ]
+      ],
+      "sinr_db_ue1": 8.36,
+      "sinr_db_ue2": -9.42,
+      "rate_ue1": 2.9741,
+      "rate_ue2": 0.156,
+      "sum_rate": 3.1301
+    },
+    {
+      "az1_deg": 0.0,
+      "az2_deg": -45.0,
+      "path_gain_db": [
+        [
+          -74.911,
+          -68.701
+        ],
+        [
+          -94.846,
+          -89.219
+        ]
+      ],
+      "sinr_db_ue1": 13.86,
+      "sinr_db_ue2": -20.55,
+      "rate_ue1": 4.6617,
+      "rate_ue2": 0.0127,
+      "sum_rate": 4.6744
+    },
+    {
+      "az1_deg": 0.0,
+      "az2_deg": 0.0,
+      "path_gain_db": [
+        [
+          -74.911,
+          -68.701
+        ],
+        [
+          -95.482,
+          -90.628
+        ]
+      ],
+      "sinr_db_ue1": 14.01,
+      "sinr_db_ue2": -21.96,
+      "rate_ue1": 4.7092,
+      "rate_ue2": 0.0092,
+      "sum_rate": 4.7183
+    },
+    {
+      "az1_deg": 0.0,
+      "az2_deg": 45.0,
+      "path_gain_db": [
+        [
+          -74.911,
+          -68.701
+        ],
+        [
+          -93.666,
+          -83.066
+        ]
+      ],
+      "sinr_db_ue1": 13.54,
+      "sinr_db_ue2": -14.4,
+      "rate_ue1": 4.559,
+      "rate_ue2": 0.0515,
+      "sum_rate": 4.6105
+    },
+    {
+      "az1_deg": 45.0,
+      "az2_deg": -45.0,
+      "path_gain_db": [
+        [
+          -75.19,
+          -70.773
+        ],
+        [
+          -94.846,
+          -89.219
+        ]
+      ],
+      "sinr_db_ue1": 13.58,
+      "sinr_db_ue2": -18.5,
+      "rate_ue1": 4.5728,
+      "rate_ue2": 0.0202,
+      "sum_rate": 4.5931
+    },
+    {
+      "az1_deg": 45.0,
+      "az2_deg": 0.0,
+      "path_gain_db": [
+        [
+          -75.19,
+          -70.773
+        ],
+        [
+          -95.482,
+          -90.628
+        ]
+      ],
+      "sinr_db_ue1": 13.73,
+      "sinr_db_ue2": -19.91,
+      "rate_ue1": 4.6201,
+      "rate_ue2": 0.0147,
+      "sum_rate": 4.6348
+    },
+    {
+      "az1_deg": 45.0,
+      "az2_deg": 45.0,
+      "path_gain_db": [
+        [
+          -75.19,
+          -70.773
+        ],
+        [
+          -93.666,
+          -83.066
+        ]
+      ],
+      "sinr_db_ue1": 13.26,
+      "sinr_db_ue2": -12.34,
+      "rate_ue1": 4.4704,
+      "rate_ue2": 0.0817,
+      "sum_rate": 4.5521
+    }
+  ],
+  "best": {
+    "az1_deg": 0.0,
+    "az2_deg": 0.0,
+    "sum_rate": 4.7183
+  },
+  "method": "sionna_rt",
+  "sionna_version": "2.0.1"
+}

@@ -1,0 +1,468 @@
+{
+  "version": "2.0",
+  "meta": {
+    "created": "2026-04-10T17:15:27.277571+00:00",
+    "modified": "2026-04-10T17:15:27.277571+00:00",
+    "name": "Benchmark Hard 04",
+    "description": "Hard benchmark scene: studio, 7.6x14.1m, multi_room layout, 1 TX, target 94% coverage",
+    "benchmark": {
+      "tier": "hard",
+      "index": 4,
+      "seed": 63000,
+      "target_coverage_pct": 95,
+      "shape": "multi_room",
+      "area_m2": 107.2,
+      "center_coverage_pct": 91.4,
+      "grid_best_coverage_pct": 97.1
+    }
+  },
+  "scene": {
+    "type": "indoor",
+    "origin": "SW",
+    "coordinate_system": {
+      "x": "east",
+      "y": "north",
+      "z": "up",
+      "theta_zero": "north",
+      "units": "meters"
+    },
+    "bounds": {
+      "width": 7.6,
+      "depth": 14.1,
+      "height": 3.0
+    },
+    "frequency_hz": 3500000000.0,
+    "source_format": "benchmark_generated"
+  },
+  "rooms": [
+    {
+      "id": "room_hard_04",
+      "name": "Studio",
+      "type": "studio",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          7.6,
+          0
+        ],
+        [
+          7.6,
+          14.1
+        ],
+        [
+          0,
+          14.1
+        ]
+      ],
+      "height": 3.0,
+      "materials": {
+        "walls": "itu_concrete",
+        "floor": "itu_concrete",
+        "ceiling": "itu_plasterboard"
+      }
+    }
+  ],
+  "walls": [
+    {
+      "id": "wall_room_hard_04_01",
+      "room_id": "room_hard_04",
+      "start": [
+        0,
+        0
+      ],
+      "end": [
+        7.6,
+        0
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": true,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_hard_04_02",
+      "room_id": "room_hard_04",
+      "start": [
+        7.6,
+        0
+      ],
+      "end": [
+        7.6,
+        14.1
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_hard_04_03",
+      "room_id": "room_hard_04",
+      "start": [
+        7.6,
+        14.1
+      ],
+      "end": [
+        0,
+        14.1
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_hard_04_04",
+      "room_id": "room_hard_04",
+      "start": [
+        0,
+        14.1
+      ],
+      "end": [
+        0,
+        0
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": true,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_hard_04_int_05",
+      "room_id": "room_hard_04",
+      "start": [
+        5.1,
+        1.7
+      ],
+      "end": [
+        5.1,
+        11.7
+      ],
+      "thickness": 0.12,
+      "material": "itu_plasterboard",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_hard_04_int_06",
+      "room_id": "room_hard_04",
+      "start": [
+        0.2,
+        12.3
+      ],
+      "end": [
+        6.2,
+        12.3
+      ],
+      "thickness": 0.12,
+      "material": "itu_plasterboard",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_hard_04_int_07",
+      "room_id": "room_hard_04",
+      "start": [
+        2.5,
+        2.9
+      ],
+      "end": [
+        2.5,
+        13.8
+      ],
+      "thickness": 0.12,
+      "material": "itu_plasterboard",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_hard_04_int_08",
+      "room_id": "room_hard_04",
+      "start": [
+        0.8,
+        8.8
+      ],
+      "end": [
+        6.2,
+        8.8
+      ],
+      "thickness": 0.12,
+      "material": "itu_plasterboard",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    }
+  ],
+  "furniture": [
+    {
+      "id": "furn_room_hard_04_001",
+      "type": "chair",
+      "catalog_id": null,
+      "position": [
+        2.61,
+        0.55,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        0.5,
+        0.5,
+        0.9
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_002",
+      "type": "bookcase",
+      "catalog_id": null,
+      "position": [
+        7.12,
+        13.36,
+        0.0
+      ],
+      "orientation_deg": 90,
+      "dimensions": [
+        0.8,
+        0.35,
+        1.8
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_003",
+      "type": "sofa",
+      "catalog_id": null,
+      "position": [
+        1.91,
+        13.35,
+        0.0
+      ],
+      "orientation_deg": 180,
+      "dimensions": [
+        2.0,
+        0.9,
+        0.85
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_004",
+      "type": "sofa",
+      "catalog_id": null,
+      "position": [
+        0.75,
+        5.57,
+        0.0
+      ],
+      "orientation_deg": 270,
+      "dimensions": [
+        2.0,
+        0.9,
+        0.85
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_005",
+      "type": "cabinet",
+      "catalog_id": null,
+      "position": [
+        6.24,
+        0.53,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        0.8,
+        0.45,
+        0.9
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_006",
+      "type": "desk",
+      "catalog_id": null,
+      "position": [
+        7.0,
+        5.33,
+        0.0
+      ],
+      "orientation_deg": 90,
+      "dimensions": [
+        1.2,
+        0.6,
+        0.75
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_007",
+      "type": "table",
+      "catalog_id": null,
+      "position": [
+        5.26,
+        13.3,
+        0.0
+      ],
+      "orientation_deg": 180,
+      "dimensions": [
+        1.0,
+        1.0,
+        0.75
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_008",
+      "type": "bookcase",
+      "catalog_id": null,
+      "position": [
+        0.47,
+        3.37,
+        0.0
+      ],
+      "orientation_deg": 270,
+      "dimensions": [
+        0.8,
+        0.35,
+        1.8
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_009",
+      "type": "table",
+      "catalog_id": null,
+      "position": [
+        3.88,
+        0.8,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        1.0,
+        1.0,
+        0.75
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_010",
+      "type": "table",
+      "catalog_id": null,
+      "position": [
+        6.8,
+        1.55,
+        0.0
+      ],
+      "orientation_deg": 90,
+      "dimensions": [
+        1.0,
+        1.0,
+        0.75
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_011",
+      "type": "cabinet",
+      "catalog_id": null,
+      "position": [
+        2.43,
+        13.57,
+        0.0
+      ],
+      "orientation_deg": 180,
+      "dimensions": [
+        0.8,
+        0.45,
+        0.9
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_hard_04_012",
+      "type": "cabinet",
+      "catalog_id": null,
+      "position": [
+        0.53,
+        4.59,
+        0.0
+      ],
+      "orientation_deg": 270,
+      "dimensions": [
+        0.8,
+        0.45,
+        0.9
+      ],
+      "material": "itu_wood",
+      "visible": true
+    }
+  ],
+  "transmitters": [
+    {
+      "id": "tx_room_hard_04_1",
+      "name": "AP-1",
+      "position": [
+        3.8,
+        7.05,
+        2.8
+      ],
+      "power_dbm": 20.0,
+      "frequency_hz": 3500000000.0,
+      "antenna": {
+        "type": "isotropic",
+        "pattern": null,
+        "polarization": "V",
+        "mimo_config": null
+      },
+      "orientation_deg": 0,
+      "visible": true
+    }
+  ],
+  "receivers": [
+    {
+      "id": "rx_grid_hard_04",
+      "type": "grid",
+      "height": 1.5,
+      "resolution": 0.2,
+      "bounds": [
+        [
+          0,
+          0
+        ],
+        [
+          7.6,
+          14.1
+        ]
+      ],
+      "visible": true
+    }
+  ],
+  "constraints": [],
+  "simulation_results": [],
+  "export_history": [],
+  "code_artifacts": []
+}

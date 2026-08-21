@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "task_type": "rt_optimize",
+  "status": "success",
+  "scene_name": null,
+  "$scene_name_enum": ["box_two_screens", "box_one_screen", "simple_street_canyon", "etoile"],
+  "tx_position": null,
+  "ue_position": null,
+  "tx_power_dbm": null,
+  "noise_dbm": null,
+  "frequency_hz": null,
+  "antenna": {
+    "num_rows": 1, "num_cols": 1,
+    "pattern": "tr38901", "polarization": "V"
+  },
+  "phy": {
+    "codec": "ldpc",
+    "k": 1024,
+    "n": 2048,
+    "modulation": "QPSK",
+    "code_rate": 0.5,
+    "throughput_model": "code_rate * bps * (1 - BLER)"
+  },
+  "azimuth_deg_grid": null,
+  "downtilt_deg_grid": null,
+  "sweep_table": null,
+  "$sweep_table_row_keys": ["az_deg", "dt_deg", "path_gain_db", "snr_db", "ebn0_db", "bler", "throughput"],
+  "best": null,
+  "$best_required_keys": ["az_deg", "dt_deg", "throughput"],
+  "method": "sionna_rt + sionna_phy",
+  "$method_required": "sionna_rt + sionna_phy",
+  "$notes": "P1 optimize: per-config RT path-solve + PHY LDPC QPSK 1/2 BLER -> throughput. Sweep_table has 15 rows (5 az x 3 dt). best.az_deg and best.dt_deg pick the config with highest throughput (ties broken arbitrarily — verifier matches any tied optimum). Output files: sweep_table.json (or .csv), optimization_result.json (this schema), simulation.py (the agent's code). MUST call sionna.rt.PathSolver and sionna.phy.* in the simulation script."
+}

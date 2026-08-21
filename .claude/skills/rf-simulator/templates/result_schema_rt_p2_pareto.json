@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "task_type": "rt_pareto",
+  "status": "success",
+  "scene_name": null,
+  "$scene_name_enum": ["box_two_screens", "box_one_screen", "simple_street_canyon", "etoile"],
+  "tx_position": null,
+  "ue_position": null,
+  "frequency_hz": null,
+  "noise_dbm": null,
+  "downtilt_fixed_deg": null,
+  "antenna": {
+    "num_rows": 1, "num_cols": 1,
+    "pattern": "tr38901", "polarization": "V"
+  },
+  "phy": {
+    "codec": "ldpc",
+    "k": 1024,
+    "n": 2048,
+    "modulation": "QPSK",
+    "code_rate": 0.5,
+    "throughput_model": "code_rate * bps * (1 - BLER)"
+  },
+  "azimuth_deg_grid": null,
+  "tx_power_dbm_grid": null,
+  "pareto_objectives": {"maximize": ["throughput"], "minimize": ["tx_power_mw"]},
+  "sweep_table": null,
+  "$sweep_table_row_keys": ["az_deg", "tx_power_dbm", "tx_power_mw", "path_gain_db", "snr_db", "ebn0_db", "throughput"],
+  "pareto_set": null,
+  "$pareto_set": "list of integer indices into sweep_table identifying the non-dominated configurations (maximise throughput, minimise tx_power_mw)",
+  "method": "sionna_rt + sionna_phy",
+  "$method_required": "sionna_rt + sionna_phy",
+  "$notes": "P2 pareto: per-config RT path-solve + PHY LDPC QPSK 1/2 BLER -> throughput. sweep_table has 15 rows (5 az x 3 power). pareto_set is the list of indices (into sweep_table) of non-dominated configs in (throughput-max, tx_power_mw-min) space. tx_power_mw = 10^(tx_power_dbm/10). Output files: simulation.py, simulation_result.json. MUST call sionna.rt.PathSolver and sionna.phy.* in the simulation script."
+}

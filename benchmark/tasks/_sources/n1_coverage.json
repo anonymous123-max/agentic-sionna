@@ -1,0 +1,141 @@
+{
+  "version": "1.0",
+  "tier": "N1_builtin_coverage",
+  "design": "Single-AP coverage on 4 Sionna built-in scenes (2 indoor + 2 outdoor). All conditions share the same prompt; no scene generation required. Tests whether the agent can drive Sionna 2.0 RT on a fixed scene + AP.",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_rt_used) + Layer C (n1_ref_oracle vs precomputed RT ground truth)",
+  "count": 4,
+  "tasks": [
+    {
+      "id": "N1_box_two_screens",
+      "tier": "N1_builtin_coverage",
+      "capability": "single_ap_coverage",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "ap_position": [0.0, 0.0, 4.5],
+      "frequency_hz": 5000000000.0,
+      "tx_power_dbm": 20.0,
+      "cell_size_m": 0.25,
+      "max_depth": 3,
+      "samples_per_tx": 100000,
+      "oracle_path": "benchmark/oracles/n1/box_two_screens.npy",
+      "prompt": "TASK: Compute a single-AP coverage map on the Sionna built-in scene \"box_two_screens\" using Sionna's RadioMapSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_two_screens (load via sionna.rt.load_scene())\n- AP position (x, y, z): (0.0, 0.0, 4.5) meters\n- Frequency: 5 GHz (5e9 Hz)\n- TX power: 20 dBm\n- TX/RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3\n- samples_per_tx: 100000\n- cell_size: (0.25, 0.25) meters\n\nOUTPUT FILES (save in current working directory):\n1. simulation.py        your script (must contain a non-commented `import sionna`)\n2. coverage_map.npy     2-D NumPy array of RSS in dBm (NaN for cells with no path)\n3. coverage_map.png     viridis heatmap of coverage_map.npy with AP marked as a red star\n4. simulation_result.json with this schema:\n   {\n     \"scene_name\":     \"box_two_screens\",\n     \"ap_position\":    [0.0, 0.0, 4.5],\n     \"frequency_hz\":   5e9,\n     \"coverage_shape\": [n_y, n_x],\n     \"rss_dbm_min\":    float,\n     \"rss_dbm_max\":    float,\n     \"rss_dbm_mean\":   float,\n     \"method\":         \"sionna_rt\"    // MUST be \"sionna_rt\", NOT \"fspl\"/\"analytical\"\n   }\n\nCONSTRAINTS:\n- MUST use Sionna RT (sionna.rt.load_scene + RadioMapSolver). Do NOT fall back to analytical FSPL.\n- If `import sionna` fails in default python, use the conda env at $RF_SIONNA_PY (e.g. `$RF_SIONNA_PY simulation.py`).\n- Sionna RT loads scenes from Mitsuba XML; built-in scenes ship with one — load_scene() reads it for you.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_map.npy",
+        "coverage_map.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_coverage_npy", "type": "file_exists", "path": "coverage_map.npy"},
+          {"key": "must_create_coverage_png", "type": "file_exists", "path": "coverage_map.png"},
+          {"key": "must_create_result_json", "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check", "type": "code_contains"},
+          {"metric": "n1_ref_oracle_check", "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "N1_box_one_screen",
+      "tier": "N1_builtin_coverage",
+      "capability": "single_ap_coverage",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "ap_position": [0.0, 0.0, 4.5],
+      "frequency_hz": 5000000000.0,
+      "tx_power_dbm": 20.0,
+      "cell_size_m": 0.25,
+      "max_depth": 3,
+      "samples_per_tx": 100000,
+      "oracle_path": "benchmark/oracles/n1/box_one_screen.npy",
+      "prompt": "TASK: Compute a single-AP coverage map on the Sionna built-in scene \"box_one_screen\" using Sionna's RadioMapSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.box_one_screen\n- AP position (x, y, z): (0.0, 0.0, 4.5) meters\n- Frequency: 5 GHz (5e9 Hz)\n- TX power: 20 dBm\n- TX/RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 3\n- samples_per_tx: 100000\n- cell_size: (0.25, 0.25) meters\n\nOUTPUT FILES: simulation.py, coverage_map.npy, coverage_map.png, simulation_result.json\nschema: {scene_name, ap_position, frequency_hz, coverage_shape, rss_dbm_min/max/mean, method: \"sionna_rt\"}\n\nCONSTRAINTS:\n- MUST use Sionna RT (load_scene + RadioMapSolver). Do NOT fall back to FSPL.\n- If `import sionna` fails, use $RF_SIONNA_PY.\n- Sionna loads from Mitsuba XML; built-in scenes ship with one.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_map.npy",
+        "coverage_map.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_coverage_npy", "type": "file_exists", "path": "coverage_map.npy"},
+          {"key": "must_create_coverage_png", "type": "file_exists", "path": "coverage_map.png"},
+          {"key": "must_create_result_json", "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check", "type": "code_contains"},
+          {"metric": "n1_ref_oracle_check", "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "N1_simple_street_canyon",
+      "tier": "N1_builtin_coverage",
+      "capability": "single_ap_coverage",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "ap_position": [0.0, 0.0, 15.0],
+      "frequency_hz": 5000000000.0,
+      "tx_power_dbm": 20.0,
+      "cell_size_m": 1.0,
+      "max_depth": 2,
+      "samples_per_tx": 50000,
+      "oracle_path": "benchmark/oracles/n1/simple_street_canyon.npy",
+      "prompt": "TASK: Compute a single-AP coverage map on the Sionna built-in scene \"simple_street_canyon\" using Sionna's RadioMapSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.simple_street_canyon (outdoor street canyon ~186x121 m)\n- AP position (x, y, z): (0.0, 0.0, 15.0) meters (mid-canyon, 15 m above ground)\n- Frequency: 5 GHz (5e9 Hz)\n- TX power: 20 dBm\n- TX/RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 2\n- samples_per_tx: 50000\n- cell_size: (1.0, 1.0) meters\n\nOUTPUT FILES: simulation.py, coverage_map.npy (RSS in dBm, NaN where no path), coverage_map.png, simulation_result.json (schema: scene_name, ap_position, frequency_hz, coverage_shape, rss_dbm_min/max/mean, method: \"sionna_rt\")\n\nCONSTRAINTS:\n- MUST use Sionna RT, do NOT fall back to FSPL.\n- If `import sionna` fails, use $RF_SIONNA_PY.\n- Outdoor coverage will be sparse (many cells with no path) — use NaN, do not fill with a constant.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_map.npy",
+        "coverage_map.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_coverage_npy", "type": "file_exists", "path": "coverage_map.npy"},
+          {"key": "must_create_coverage_png", "type": "file_exists", "path": "coverage_map.png"},
+          {"key": "must_create_result_json", "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check", "type": "code_contains"},
+          {"metric": "n1_ref_oracle_check", "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "N1_etoile",
+      "tier": "N1_builtin_coverage",
+      "capability": "single_ap_coverage",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "ap_position": [0.0, 0.0, 30.0],
+      "frequency_hz": 5000000000.0,
+      "tx_power_dbm": 20.0,
+      "cell_size_m": 2.0,
+      "max_depth": 2,
+      "samples_per_tx": 50000,
+      "oracle_path": "benchmark/oracles/n1/etoile.npy",
+      "prompt": "TASK: Compute a single-AP coverage map on the Sionna built-in scene \"etoile\" (Place de l'Etoile, Paris) using Sionna's RadioMapSolver.\n\nPARAMETERS:\n- Scene: sionna.rt.scene.etoile (large outdoor scene, ~854x676 m around Arc de Triomphe)\n- AP position (x, y, z): (0.0, 0.0, 30.0) meters (rooftop height at scene origin)\n- Frequency: 5 GHz (5e9 Hz)\n- TX power: 20 dBm\n- TX/RX antenna: PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- max_depth: 2\n- samples_per_tx: 50000\n- cell_size: (2.0, 2.0) meters\n\nOUTPUT FILES: simulation.py, coverage_map.npy (RSS in dBm, NaN where no path), coverage_map.png, simulation_result.json (schema: scene_name, ap_position, frequency_hz, coverage_shape, rss_dbm_min/max/mean, method: \"sionna_rt\")\n\nCONSTRAINTS:\n- MUST use Sionna RT, do NOT fall back to FSPL.\n- If `import sionna` fails, use $RF_SIONNA_PY.\n- Coverage will be very sparse (street-level paths only) — use NaN for cells with no path.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_map.npy",
+        "coverage_map.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_coverage_npy", "type": "file_exists", "path": "coverage_map.npy"},
+          {"key": "must_create_coverage_png", "type": "file_exists", "path": "coverage_map.png"},
+          {"key": "must_create_result_json", "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check", "type": "code_contains"},
+          {"metric": "n1_ref_oracle_check", "type": "code_contains"}
+        ]
+      }
+    }
+  ]
+}

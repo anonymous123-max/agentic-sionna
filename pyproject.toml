@@ -1,0 +1,63 @@
+[project]
+name = "autonetsim"
+version = "1.0.0"
+description = "Intent-driven wireless network simulation with self-evolving Claude Code agents (NVIDIA Sionna 2.0)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Pervasive Intelligence Lab"},
+]
+keywords = ["sionna", "wireless", "ray-tracing", "claude", "llm-agent", "network-simulation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+dependencies = [
+    "flask>=3.0",
+    "numpy>=2.0",
+    "scipy>=1.11",
+    "shapely>=2.0",
+    "trimesh>=4.0",
+    "mapbox-earcut>=1.0",
+    "matplotlib>=3.7",
+    "pydantic>=2.5",
+    "sionna>=2.0",
+]
+
+[project.optional-dependencies]
+memory = [
+    # RAG / vector store for the skill's failure memory + Sionna API index
+    "chromadb>=0.5,<1.0",
+    "sentence-transformers>=2.6",
+]
+osm = [
+    # Fetch outdoor scenes from OpenStreetMap
+    "osmnx>=2.0",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+    "black>=24.0",
+    "ruff>=0.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/Pervasive-Intelligence-Lab/sionna-skill"
+Repository = "https://github.com/Pervasive-Intelligence-Lab/sionna-skill"
+Paper = "https://github.com/Pervasive-Intelligence-Lab/sionna-skill/blob/main/main.pdf"
+
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+exclude = ["benchmark*", "web*", "docs*", "tests*"]

@@ -1,0 +1,142 @@
+{
+  "task_family": "S4_rb_pareto",
+  "scene_name": "simple_street_canyon",
+  "ap_position": [
+    0.0,
+    0.0,
+    15.0
+  ],
+  "ue_positions": [
+    [
+      -20.0,
+      0.0,
+      1.5
+    ],
+    [
+      -5.0,
+      0.0,
+      1.5
+    ],
+    [
+      5.0,
+      0.0,
+      1.5
+    ],
+    [
+      20.0,
+      0.0,
+      1.5
+    ]
+  ],
+  "tx_power_dbm": 0.0,
+  "noise_dbm": -85.0,
+  "total_rb": 50,
+  "path_gain_db": [
+    -72.465,
+    -68.647,
+    -68.647,
+    -72.44
+  ],
+  "per_user_se_bps_hz": [
+    4.2423,
+    5.4654,
+    5.4654,
+    4.2502
+  ],
+  "sweep_table": [
+    {
+      "strategy": "equal",
+      "allocation": [
+        13,
+        13,
+        12,
+        12
+      ],
+      "per_user_rate_bps_hz": [
+        1.103,
+        1.421,
+        1.3117,
+        1.0201
+      ],
+      "sum_rate": 4.8558,
+      "fairness": 0.9829
+    },
+    {
+      "strategy": "max_rate",
+      "allocation": [
+        0,
+        50,
+        0,
+        0
+      ],
+      "per_user_rate_bps_hz": [
+        0.0,
+        5.4654,
+        0.0,
+        0.0
+      ],
+      "sum_rate": 5.4654,
+      "fairness": 0.25
+    },
+    {
+      "strategy": "max_min",
+      "allocation": [
+        14,
+        11,
+        11,
+        14
+      ],
+      "per_user_rate_bps_hz": [
+        1.1879,
+        1.2024,
+        1.2024,
+        1.1901
+      ],
+      "sum_rate": 4.7827,
+      "fairness": 1.0
+    },
+    {
+      "strategy": "proportional_fair",
+      "allocation": [
+        11,
+        14,
+        14,
+        11
+      ],
+      "per_user_rate_bps_hz": [
+        0.9333,
+        1.5303,
+        1.5303,
+        0.935
+      ],
+      "sum_rate": 4.929,
+      "fairness": 0.9447
+    },
+    {
+      "strategy": "weighted",
+      "allocation": [
+        3,
+        25,
+        15,
+        7
+      ],
+      "per_user_rate_bps_hz": [
+        0.2545,
+        2.7327,
+        1.6396,
+        0.595
+      ],
+      "sum_rate": 5.2219,
+      "fairness": 0.6446
+    }
+  ],
+  "pareto_set": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "method": "sionna_rt",
+  "sionna_version": "2.0.1"
+}

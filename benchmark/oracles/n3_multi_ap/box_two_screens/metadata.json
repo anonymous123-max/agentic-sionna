@@ -1,0 +1,66 @@
+{
+  "scene_name": "box_two_screens",
+  "kind": "indoor",
+  "ap_positions": [
+    [
+      -3,
+      0,
+      4.5
+    ],
+    [
+      3,
+      0,
+      4.5
+    ]
+  ],
+  "frequency_hz": 5000000000.0,
+  "tx_power_dbm": 20.0,
+  "cell_size_m": 0.25,
+  "max_depth": 3,
+  "samples_per_tx": 100000,
+  "grid_shape": [
+    40,
+    40
+  ],
+  "per_ap": [
+    {
+      "ap_id": 0,
+      "position": [
+        -3,
+        0,
+        4.5
+      ],
+      "rss_dbm_min": -42.10203552246094,
+      "rss_dbm_max": -28.193695068359375,
+      "rss_dbm_mean": -33.572410583496094,
+      "valid_cells": 1600,
+      "total_cells": 1600
+    },
+    {
+      "ap_id": 1,
+      "position": [
+        3,
+        0,
+        4.5
+      ],
+      "rss_dbm_min": -41.68639373779297,
+      "rss_dbm_max": -28.16448974609375,
+      "rss_dbm_mean": -33.60737991333008,
+      "valid_cells": 1600,
+      "total_cells": 1600
+    }
+  ],
+  "best_server_metrics": {
+    "rss_dbm_min": -35.17926025390625,
+    "rss_dbm_max": -28.16448974609375,
+    "rss_dbm_mean": -30.754653930664062,
+    "valid_cells": 1600,
+    "total_cells": 1600
+  },
+  "serving_ap_fractions": [
+    0.5056,
+    0.4944
+  ],
+  "solver_elapsed_s": 0.01,
+  "sionna_version": "2.0.1"
+}

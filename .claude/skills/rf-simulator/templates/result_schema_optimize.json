@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AP-position optimization result",
+  "type": "object",
+  "required": ["task_type", "numerical_metrics", "deployment"],
+  "properties": {
+    "task_type": {"const": "optimize"},
+    "numerical_metrics": {
+      "type": "object",
+      "required": ["coverage_pct", "rss_p5_dbm", "history_coverage_pct"],
+      "properties": {
+        "coverage_pct":  {"type": "number", "minimum": 0, "maximum": 100},
+        "rss_p5_dbm":    {"type": "number"},
+        "n_steps":       {"type": "integer", "minimum": 1},
+        "learning_rate": {"type": "number", "exclusiveMinimum": 0},
+        "history_coverage_pct": {"type": "array",
+                                  "items": {"type": "number"},
+                                  "minItems": 1,
+                                  "description": "Per-step coverage; must be non-decreasing in expectation."},
+        "history_rss_p5_dbm":   {"type": "array",
+                                  "items": {"type": "number"},
+                                  "minItems": 1}
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "required": ["APs"],
+      "properties": {
+        "APs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "x", "y", "z", "power_dbm"],
+            "properties": {
+              "id": {"type": "string"},
+              "x":  {"type": "number"},
+              "y":  {"type": "number"},
+              "z":  {"type": "number"},
+              "power_dbm": {"type": "number"}
+            }
+          }
+        },
+        "frequency_hz": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "description": "List of caveat objects. Empty means no fallbacks/defaults/degradations/assumptions applied.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind":    {"enum": ["fallback", "default", "degraded", "assumption"]},
+          "source":  {"type": "string"},
+          "message": {"type": "string"}
+        },
+        "required": ["kind", "source", "message"]
+      }
+    }
+  }
+}

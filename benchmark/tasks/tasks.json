@@ -1,0 +1,4728 @@
+{
+  "version": "1.1",
+  "description": "Active benchmark task set merging _sources/capability_grid.json (60) + _sources/tutorial_variants.json kept categories. Includes stratified 60/40 train/test split (seed=20260417) \u2014 test tasks must not be used for skill iteration.",
+  "total_tasks": 148,
+  "split_policy": "stratified-by-tier, seed=20260417",
+  "by_tier": {
+    "T0_scene_gen": 25,
+    "T1_phy_link_level": 20,
+    "T2_ray_tracing": 25,
+    "T3_ml_neural": 15,
+    "T4_system_level": 47,
+    "T5_emerging": 10,
+    "T6_anchor": 6
+  },
+  "by_origin": {
+    "suite": 60,
+    "corpus": 74
+  },
+  "by_verifier_type": {
+    "metric_threshold": 24,
+    "metric_range": 3,
+    "count": 6,
+    "code_contains": 32,
+    "metric_monotone": 7,
+    "value_exact": 1,
+    "composite": 20,
+    "file_exists": 33,
+    "execution_ok": 8
+  },
+  "by_split": {
+    "test": 53,
+    "train": 95
+  },
+  "tasks": [
+    {
+      "id": "U001",
+      "origin": "suite",
+      "origin_id": "T01",
+      "tier": "T1_phy_link_level",
+      "capability": "ber_curve",
+      "difficulty": "easy",
+      "name": "BER curve: AWGN uncoded baseline",
+      "prompt": "Simulate uncoded QPSK over AWGN for Eb/N0 from -2 to 10 dB. Plot BER vs Eb/N0 on log-scale y-axis and overlay the theoretical QPSK curve.",
+      "distractor": "Using Es/N0 instead of Eb/N0 shifts the curve by 3 dB",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "ber_gap_db",
+        "threshold": 0.5,
+        "tolerance": null,
+        "at_ber": 0.001,
+        "at_snr": null,
+        "direction": "<="
+      },
+      "assertions": [
+        "BER at Eb/N0=6dB within 0.5dB of theory (\u22482.4e-3)",
+        "Curve strictly non-increasing",
+        "Y-axis is log-scale"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U002",
+      "origin": "suite",
+      "origin_id": "T02",
+      "tier": "T1_phy_link_level",
+      "capability": "ber_curve",
+      "difficulty": "medium",
+      "name": "BER curve: LDPC coded 5G NR",
+      "prompt": "Simulate 5G NR LDPC (BG1, rate 0.5, k=1024) over AWGN. Plot BLER vs Eb/N0 and mark the waterfall threshold.",
+      "distractor": "Missing bit interleaving between encoder and mapper",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_range",
+        "metric": "bler_waterfall_range",
+        "min": 1,
+        "max": 4
+      },
+      "assertions": [
+        "BLER < 1e-2 within [1,4] dB Eb/N0",
+        "Code rate verified from encoder params",
+        "Uses LDPC5GEncoder/Decoder"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U003",
+      "origin": "suite",
+      "origin_id": "T03",
+      "tier": "T1_phy_link_level",
+      "capability": "ber_curve",
+      "difficulty": "medium",
+      "name": "BER curve: multi-modulation comparison",
+      "prompt": "Plot BPSK, QPSK, 16-QAM, 64-QAM BER vs Eb/N0 over AWGN (uncoded) on a single figure. Annotate each curve.",
+      "distractor": "Same num_bits_per_symbol for all constellations",
+      "scene_path": null,
+      "verifier": {
+        "type": "count",
+        "metric": "curve_count",
+        "expected": 4
+      },
+      "assertions": [
+        "4 distinct curves",
+        "~6dB ordering between modulation doublings at BER=1e-3",
+        "Curves labeled"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U004",
+      "origin": "suite",
+      "origin_id": "T04",
+      "tier": "T1_phy_link_level",
+      "capability": "ofdm_chain",
+      "difficulty": "medium",
+      "name": "OFDM chain: basic SISO",
+      "prompt": "Build SISO OFDM (14 symbols, FFT=76, 15kHz SCS, Kronecker pilots at symbols [2,11]), flat Rayleigh, LS estimation, LMMSE equalization, QPSK. Report BER at Eb/N0=10dB.",
+      "distractor": "CP shorter than delay spread causes ISI",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "ber_at_snr",
+        "threshold": 0.05,
+        "tolerance": null,
+        "at_ber": null,
+        "at_snr": null,
+        "direction": "<="
+      },
+      "assertions": [
+        "BER at 10dB < 5e-2",
+        "LSChannelEstimator used",
+        "ResourceGrid dims match"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U005",
+      "origin": "suite",
+      "origin_id": "T05",
+      "tier": "T1_phy_link_level",
+      "capability": "ofdm_+_ldpc_integration",
+      "difficulty": "hard",
+      "name": "OFDM + LDPC integration",
+      "prompt": "QPSK-OFDM over CDL-C with 5G NR LDPC. Compare BLER with and without coding on same plot.",
+      "distractor": "CDL for multi-user (CDL only supports point-to-point)",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "ber_at_snr",
+        "at_snr": 10,
+        "direction": "<=",
+        "threshold": 0.01
+      },
+      "assertions": [
+        "Two BLER curves",
+        "Coded < uncoded at all SNR above noise floor",
+        "Uses LDPC5GEncoder"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U006",
+      "origin": "suite",
+      "origin_id": "T06",
+      "tier": "T1_phy_link_level",
+      "capability": "channel_model_selection",
+      "difficulty": "medium",
+      "name": "Channel model selection: P2P vs multi-user",
+      "prompt": "2 base stations, 4 users \u2014 set up channel model for uplink. Then single-user comparison with 1 TX, 1 RX.",
+      "distractor": "CDL for multi-user scenario (fails at runtime)",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_range",
+        "metric": "ber_at_snr",
+        "at_snr": 10,
+        "min": 0.001,
+        "max": 0.1
+      },
+      "assertions": [
+        "Multi-user uses UMi/UMa",
+        "Single-user uses CDL/TDL",
+        "CDL for multi-user = FAIL"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U007",
+      "origin": "suite",
+      "origin_id": "T07",
+      "tier": "T1_phy_link_level",
+      "capability": "cdl-a_with_doppler",
+      "difficulty": "medium",
+      "name": "CDL-A with Doppler",
+      "prompt": "CDL-A at 60km/h, 3.5GHz. Plot channel magnitude across 14 OFDM symbols. Report Doppler frequency.",
+      "distractor": "Setting speed=0 disables Doppler",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_range",
+        "metric": "doppler_hz",
+        "min": 184.3,
+        "max": 203.7
+      },
+      "assertions": [
+        "Channel varies across symbols (std>0.05)",
+        "Doppler within 5% of 194Hz"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U008",
+      "origin": "suite",
+      "origin_id": "T08",
+      "tier": "T1_phy_link_level",
+      "capability": "mimo",
+      "difficulty": "medium",
+      "name": "MIMO: 4x4 point-to-point",
+      "prompt": "4x4 MIMO OFDM, CDL-B, LMMSE equalization, ZF precoding, 16-QAM, no coding. BER at SNR=15dB.",
+      "distractor": "Missing StreamManagement configuration",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "ber_at_snr",
+        "threshold": 0.01,
+        "tolerance": null,
+        "at_ber": null,
+        "at_snr": null,
+        "direction": "<="
+      },
+      "assertions": [
+        "BER at 15dB < 1e-2",
+        "StreamManagement with num_streams=4",
+        "LMMSEEqualizer used"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U009",
+      "origin": "suite",
+      "origin_id": "T09",
+      "tier": "T1_phy_link_level",
+      "capability": "mimo",
+      "difficulty": "hard",
+      "name": "MIMO: multi-user uplink with UMi",
+      "prompt": "4 single-antenna users \u2192 8-antenna BS, urban micro, 3.5GHz. Compute post-equalization SINR per stream.",
+      "distractor": "Using CDL for multi-user (runtime error)",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_range",
+        "metric": "sinr_db",
+        "min": 0.0,
+        "max": 30.0
+      },
+      "assertions": [
+        "Uses UMi",
+        "SINR computed per stream",
+        "No runtime error"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U010",
+      "origin": "suite",
+      "origin_id": "T10",
+      "tier": "T1_phy_link_level",
+      "capability": "massive_mimo",
+      "difficulty": "hard",
+      "name": "Massive MIMO: 64x4",
+      "prompt": "64-antenna BS (8x4 dual-pol), 4 UEs, UMa, downlink, RZF precoding. Sum rate at 20dB SNR.",
+      "distractor": "Single polarization when dual-pol specified \u2192 shape mismatch",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "sum_rate_bps_hz",
+        "direction": ">=",
+        "threshold": 10.0
+      },
+      "assertions": [
+        "AntennaArray 8x4",
+        "RZF precoding",
+        "Sum rate computed"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U011",
+      "origin": "suite",
+      "origin_id": "T11",
+      "tier": "T1_phy_link_level",
+      "capability": "polar_code_for_short_messages",
+      "difficulty": "medium",
+      "name": "Polar code for short messages",
+      "prompt": "5G NR Polar code (msg=32 bits, rate 0.5) over AWGN. Plot BLER. Compare to LDPC at same rate and length.",
+      "distractor": "LDPC minimum message length exceeded for 32 bits",
+      "scene_path": null,
+      "verifier": {
+        "type": "count",
+        "metric": "uses_polar",
+        "expected": true
+      },
+      "assertions": [
+        "Uses Polar5GEncoder/Decoder",
+        "BLER plotted",
+        "LDPC comparison or infeasibility noted"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U012",
+      "origin": "suite",
+      "origin_id": "T12",
+      "tier": "T1_phy_link_level",
+      "capability": "code_rate_sweep",
+      "difficulty": "easy",
+      "name": "Code rate sweep",
+      "prompt": "LDPC BG1, k=2048. Plot BLER at SNR=2dB vs code rate from 0.3 to 0.9 (8 points).",
+      "distractor": "Fixed num_bits_per_symbol while sweeping rate",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_monotone",
+        "metric": "monotonic_bler_vs_rate",
+        "direction": "decreasing",
+        "min_points": 3
+      },
+      "assertions": [
+        "8 BLER values",
+        "BLER increases with rate at fixed SNR"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U013",
+      "origin": "suite",
+      "origin_id": "T13",
+      "tier": "T1_phy_link_level",
+      "capability": "soft_vs_hard_demapping",
+      "difficulty": "medium",
+      "name": "Soft vs hard demapping",
+      "prompt": "64-QAM AWGN with LDPC. Verify soft APP demapping produces lower BLER than hard demapping.",
+      "distractor": "LLR sign convention mismatch with decoder",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "bler_soft",
+        "direction": "<=",
+        "threshold": 0.01
+      },
+      "assertions": [
+        "Soft BLER < hard BLER",
+        "Both curves present"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U014",
+      "origin": "suite",
+      "origin_id": "T14",
+      "tier": "T1_phy_link_level",
+      "capability": "receiver_sensitivity_calculation",
+      "difficulty": "easy",
+      "name": "Receiver sensitivity calculation",
+      "prompt": "NF=7dB, BW=20MHz. Compute thermal noise power (dBm). Simulate QPSK BER=1e-3, report minimum Prx.",
+      "distractor": "Omitting noise figure from sensitivity",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "noise_power_dbm",
+        "threshold": -101,
+        "tolerance": 0.5,
+        "at_ber": null,
+        "at_snr": null,
+        "direction": "<="
+      },
+      "assertions": [
+        "Noise power within 0.5dBm of -101dBm"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U015",
+      "origin": "suite",
+      "origin_id": "T15",
+      "tier": "T1_phy_link_level",
+      "capability": "sim_ber()_efficiency",
+      "difficulty": "easy",
+      "name": "sim_ber() efficiency",
+      "prompt": "Use sim_ber() for QPSK-AWGN, 0-8dB, 100 min block errors per point. Compare runtime to manual loop.",
+      "distractor": "max_mc_iter too low \u2192 unreliable estimates at high SNR",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "min_errors_per_point",
+        "threshold": 100,
+        "tolerance": null,
+        "at_ber": null,
+        "at_snr": null,
+        "direction": ">="
+      },
+      "assertions": [
+        "\u2265100 errors per SNR point",
+        "sim_ber() faster than manual"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U016",
+      "origin": "suite",
+      "origin_id": "T16",
+      "tier": "T1_phy_link_level",
+      "capability": "version_migration",
+      "difficulty": "hard",
+      "name": "Version migration: v0.x to v2.0",
+      "prompt": "Migrate provided v0.16 code (sionna.channel.AWGN, sionna.mapping.Mapper) to v2.0.",
+      "distractor": "Partial migration mixing old and new imports",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "code_runs_v2",
+        "spec": {
+          "metric": "code_runs_v2",
+          "no_import_errors": true
+        }
+      },
+      "assertions": [
+        "Runs on v2.0",
+        "Uses sionna.phy.* namespace",
+        "BER matches within 0.5dB"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U017",
+      "origin": "suite",
+      "origin_id": "T17",
+      "tier": "T1_phy_link_level",
+      "capability": "spectral_efficiency_calculation",
+      "difficulty": "medium",
+      "name": "Spectral efficiency calculation",
+      "prompt": "2x2 MIMO OFDM, 64-QAM, rate 0.75. Compute peak SE. Simulate effective throughput at SNR=25dB.",
+      "distractor": "Not subtracting pilot/guard overhead",
+      "scene_path": null,
+      "verifier": {
+        "type": "value_exact",
+        "metric": "peak_se",
+        "expected": 9.0,
+        "tolerance": 0.1
+      },
+      "assertions": [
+        "Peak SE = 9 bits/s/Hz",
+        "Effective \u2264 peak",
+        "Pilot overhead noted"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U018",
+      "origin": "suite",
+      "origin_id": "T18",
+      "tier": "T1_phy_link_level",
+      "capability": "harq_type-i_retransmission",
+      "difficulty": "hard",
+      "name": "HARQ Type-I retransmission",
+      "prompt": "HARQ Type-I (max 4 TX) for LDPC-QPSK AWGN. Plot BLER per retransmission round.",
+      "distractor": "Reusing same channel realization across retransmissions",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_monotone",
+        "metric": "bler_decreasing_per_round",
+        "direction": "decreasing",
+        "min_points": 4
+      },
+      "assertions": [
+        "4 BLER curves",
+        "Each round lower",
+        "Different channel per round"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U019",
+      "origin": "suite",
+      "origin_id": "T19",
+      "tier": "T2_ray_tracing",
+      "capability": "scene_loading_and_tx/rx_placement",
+      "difficulty": "easy",
+      "name": "Scene loading and TX/RX placement",
+      "prompt": "Load Munich scene. TX at [0,0,25], 5 random RX at z=1.5m. Compute paths, report count per RX. Save cir.npy and write total_paths to simulation_result.json.",
+      "distractor": "Not using synthetic_array=True for large arrays",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "total_paths",
+            "direction": ">=",
+            "threshold": 1
+          }
+        ]
+      },
+      "assertions": [
+        "Scene loads",
+        "5 RX placed",
+        "Nonzero paths for \u22653 RX"
+      ],
+      "required_artifacts": [
+        "cir.npy",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U020",
+      "origin": "suite",
+      "origin_id": "T20",
+      "tier": "T2_ray_tracing",
+      "capability": "cir_extraction_and_shape_verification",
+      "difficulty": "medium",
+      "name": "CIR extraction and shape verification",
+      "prompt": "Munich scene, 1 TX/RX. Compute CIR, verify shape. Convert to CFR for OFDM (FFT=76, SCS=15kHz).",
+      "distractor": "out_type='tensorflow' on PyTorch backend",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "cir_shape_valid",
+        "spec": {
+          "metric": "cir_shape_valid",
+          "cfr_produced": true
+        }
+      },
+      "assertions": [
+        "CIR shape [1,1,1,1,num_paths,1]",
+        "CFR produced",
+        "cir_to_ofdm_channel() used"
+      ],
+      "required_artifacts": [
+        "cir.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U021",
+      "origin": "suite",
+      "origin_id": "T21",
+      "tier": "T2_ray_tracing",
+      "capability": "radio_map",
+      "difficulty": "easy",
+      "name": "Radio map: coverage prediction",
+      "prompt": "Generate path loss radio map for urban scene, TX at 25m, 2.4GHz. Plot heatmap. Identify 3dB boundary.",
+      "distractor": "Frequency in Hz vs GHz confusion",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_range",
+        "metric": "path_loss_range",
+        "min": 40,
+        "max": 160
+      },
+      "assertions": [
+        "2D grid",
+        "Values in [40,160]dB",
+        "Coverage boundary identified"
+      ],
+      "required_artifacts": [
+        "cir.npy",
+        "radio_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U022",
+      "origin": "suite",
+      "origin_id": "T22",
+      "tier": "T2_ray_tracing",
+      "capability": "differentiable_optimization",
+      "difficulty": "hard",
+      "name": "Differentiable optimization: TX orientation",
+      "prompt": "Gradient descent to optimize TX azimuth+tilt in Munich scene. 10 RX, 50 steps. Plot power vs iteration.",
+      "distractor": "Using tf.GradientTape on PyTorch backend",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_monotone",
+        "metric": "power_increases",
+        "direction": "increasing",
+        "min_points": 20
+      },
+      "assertions": [
+        "Power increases first 20 iterations",
+        "Final > initial",
+        "Correct autograd API"
+      ],
+      "required_artifacts": [
+        "cir.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U023",
+      "origin": "suite",
+      "origin_id": "T23",
+      "tier": "T2_ray_tracing",
+      "capability": "differentiable_optimization",
+      "difficulty": "hard",
+      "name": "Differentiable optimization: material learning",
+      "prompt": "Given 10 measured path loss values, optimize wall permittivity to match. 30 gradient steps.",
+      "distractor": "Unclamped permittivity \u2192 negative values \u2192 crash",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "rmse_improves",
+        "spec": {
+          "metric": "rmse_improves",
+          "permittivity_valid": true
+        }
+      },
+      "assertions": [
+        "Permittivity in [1,80]",
+        "Final RMSE < initial",
+        "Loss curve plotted"
+      ],
+      "required_artifacts": [
+        "cir.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U024",
+      "origin": "suite",
+      "origin_id": "T24",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "hard",
+      "name": "RT to PHY: full pipeline",
+      "prompt": "RT CIR \u2192 OFDM link-level sim (16-QAM, LS). Compare BER to CDL-C at same mean SNR.",
+      "distractor": "Incompatible delay tap spacing \u2192 ISI error floor",
+      "scene_path": null,
+      "verifier": {
+        "type": "count",
+        "metric": "two_ber_curves",
+        "expected": 2
+      },
+      "assertions": [
+        "Two BER curves (RT and CDL-C)",
+        "paths.taps() \u2192 ApplyOFDMChannel"
+      ],
+      "required_artifacts": [
+        "cir.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U025",
+      "origin": "suite",
+      "origin_id": "T25",
+      "tier": "T2_ray_tracing",
+      "capability": "radio_map",
+      "difficulty": "medium",
+      "name": "Radio map: multi-BS coverage",
+      "prompt": "3 base stations, individual radio maps, best-server map (per-pixel max). Plot with 3 coverage zones.",
+      "distractor": "Single combined map instead of 3 individual + max",
+      "scene_path": null,
+      "verifier": {
+        "type": "count",
+        "metric": "three_maps_generated",
+        "expected": 3
+      },
+      "assertions": [
+        "3 individual maps",
+        "Best-server = pixelwise max",
+        "3 zones in plot"
+      ],
+      "required_artifacts": [
+        "cir.npy",
+        "radio_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U026",
+      "origin": "suite",
+      "origin_id": "T26",
+      "tier": "T2_ray_tracing",
+      "capability": "ris_optimization_via_ray_tracing",
+      "difficulty": "hard",
+      "name": "RIS optimization via ray tracing",
+      "prompt": "RIS in NLoS scene. Gradient descent on phase shifts. Compare: optimized vs random vs no-RIS.",
+      "distractor": "Random init without normalization \u2192 local minimum",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "ris_gain_db",
+        "threshold": 3.0,
+        "direction": ">="
+      },
+      "assertions": [
+        "Optimized > random > no-RIS",
+        "\u22653dB gain over no-RIS"
+      ],
+      "required_artifacts": [
+        "cir.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U027",
+      "origin": "suite",
+      "origin_id": "T27",
+      "tier": "T2_ray_tracing",
+      "capability": "cir_plausibility_checks",
+      "difficulty": "easy",
+      "name": "CIR plausibility checks",
+      "prompt": "After computing CIR, check: LOS delay matches d/c, path gains decrease with order, all delays positive.",
+      "distractor": "LOS delay in seconds vs samples confusion",
+      "scene_path": null,
+      "verifier": {
+        "type": "count",
+        "metric": "three_checks_pass",
+        "expected": 3
+      },
+      "assertions": [
+        "3 checks implemented",
+        "LOS delay = d/c",
+        "All pass"
+      ],
+      "required_artifacts": [
+        "cir.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U028",
+      "origin": "suite",
+      "origin_id": "T28",
+      "tier": "T3_ml_neural",
+      "capability": "neural_demapper",
+      "difficulty": "medium",
+      "name": "Neural demapper: training setup",
+      "prompt": "Replace Demapper with 3-layer MLP (128 hidden). Train on QPSK-AWGN, 200 steps. Compare BER to classical.",
+      "distractor": "LLR sign convention mismatch with decoder",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "ber_gap_to_classical",
+        "threshold": 1.0,
+        "tolerance": null,
+        "at_ber": null,
+        "at_snr": null,
+        "direction": "<="
+      },
+      "assertions": [
+        "Neural BER within 1dB of classical at 6dB",
+        "Loss decreases",
+        "torch.nn.Module used"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U029",
+      "origin": "suite",
+      "origin_id": "T29",
+      "tier": "T3_ml_neural",
+      "capability": "neural_channel_estimator",
+      "difficulty": "hard",
+      "name": "Neural channel estimator: NVE metric",
+      "prompt": "Neural estimator for SISO OFDM CDL-C. Train on 1000 realizations. Report NVE. LS baseline \u2248 94.",
+      "distractor": "Evaluating on training set (over-optimistic)",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "nve",
+        "threshold": 70,
+        "direction": "<="
+      },
+      "assertions": [
+        "NVE < 70",
+        "Evaluation on held-out data",
+        "NVE formula correct"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U030",
+      "origin": "suite",
+      "origin_id": "T30",
+      "tier": "T3_ml_neural",
+      "capability": "neural_channel_estimator",
+      "difficulty": "hard",
+      "name": "Neural channel estimator: NMSE",
+      "prompt": "Train estimator for 2x2 MIMO CDL-A. Plot NMSE vs SNR. Compare to LS and LMMSE. Target: NMSE < -10dB at SNR=10dB.",
+      "distractor": "NMSE = MSE/signal_power instead of MSE/||H||\u00b2",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "nmse_db",
+        "threshold": -10,
+        "tolerance": null,
+        "at_ber": null,
+        "at_snr": 10,
+        "direction": "<="
+      },
+      "assertions": [
+        "3 curves (neural, LS, LMMSE)",
+        "Neural < -10dB at SNR=10dB",
+        "Correct NMSE formula"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U031",
+      "origin": "suite",
+      "origin_id": "T31",
+      "tier": "T3_ml_neural",
+      "capability": "end-to-end_autoencoder",
+      "difficulty": "medium",
+      "name": "End-to-end autoencoder: AWGN",
+      "prompt": "(7,4) autoencoder over AWGN. Train 500 epochs. Plot learned constellation. Compare BER to 16-QAM.",
+      "distractor": "No power normalization \u2192 cheating by increasing Tx power",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "power_normalized",
+        "spec": {
+          "metric": "power_normalized",
+          "constellation_plotted": true
+        }
+      },
+      "assertions": [
+        "Power normalization layer present",
+        "Constellation plotted",
+        "BER comparison included"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U032",
+      "origin": "suite",
+      "origin_id": "T32",
+      "tier": "T3_ml_neural",
+      "capability": "autoencoder",
+      "difficulty": "hard",
+      "name": "Autoencoder: fading channel",
+      "prompt": "Autoencoder over Rayleigh fading with known CSI at RX. 300 training steps. Show constellation differs from AWGN case.",
+      "distractor": "Same channel realization for all batch items",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "new_channel_per_item",
+        "spec": {
+          "metric": "new_channel_per_item",
+          "constellation_differs": true
+        }
+      },
+      "assertions": [
+        "New realization per batch item",
+        "Constellation differs from AWGN",
+        "BER curve produced"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U033",
+      "origin": "suite",
+      "origin_id": "T33",
+      "tier": "T3_ml_neural",
+      "capability": "neural_decoder",
+      "difficulty": "hard",
+      "name": "Neural decoder: unfolded LDPC",
+      "prompt": "5-iteration unfolded LDPC with learnable scaling factors. Train on CDL-C. Compare to 20-iteration classical.",
+      "distractor": "Not sharing weights across unfolded iterations",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "learnable_params_present",
+        "spec": {
+          "metric": "learnable_params_present",
+          "bler_comparison": true
+        }
+      },
+      "assertions": [
+        "Learnable scaling factors",
+        "BLER comparison",
+        "Fewer params than 5 independent decoders"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U034",
+      "origin": "suite",
+      "origin_id": "T34",
+      "tier": "T3_ml_neural",
+      "capability": "neural_equalizer",
+      "difficulty": "hard",
+      "name": "Neural equalizer: model mismatch",
+      "prompt": "Train neural equalizer on CDL-A. Test on CDL-C (mismatch). Compare degradation to LMMSE under same mismatch.",
+      "distractor": "Evaluating on training distribution",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "mismatch_evaluated",
+        "spec": {
+          "metric": "mismatch_evaluated",
+          "both_conditions_present": true
+        }
+      },
+      "assertions": [
+        "Train=CDL-A, test=CDL-C",
+        "Neural and LMMSE results under mismatch",
+        "Degradation analyzed"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U035",
+      "origin": "suite",
+      "origin_id": "T35",
+      "tier": "T3_ml_neural",
+      "capability": "csi_feedback_compression",
+      "difficulty": "hard",
+      "name": "CSI feedback compression",
+      "prompt": "CsiNet-style autoencoder: compress H [32,32] to 32 values. Train on UMi. Report reconstruction NMSE.",
+      "distractor": "Flattening without exploiting spatial-frequency structure",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "nmse_db",
+        "threshold": -5,
+        "tolerance": null,
+        "at_ber": null,
+        "at_snr": null,
+        "direction": "<="
+      },
+      "assertions": [
+        "Encoder dim=32",
+        "Reconstructed shape=[32,32]",
+        "NMSE < -5dB"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U036",
+      "origin": "suite",
+      "origin_id": "T36",
+      "tier": "T3_ml_neural",
+      "capability": "zf_vs_mrt_beamforming_comparison",
+      "difficulty": "medium",
+      "name": "ZF vs MRT beamforming comparison",
+      "prompt": "16-antenna BS, 2 UEs, MU-MIMO downlink. Compare ZF and MRT per-user SINR vs SNR.",
+      "distractor": "MRT without per-user power normalization",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "crossing_behavior",
+        "spec": {
+          "metric": "crossing_behavior",
+          "zf_better_at_high_snr": true
+        }
+      },
+      "assertions": [
+        "ZF higher SINR at high SNR",
+        "MRT comparable at low SNR",
+        "Power normalized"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U037",
+      "origin": "suite",
+      "origin_id": "T37",
+      "tier": "T3_ml_neural",
+      "capability": "gradient-based_beamforming",
+      "difficulty": "hard",
+      "name": "Gradient-based beamforming",
+      "prompt": "RT-computed angles, 4-antenna TX. Optimize beamforming vector via gradient descent. Compare to MRT.",
+      "distractor": "Unconstrained norm \u2192 arbitrary power increase",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "norm_constrained",
+        "spec": {
+          "metric": "norm_constrained",
+          "snr_geq_mrt": true
+        }
+      },
+      "assertions": [
+        "||w||=1 throughout",
+        "Gradient BF SNR \u2265 MRT SNR",
+        "Optimization curve plotted"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U038",
+      "origin": "suite",
+      "origin_id": "T38",
+      "tier": "T3_ml_neural",
+      "capability": "semantic_communication",
+      "difficulty": "hard",
+      "name": "Semantic communication: image classification",
+      "prompt": "Joint source-channel coding for image class over AWGN. Pre-trained feature extractor as encoder. Accuracy vs SNR.",
+      "distractor": "Evaluating BER instead of classification accuracy",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "eval_metric_is_accuracy",
+        "spec": {
+          "metric": "eval_metric_is_accuracy",
+          "not_ber": true
+        }
+      },
+      "assertions": [
+        "Metric is accuracy not BER",
+        "Accuracy degrades gracefully",
+        "Feature extractor used"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U039",
+      "origin": "suite",
+      "origin_id": "T39",
+      "tier": "T3_ml_neural",
+      "capability": "isac_dual-function_waveform",
+      "difficulty": "hard",
+      "name": "ISAC dual-function waveform",
+      "prompt": "OFDM with data + sensing subcarriers. CDL-A, scatterer at 100m. Report BER and ranging RMSE.",
+      "distractor": "All subcarriers to one function",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "dual_function",
+        "spec": {
+          "metric": "dual_function",
+          "both_metrics_reported": true
+        }
+      },
+      "assertions": [
+        "Mixed subcarrier allocation",
+        "Communication BER reported",
+        "Ranging RMSE reported"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U040",
+      "origin": "suite",
+      "origin_id": "T40",
+      "tier": "T3_ml_neural",
+      "capability": "isac_localization",
+      "difficulty": "hard",
+      "name": "ISAC localization",
+      "prompt": "3 BSs in RT scene. Estimate user position via AoA from each BS. Report localization RMSE over 50 positions.",
+      "distractor": "Using ToA instead of AoA",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "localization_rmse_m",
+        "threshold": 5.0,
+        "direction": "<="
+      },
+      "assertions": [
+        "AoA from each BS",
+        "Triangulation",
+        "RMSE over \u226550 positions"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U041",
+      "origin": "suite",
+      "origin_id": "T41",
+      "tier": "T3_ml_neural",
+      "capability": "ris",
+      "difficulty": "medium",
+      "name": "RIS: analytical phase optimization",
+      "prompt": "RIS-assisted SISO (Rayleigh fading). Optimize phases analytically (MRC) and via random search. Compare SNR.",
+      "distractor": "Continuous vs quantized phase assumption",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "analytical_achieves_max",
+        "spec": {
+          "metric": "analytical_achieves_max",
+          "random_within_20pct": true
+        }
+      },
+      "assertions": [
+        "Analytical = max possible SNR",
+        "Random within 20%",
+        "Quantization noted"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U042",
+      "origin": "suite",
+      "origin_id": "T42",
+      "tier": "T3_ml_neural",
+      "capability": "jamming",
+      "difficulty": "hard",
+      "name": "Jamming: PyJama barrage vs learned",
+      "prompt": "Barrage jammer 0-20dBm against LDPC-QPSK. Sweep power. Compare to learned jammer (same budget).",
+      "distractor": "Jammer power not normalized to signal",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_monotone",
+        "metric": "bler_monotone_with_power",
+        "direction": "decreasing",
+        "min_points": 3
+      },
+      "assertions": [
+        "BLER increases with power",
+        "Learned \u2265 barrage at all powers",
+        "Both curves present"
+      ],
+      "required_artifacts": [
+        "model_checkpoint.pt",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U043",
+      "origin": "suite",
+      "origin_id": "T43",
+      "tier": "T4_system_level",
+      "capability": "multi-cell_hexagonal_grid",
+      "difficulty": "medium",
+      "name": "Multi-cell hexagonal grid",
+      "prompt": "7-cell hex, 10 users/cell. Cell-edge (5th pct) and median throughput at 20dB SNR.",
+      "distractor": "No wrap-around \u2192 edge effects",
+      "scene_path": null,
+      "verifier": {
+        "type": "count",
+        "metric": "topology_cells",
+        "expected": 7
+      },
+      "assertions": [
+        "7 cells",
+        "70 users",
+        "5th pct and median reported"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U044",
+      "origin": "suite",
+      "origin_id": "T44",
+      "tier": "T4_system_level",
+      "capability": "link_adaptation",
+      "difficulty": "medium",
+      "name": "Link adaptation: OLLA",
+      "prompt": "OLLA for SU-MIMO targeting 10% BLER. Compare to fixed MCS over 100 slots. Plot BLER over time.",
+      "distractor": "Step size too large (5dB) \u2192 oscillation",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "olla_closer_to_target",
+        "spec": {
+          "metric": "olla_closer_to_target",
+          "target_bler": 0.1
+        }
+      },
+      "assertions": [
+        "OLLA mean BLER closer to 10%",
+        "Lower BLER variance",
+        "Step < 1dB"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U045",
+      "origin": "suite",
+      "origin_id": "T45",
+      "tier": "T4_system_level",
+      "capability": "proportional_fair_scheduling",
+      "difficulty": "medium",
+      "name": "Proportional fair scheduling",
+      "prompt": "PF scheduling for 4 users (SNR 5,10,15,20 dB). Compare Jain fairness to round-robin.",
+      "distractor": "Max-throughput instead of PF",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "pf_fairer",
+        "spec": {
+          "metric": "pf_fairer",
+          "jain_index_higher": true
+        }
+      },
+      "assertions": [
+        "PF Jain > RR Jain",
+        "Per-user throughput plotted",
+        "PF metric: r_i/R_i"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U046",
+      "origin": "suite",
+      "origin_id": "T46",
+      "tier": "T4_system_level",
+      "capability": "uplink_power_control",
+      "difficulty": "easy",
+      "name": "Uplink power control",
+      "prompt": "Open-loop power control, 8 users, target Prx=-85dBm. Report Tx power range.",
+      "distractor": "No max Tx power cap (23dBm for 5G NR)",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "max_tx_power",
+        "spec": {
+          "metric": "max_tx_power",
+          "cap_dbm": 23
+        }
+      },
+      "assertions": [
+        "Max Tx \u2264 23dBm",
+        "Target within 2dB for all users"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U047",
+      "origin": "suite",
+      "origin_id": "T47",
+      "tier": "T4_system_level",
+      "capability": "phy_abstraction",
+      "difficulty": "easy",
+      "name": "PHY abstraction: SINR to BLER",
+      "prompt": "Map SINR [-5,0,5,10,15,20]dB to BLER for 16-QAM rate 0.5. Plot curve.",
+      "distractor": "SINR used directly as Eb/N0 without MCS mapping",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_monotone",
+        "metric": "bler_monotone_decreasing",
+        "direction": "decreasing",
+        "min_points": 3
+      },
+      "assertions": [
+        "BLER decreases with SINR",
+        "BLER\u21920 at 20dB",
+        "PHYAbstraction used"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U048",
+      "origin": "suite",
+      "origin_id": "T48",
+      "tier": "T4_system_level",
+      "capability": "digital_twin",
+      "difficulty": "hard",
+      "name": "Digital twin: RT + system integration",
+      "prompt": "RT radio map \u2192 SNR for 20 users \u2192 system-level throughput. Compare to stochastic UMi model.",
+      "distractor": "Path loss directly as SNR (unit error: dBm vs dB)",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "snr_formula_correct",
+        "spec": {
+          "metric": "snr_formula_correct",
+          "two_throughputs_compared": true
+        }
+      },
+      "assertions": [
+        "SNR = Ptx - PL - N (all dB)",
+        "Two throughput values",
+        "Range [0,200] Mbps"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U049",
+      "origin": "suite",
+      "origin_id": "T49",
+      "tier": "T4_system_level",
+      "capability": "network_slicing",
+      "difficulty": "hard",
+      "name": "Network slicing: eMBB vs URLLC",
+      "prompt": "2 slices sharing 100MHz: eMBB (6 users, max throughput) and URLLC (2 users, BLER<0.1%). Allocate resources.",
+      "distractor": "Equal allocation fails URLLC target",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "urllc_bler",
+        "spec": {
+          "metric": "urllc_bler",
+          "threshold": 0.001
+        }
+      },
+      "assertions": [
+        "URLLC BLER < 1e-3",
+        "eMBB throughput > 0",
+        "Allocation justified"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U050",
+      "origin": "suite",
+      "origin_id": "T50",
+      "tier": "T4_system_level",
+      "capability": "capacity",
+      "difficulty": "medium",
+      "name": "Capacity: Shannon bound comparison",
+      "prompt": "Rayleigh fading: ergodic capacity, 10% outage capacity, AWGN capacity. Plot all vs SNR.",
+      "distractor": "Instantaneous vs average SNR for AWGN comparison",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "ordering_correct",
+        "spec": {
+          "metric": "ordering_correct",
+          "ergodic_lt_awgn": true
+        }
+      },
+      "assertions": [
+        "3 curves",
+        "Ergodic < AWGN",
+        "Outage < ergodic"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U051",
+      "origin": "suite",
+      "origin_id": "T51",
+      "tier": "T5_emerging",
+      "capability": "channel_charting",
+      "difficulty": "hard",
+      "name": "Channel charting",
+      "prompt": "CSI from 100 positions in RT scene. Train 2D channel chart. Verify spatial correlation.",
+      "distractor": "Using only magnitude (no phase) loses spatial resolution",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "spatial_correlation",
+        "spec": {
+          "metric": "spatial_correlation",
+          "pearson_min": 0.7
+        }
+      },
+      "assertions": [
+        "Correlation > 0.7",
+        "Scatter plot produced"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U052",
+      "origin": "suite",
+      "origin_id": "T52",
+      "tier": "T5_emerging",
+      "capability": "otfs_waveform",
+      "difficulty": "hard",
+      "name": "OTFS waveform",
+      "prompt": "2D OTFS over doubly-dispersive channel (1\u00b5s delay, 1kHz Doppler). Compare BER to OFDM at same SE.",
+      "distractor": "Standard OFDM pilots for OTFS estimation",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "otfs_better_high_doppler",
+        "spec": {
+          "metric": "otfs_better_high_doppler",
+          "at_high_snr": true
+        }
+      },
+      "assertions": [
+        "OTFS BER < OFDM at high Doppler",
+        "2D pilot structure"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U053",
+      "origin": "suite",
+      "origin_id": "T53",
+      "tier": "T5_emerging",
+      "capability": "near-field_beamforming",
+      "difficulty": "hard",
+      "name": "Near-field beamforming: XL-MIMO",
+      "prompt": "128 antennas, 30GHz. Compute Rayleigh distance. User in near-field. Compare near vs far-field gain.",
+      "distractor": "Far-field steering in near-field \u2192 suboptimal focus",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "rayleigh_distance_correct",
+        "spec": {
+          "metric": "rayleigh_distance_correct",
+          "near_field_better": true
+        }
+      },
+      "assertions": [
+        "Rayleigh = 2D\u00b2/\u03bb",
+        "User within distance",
+        "Near-field > far-field SNR"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U054",
+      "origin": "suite",
+      "origin_id": "T54",
+      "tier": "T5_emerging",
+      "capability": "thz_channel",
+      "difficulty": "medium",
+      "name": "THz channel: molecular absorption",
+      "prompt": "300GHz link over 10m indoor. Include molecular absorption. Compare total path loss to 28GHz.",
+      "distractor": "Standard Friis without molecular absorption",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "thz_loss_gt_mmwave",
+        "spec": {
+          "metric": "thz_loss_gt_mmwave",
+          "absorption_applied": true
+        }
+      },
+      "assertions": [
+        "Molecular absorption applied",
+        "300GHz loss > 28GHz",
+        "Within 5dB of reference"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U055",
+      "origin": "suite",
+      "origin_id": "T55",
+      "tier": "T5_emerging",
+      "capability": "federated_learning",
+      "difficulty": "hard",
+      "name": "Federated learning: channel estimation",
+      "prompt": "5 clients, each different channel realization. FedAvg. Compare federated, centralized, local NMSE.",
+      "distractor": "Equal-weight FedAvg with identical data = centralized",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "federated_between_central_and_local",
+        "spec": {
+          "metric": "federated_between_central_and_local",
+          "three_curves": true
+        }
+      },
+      "assertions": [
+        "3 NMSE curves",
+        "Federated closer to centralized than local"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U056",
+      "origin": "suite",
+      "origin_id": "T56",
+      "tier": "T5_emerging",
+      "capability": "semantic_metric",
+      "difficulty": "hard",
+      "name": "Semantic metric: accuracy vs BER",
+      "prompt": "Semantic comm for images. Plot both BER and accuracy vs SNR. Identify semantic robustness regime.",
+      "distractor": "Assuming BER and accuracy degrade in lockstep",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "decoupling_shown",
+        "spec": {
+          "metric": "decoupling_shown",
+          "robustness_regime_labeled": true
+        }
+      },
+      "assertions": [
+        "Two metrics plotted",
+        "Regime where accuracy>70% while BER>10%",
+        "Labeled"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U057",
+      "origin": "suite",
+      "origin_id": "T57",
+      "tier": "T5_emerging",
+      "capability": "isac_tradeoff_curve",
+      "difficulty": "medium",
+      "name": "ISAC tradeoff curve",
+      "prompt": "Sweep sensing allocation 0-100%. Plot throughput and RMSE vs allocation. Find Pareto point.",
+      "distractor": "Fixed channel realizations for sensing metric",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_monotone",
+        "metric": "monotone_tradeoff",
+        "direction": "decreasing",
+        "min_points": 3
+      },
+      "assertions": [
+        "Two curves",
+        "Monotone tradeoff",
+        "Pareto point labeled",
+        "Averaged \u226520 realizations"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U058",
+      "origin": "suite",
+      "origin_id": "T58",
+      "tier": "T5_emerging",
+      "capability": "o-ran_xapp",
+      "difficulty": "hard",
+      "name": "O-RAN xApp: MCS adaptation",
+      "prompt": "Near-RT RIC xApp adjusting MCS every 10ms over 1s. Compare to fixed MCS.",
+      "distractor": "Adjusting every 1ms (wrong O-RAN timescale)",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "update_interval_correct",
+        "spec": {
+          "metric": "update_interval_correct",
+          "xapp_better": true
+        }
+      },
+      "assertions": [
+        "MCS update every 10 slots",
+        "xApp throughput > fixed",
+        "O-RAN noted in comments"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U059",
+      "origin": "suite",
+      "origin_id": "T59",
+      "tier": "T5_emerging",
+      "capability": "star-ris",
+      "difficulty": "hard",
+      "name": "STAR-RIS: full-space coverage",
+      "prompt": "STAR-RIS serving one UE each side. Optimize T and R coefficients. Compare to conventional RIS.",
+      "distractor": "Reflection code applied to transmission side",
+      "scene_path": null,
+      "verifier": {
+        "type": "code_contains",
+        "metric": "star_better_than_conventional",
+        "spec": {
+          "metric": "star_better_than_conventional",
+          "constraint_enforced": true
+        }
+      },
+      "assertions": [
+        "Two UEs served",
+        "Separate T/R matrices",
+        "|t|\u00b2+|r|\u00b2=1 enforced"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U060",
+      "origin": "suite",
+      "origin_id": "T60",
+      "tier": "T5_emerging",
+      "capability": "channel_prediction",
+      "difficulty": "hard",
+      "name": "Channel prediction: autoregressive LSTM",
+      "prompt": "LSTM predicting next channel from 5 past observations. CDL-A 60km/h. NMSE at 1,2,5,10 steps ahead.",
+      "distractor": "Not normalizing channel coefficient magnitudes",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_monotone",
+        "metric": "nmse_increases_with_horizon",
+        "direction": "increasing",
+        "min_points": 3
+      },
+      "assertions": [
+        "NMSE for 4 horizons",
+        "LSTM < last-sample at 1-2 steps",
+        "Normalization applied"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U061",
+      "origin": "corpus",
+      "origin_id": "B01",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "easy",
+      "name": "B_indoor_coverage: Generate a coverage map for a single AP at 3.5 GHz in a 10x8",
+      "prompt": "Generate a coverage map for a single AP at 3.5 GHz in a 10x8m conference room",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_heatmap"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_report_coverage_pct"
+          },
+          {
+            "type": "metric_range",
+            "metric": "coverage_pct",
+            "min": 80,
+            "max": 100
+          }
+        ]
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must report coverage pct",
+        "coverage in range",
+        "expect coverage_range_pct=[80, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U062",
+      "origin": "corpus",
+      "origin_id": "B02",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "easy",
+      "name": "B_indoor_coverage: Show me WiFi coverage at 5.8 GHz in a 6x5m office with 4 des",
+      "prompt": "Show me WiFi coverage at 5.8 GHz in a 6x5m office with 4 desks",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_heatmap"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_report_coverage_pct"
+          }
+        ]
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must report coverage pct",
+        "must place furniture",
+        "expect coverage_range_pct=[70, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy",
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U063",
+      "origin": "corpus",
+      "origin_id": "B03",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "medium",
+      "name": "B_indoor_coverage: Coverage map for an L-shaped living room, 12x8m overall, AP ",
+      "prompt": "Coverage map for an L-shaped living room, 12x8m overall, AP at ceiling center",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_heatmap"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_create_l_shaped_room"
+          }
+        ]
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must create l shaped room",
+        "expect coverage_range_pct=[60, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U064",
+      "origin": "corpus",
+      "origin_id": "B04",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "hard",
+      "name": "B_indoor_coverage: Compare coverage at different AP heights: 1.5m, 2.0m, and ce",
+      "prompt": "Compare coverage at different AP heights: 1.5m, 2.0m, and ceiling in a bedroom",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_multiple_heatmaps"
+      },
+      "assertions": [
+        "must produce multiple heatmaps",
+        "expect must_produce_3_maps=True"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U065",
+      "origin": "corpus",
+      "origin_id": "B05",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "medium",
+      "name": "B_indoor_coverage: Show signal strength in a 15x10m open office with glass part",
+      "prompt": "Show signal strength in a 15x10m open office with glass partitions",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must use glass material",
+        "expect coverage_range_pct=[70, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U066",
+      "origin": "corpus",
+      "origin_id": "B06",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "hard",
+      "name": "B_indoor_coverage: Coverage in a small bathroom, 3x2.5m, AP in adjacent bedroom",
+      "prompt": "Coverage in a small bathroom, 3x2.5m, AP in adjacent bedroom",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must model through wall",
+        "expect coverage_range_pct=[30, 90]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U067",
+      "origin": "corpus",
+      "origin_id": "B07",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "medium",
+      "name": "B_indoor_coverage: Map coverage at 28 GHz mmWave in a 20x15m factory floor",
+      "prompt": "Map coverage at 28 GHz mmWave in a 20x15m factory floor",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must use mmwave frequency",
+        "expect coverage_range_pct=[20, 80]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U068",
+      "origin": "corpus",
+      "origin_id": "B08",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "hard",
+      "name": "B_indoor_coverage: Show me where coverage drops below -75 dBm in a 2-room apart",
+      "prompt": "Show me where coverage drops below -75 dBm in a 2-room apartment",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_heatmap"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_create_multi_room"
+          }
+        ]
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must create multi room",
+        "expect coverage_range_pct=[50, 95]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U069",
+      "origin": "corpus",
+      "origin_id": "B09",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "medium",
+      "name": "B_indoor_coverage: Coverage with two APs in a 25x15m open plan office",
+      "prompt": "Coverage with two APs in a 25x15m open plan office",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must place two tx",
+        "expect coverage_range_pct=[80, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U070",
+      "origin": "corpus",
+      "origin_id": "B10",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "medium",
+      "name": "B_indoor_coverage: Signal strength at desk height (0.75m) vs standing height (1",
+      "prompt": "Signal strength at desk height (0.75m) vs standing height (1.5m) in an office",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must compare heights",
+        "expect must_produce_2_maps=True"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U071",
+      "origin": "corpus",
+      "origin_id": "B11",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "easy",
+      "name": "B_indoor_coverage: Coverage map for a corridor, 20m long, 2m wide, AP at one en",
+      "prompt": "Coverage map for a corridor, 20m long, 2m wide, AP at one end",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "expect coverage_range_pct=[40, 90]",
+        "expect signal_decreases_with_distance=True"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U072",
+      "origin": "corpus",
+      "origin_id": "B12",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "medium",
+      "name": "B_indoor_coverage: Show WiFi 6E coverage at 6 GHz in a studio apartment with ki",
+      "prompt": "Show WiFi 6E coverage at 6 GHz in a studio apartment with kitchen island",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "expect coverage_range_pct=[60, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U073",
+      "origin": "corpus",
+      "origin_id": "B13",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "medium",
+      "name": "B_indoor_coverage: Coverage in a bedroom with concrete walls and a large wardro",
+      "prompt": "Coverage in a bedroom with concrete walls and a large wardrobe blocking LOS",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must include furniture obstruction",
+        "expect coverage_range_pct=[60, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U074",
+      "origin": "corpus",
+      "origin_id": "B14",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "hard",
+      "name": "B_indoor_coverage: Map the dead zones in a 3-room house with one AP in the livi",
+      "prompt": "Map the dead zones in a 3-room house with one AP in the living room",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must identify dead zones",
+        "expect coverage_range_pct=[40, 85]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U075",
+      "origin": "corpus",
+      "origin_id": "B15",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "easy",
+      "name": "B_indoor_coverage: Coverage analysis at 60 GHz in a 4x3m meeting room",
+      "prompt": "Coverage analysis at 60 GHz in a 4x3m meeting room",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_heatmap"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_report_coverage_pct"
+          }
+        ]
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must report coverage pct",
+        "expect coverage_range_pct=[50, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy",
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U076",
+      "origin": "corpus",
+      "origin_id": "B16",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "hard",
+      "name": "B_indoor_coverage: Generate a coverage map at 3.5 GHz for an outdoor urban cany",
+      "prompt": "Generate a coverage map at 3.5 GHz for an outdoor urban canyon: 100x50m street bounded by 20m tall buildings on both sides, AP on the south building rooftop",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_heatmap"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_create_outdoor_scene"
+          }
+        ]
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must create outdoor scene",
+        "must include building walls",
+        "expect coverage_range_pct=[40, 90]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U077",
+      "origin": "corpus",
+      "origin_id": "B17",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "hard",
+      "name": "B_indoor_coverage: Show me 28 GHz mmWave outdoor coverage with a rooftop AP ser",
+      "prompt": "Show me 28 GHz mmWave outdoor coverage with a rooftop AP serving a 200x200m block around it",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must use mmwave",
+        "mmwave shorter range than sub6",
+        "expect coverage_range_pct=[20, 70]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U078",
+      "origin": "corpus",
+      "origin_id": "B18",
+      "tier": "T4_system_level",
+      "capability": "indoor_coverage_map",
+      "difficulty": "hard",
+      "name": "B_indoor_coverage: Map SINR for two co-channel APs 15m apart in a 20x15m open o",
+      "prompt": "Map SINR for two co-channel APs 15m apart in a 20x15m open office at 3.5 GHz, showing interference-limited zones",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene.frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_sinr_map"
+      },
+      "assertions": [
+        "must produce sinr map",
+        "must use two aps",
+        "must identify interference zones",
+        "expect sinr_range_db=[-5, 25]",
+        "expect interference_limited=True"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U079",
+      "origin": "corpus",
+      "origin_id": "D01",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "easy",
+      "name": "D_scene_generation: Create a small bedroom with a bed, nightstand, and wardrobe",
+      "prompt": "Create a small bedroom with a bed, nightstand, and wardrobe",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_create_scene_state"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "in_bounds_check"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_have_rf_materials"
+          }
+        ]
+      },
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must have rf materials",
+        "expect expected_furniture=['bed', 'nightstand', 'wardrobe']",
+        "expect min_furniture=3",
+        "expect room_dims_range={'width': [3, 6], 'depth': [3, 5]}"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U080",
+      "origin": "corpus",
+      "origin_id": "D02",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "easy",
+      "name": "D_scene_generation: Generate a 6x5m office with 4 desks and 4 chairs",
+      "prompt": "Generate a 6x5m office with 4 desks and 4 chairs",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_create_scene_state"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          }
+        ]
+      },
+      "assertions": [
+        "must create scene state",
+        "must match dimensions",
+        "must be collision free",
+        "expect expected_furniture=['desk', 'chair']",
+        "expect min_furniture=6",
+        "expect room_width=6",
+        "expect room_depth=5"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U081",
+      "origin": "corpus",
+      "origin_id": "D03",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_l_shape",
+      "difficulty": "medium",
+      "name": "L-shaped office layout",
+      "prompt": "Generate an L-shaped office, total floor area ~50 m\u00b2. The L has a long arm 8 m \u00d7 4 m and a short arm 4 m \u00d7 4 m, joined at one corner. Place 1 desk and 1 chair in each arm. Wall material: drywall throughout.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "in_bounds_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "l_shape"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U082",
+      "origin": "corpus",
+      "origin_id": "D04",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_l_shape",
+      "difficulty": "medium",
+      "name": "L-shaped studio with partition",
+      "prompt": "Generate an L-shaped studio apartment ~60 m\u00b2. Long arm 10 m \u00d7 4 m holds a sofa and bookshelf; short arm 4 m \u00d7 5 m holds a bed and wardrobe. Default ceiling height 2.7 m.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "in_bounds_check"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U083",
+      "origin": "corpus",
+      "origin_id": "D05",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "medium",
+      "name": "D_scene_generation: Make a studio apartment with kitchen area, bed, desk, and bo",
+      "prompt": "Make a studio apartment with kitchen area, bed, desk, and bookshelf",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_create_scene_state"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          }
+        ]
+      },
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "expect expected_furniture=['bed', 'desk', 'bookshelf']",
+        "expect min_furniture=4"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U084",
+      "origin": "corpus",
+      "origin_id": "D06",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "medium",
+      "name": "D_scene_generation: Create a bedroom with the bed against the north wall and des",
+      "prompt": "Create a bedroom with the bed against the north wall and desk near the window",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_create_scene_state"
+      },
+      "assertions": [
+        "must create scene state",
+        "must place furniture as requested",
+        "expect expected_furniture=['bed', 'desk']",
+        "expect bed_near_north=True"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U085",
+      "origin": "corpus",
+      "origin_id": "D07",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_partitioned",
+      "difficulty": "medium",
+      "name": "Office with full-height partition",
+      "prompt": "Generate a 10 m \u00d7 6 m office with a full-height partition wall splitting it into two 5 m \u00d7 6 m halves. The east half has 2 desks; the west half has a meeting table and 4 chairs. Partition material: drywall.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "partition"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U086",
+      "origin": "corpus",
+      "origin_id": "D08",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_partitioned",
+      "difficulty": "medium",
+      "name": "Lab with glass partition",
+      "prompt": "12 m \u00d7 5 m lab. A 4 m glass partition (height 2.4 m) separates a clean area from a workshop area. Place a workbench in each half.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "glass"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U087",
+      "origin": "corpus",
+      "origin_id": "D09",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_mixed_materials",
+      "difficulty": "medium",
+      "name": "Server room (concrete + metal furniture)",
+      "prompt": "Generate an 8 m \u00d7 6 m server room. Concrete walls. Place 4 metal server racks (1 m \u00d7 0.6 m each) in two rows, and 1 metal filing cabinet against the north wall. Materials must reflect structural dominance \u2014 see references/sionna-materials.md.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "metal"
+          },
+          {
+            "type": "code_contains",
+            "metric": "concrete"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U088",
+      "origin": "corpus",
+      "origin_id": "D10",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_mixed_materials",
+      "difficulty": "easy",
+      "name": "Living room with dominant wood furniture",
+      "prompt": "Generate a 6 m \u00d7 5 m living room with drywall walls. Place a wooden sofa frame, a wooden coffee table, and a wooden bookshelf. The skill's structural-dominance rule (paper \u00a74.3) maps these categories to their RF-dominant material \u2014 verify the scene_state encodes it correctly.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "wood"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U089",
+      "origin": "corpus",
+      "origin_id": "D11",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_irc_compliance",
+      "difficulty": "medium",
+      "name": "IRC \u00a7R303 living room (\u22658% aperture)",
+      "prompt": "Generate a 6 m \u00d7 5 m living room (room_type='living') with windows totaling at least 8% of floor area, on perimeter walls only, per IRC \u00a7R303. The skill's lib/scene_gen/windows.py provides place_irc_windows() \u2014 use it.",
+      "scene_path": null,
+      "verifier": {
+        "type": "irc_aperture",
+        "min_ratio": 0.08
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U090",
+      "origin": "corpus",
+      "origin_id": "D12",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "hard",
+      "name": "D_scene_generation: Generate a hotel room with king bed, desk, TV stand, and en-",
+      "prompt": "Generate a hotel room with king bed, desk, TV stand, and en-suite bathroom",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_create_scene_state"
+      },
+      "assertions": [
+        "must create scene state",
+        "expect expected_furniture=['bed', 'desk', 'tv stand']",
+        "expect min_furniture=3"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U091",
+      "origin": "corpus",
+      "origin_id": "D13",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "hard",
+      "name": "D_scene_generation: Make a classroom with 20 desks in rows facing a whiteboard",
+      "prompt": "Make a classroom with 20 desks in rows facing a whiteboard",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_create_scene_state"
+      },
+      "assertions": [
+        "must create scene state",
+        "expect expected_furniture=['desk']",
+        "expect min_furniture=10"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U092",
+      "origin": "corpus",
+      "origin_id": "D14",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_irc_compliance",
+      "difficulty": "medium",
+      "name": "IRC \u00a7R303 bedroom + storage skip",
+      "prompt": "Generate two adjacent rooms: a 4 m \u00d7 4 m bedroom (room_type='bedroom', must meet \u00a7R303) and a 2 m \u00d7 2 m storage closet (room_type='storage', exempt). Confirm the storage closet has zero windows.",
+      "scene_path": null,
+      "verifier": {
+        "type": "irc_aperture",
+        "min_ratio": 0.08
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U093",
+      "origin": "corpus",
+      "origin_id": "D15",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "medium",
+      "name": "D_scene_generation: Design a server room, 5x4m, with 3 server racks",
+      "prompt": "Design a server room, 5x4m, with 3 server racks",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_create_scene_state"
+      },
+      "assertions": [
+        "must create scene state",
+        "expect expected_furniture=['server rack', 'cabinet', 'rack']",
+        "expect min_furniture=3"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U094",
+      "origin": "corpus",
+      "origin_id": "D16",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "easy",
+      "name": "D_scene_generation: Create a dining room with a table for 6 and a sideboard",
+      "prompt": "Create a dining room with a table for 6 and a sideboard",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_create_scene_state"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          }
+        ]
+      },
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "expect expected_furniture=['table', 'chair']",
+        "expect min_furniture=4"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U095",
+      "origin": "corpus",
+      "origin_id": "D17",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_multi_room",
+      "difficulty": "hard",
+      "name": "Two-bedroom apartment (kitchen + 2 bedrooms)",
+      "prompt": "Generate a 12 m \u00d7 8 m apartment with: a 5 m \u00d7 4 m kitchen, a 4 m \u00d7 4 m primary bedroom, and a 3 m \u00d7 4 m second bedroom, separated by interior walls. Place 1 bed in each bedroom and a refrigerator in the kitchen. All exterior walls drywall.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "count",
+            "expected": 3
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U096",
+      "origin": "corpus",
+      "origin_id": "D18",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "medium",
+      "name": "D_scene_generation: Make a library reading room with bookshelves and study desks",
+      "prompt": "Make a library reading room with bookshelves and study desks",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_create_scene_state"
+      },
+      "assertions": [
+        "must create scene state",
+        "expect expected_furniture=['bookshelf', 'bookcase', 'desk']",
+        "expect min_furniture=3"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U097",
+      "origin": "corpus",
+      "origin_id": "D19",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_multi_room",
+      "difficulty": "hard",
+      "name": "Office suite (3 offices + corridor)",
+      "prompt": "Generate a 16 m \u00d7 8 m office suite: three 4 m \u00d7 6 m private offices along the north side, a 16 m \u00d7 2 m corridor along the south. Place 1 desk + 1 chair in each office. Corridor must be navigable (no furniture).",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          },
+          {
+            "type": "count",
+            "expected": 4
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U098",
+      "origin": "corpus",
+      "origin_id": "D20",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "easy",
+      "name": "D_scene_generation: Design a reception area with a front desk, waiting chairs, a",
+      "prompt": "Design a reception area with a front desk, waiting chairs, and coffee table",
+      "distractor": "Placing furniture that overlaps walls or other furniture produces physically impossible scenes that break downstream simulation. Forgetting rf_materials makes propagation use default vacuum.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_create_scene_state"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          }
+        ]
+      },
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "expect expected_furniture=['desk', 'chair', 'table']",
+        "expect min_furniture=3"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U099",
+      "origin": "corpus",
+      "origin_id": "E01",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "easy",
+      "name": "E_optimization: Find the optimal AP position to maximize coverage above -70 ",
+      "prompt": "Find the optimal AP position to maximize coverage above -70 dBm",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/easy/scene_01/scene_state.json",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct",
+            "threshold": 91,
+            "direction": ">="
+          },
+          {
+            "type": "file_exists",
+            "key": "must_report_tx_position"
+          }
+        ]
+      },
+      "assertions": [
+        "coverage must meet target",
+        "must report tx position",
+        "expect grid_search_best_pct=97.5",
+        "expect center_coverage_pct=90.8",
+        "expect target_pct=91"
+      ],
+      "required_artifacts": [
+        "tx_position.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U100",
+      "origin": "corpus",
+      "origin_id": "E02",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "medium",
+      "name": "E_optimization: Achieve 85% coverage above -70 dBm in this L-shaped room",
+      "prompt": "Achieve 85% coverage above -70 dBm in this L-shaped room",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/medium/scene_01/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 93,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=96.2",
+        "expect center_coverage_pct=89.9",
+        "expect target_pct=93"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U101",
+      "origin": "corpus",
+      "origin_id": "E03",
+      "tier": "T4_system_level",
+      "capability": "opt_multi_ap",
+      "difficulty": "hard",
+      "name": "E_optimization: Optimize AP placement for this multi-room floor plan",
+      "prompt": "Optimize AP placement for this multi-room floor plan",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/hard/scene_02/scene_state.json",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct",
+            "threshold": 95,
+            "direction": ">="
+          },
+          {
+            "type": "file_exists",
+            "key": "must_report_tx_position"
+          }
+        ]
+      },
+      "assertions": [
+        "coverage must meet target",
+        "must report tx position",
+        "expect grid_search_best_pct=97.1",
+        "expect center_coverage_pct=89.0",
+        "expect target_pct=95"
+      ],
+      "required_artifacts": [
+        "tx_position.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U102",
+      "origin": "corpus",
+      "origin_id": "E04",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "medium",
+      "name": "E_optimization: Find the best AP position in this partitioned office",
+      "prompt": "Find the best AP position in this partitioned office",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/medium/scene_03/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 93,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=94.8",
+        "expect center_coverage_pct=90.7",
+        "expect target_pct=93"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U103",
+      "origin": "corpus",
+      "origin_id": "E05",
+      "tier": "T4_system_level",
+      "capability": "opt_multi_ap",
+      "difficulty": "hard",
+      "name": "E_optimization: Maximize coverage in this large multi-room scene",
+      "prompt": "Maximize coverage in this large multi-room scene",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/hard/scene_07/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 95,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=96.2",
+        "expect center_coverage_pct=92.5",
+        "expect target_pct=95"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U104",
+      "origin": "corpus",
+      "origin_id": "E06",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "hard",
+      "name": "E_optimization: Add a second AP to cover the dead zones in this scene",
+      "prompt": "Add a second AP to cover the dead zones in this scene",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/hard/scene_08/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 95,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=98.1",
+        "expect center_coverage_pct=92.0",
+        "expect target_pct=95"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U105",
+      "origin": "corpus",
+      "origin_id": "E07",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "easy",
+      "name": "E_optimization: Optimize for this easy rectangular room",
+      "prompt": "Optimize for this easy rectangular room",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/easy/scene_05/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 91,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=92.3",
+        "expect center_coverage_pct=87.9",
+        "expect target_pct=91"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U106",
+      "origin": "corpus",
+      "origin_id": "E08",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "medium",
+      "name": "E_optimization: Find best AP position in this medium complexity scene",
+      "prompt": "Find best AP position in this medium complexity scene",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/medium/scene_05/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 93,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=96.6",
+        "expect center_coverage_pct=92.0",
+        "expect target_pct=93"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U107",
+      "origin": "corpus",
+      "origin_id": "E09",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "hard",
+      "name": "E_optimization: Optimize coverage for minimum number of APs",
+      "prompt": "Optimize coverage for minimum number of APs",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/hard/scene_05/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 95,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=97.3",
+        "expect center_coverage_pct=92.8",
+        "expect target_pct=95"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U108",
+      "origin": "corpus",
+      "origin_id": "E10",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "medium",
+      "name": "E_optimization: Optimize AP position considering wall obstructions",
+      "prompt": "Optimize AP position considering wall obstructions",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/medium/scene_07/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 93,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=97.7",
+        "expect center_coverage_pct=90.5",
+        "expect target_pct=93"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U109",
+      "origin": "corpus",
+      "origin_id": "E11",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "easy",
+      "name": "E_optimization: Achieve target coverage in this corridor-like scene",
+      "prompt": "Achieve target coverage in this corridor-like scene",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/easy/scene_03/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 91,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=93.5",
+        "expect center_coverage_pct=89.3",
+        "expect target_pct=91"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U110",
+      "origin": "corpus",
+      "origin_id": "E12",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "hard",
+      "name": "E_optimization: Optimize for this hard scene with many partitions",
+      "prompt": "Optimize for this hard scene with many partitions",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/hard/scene_01/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 95,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=97.8",
+        "expect center_coverage_pct=92.0",
+        "expect target_pct=95"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U111",
+      "origin": "corpus",
+      "origin_id": "E13",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "medium",
+      "name": "E_optimization: Find optimal AP for this medium L-shaped room",
+      "prompt": "Find optimal AP for this medium L-shaped room",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/medium/scene_09/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 93,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=94.1",
+        "expect center_coverage_pct=88.2",
+        "expect target_pct=93"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U112",
+      "origin": "corpus",
+      "origin_id": "E14",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "easy",
+      "name": "E_optimization: Optimize coverage for this easy room with furniture",
+      "prompt": "Optimize coverage for this easy room with furniture",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/easy/scene_08/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 91,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=94.0",
+        "expect center_coverage_pct=89.6",
+        "expect target_pct=91"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U113",
+      "origin": "corpus",
+      "origin_id": "E15",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "hard",
+      "name": "E_optimization: Maximize coverage in this challenging hard scene",
+      "prompt": "Maximize coverage in this challenging hard scene",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": "benchmark/scenes/hard/scene_06/scene_state.json",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "coverage_pct",
+        "threshold": 95,
+        "direction": ">="
+      },
+      "assertions": [
+        "coverage must meet target",
+        "expect grid_search_best_pct=95.3",
+        "expect center_coverage_pct=88.7",
+        "expect target_pct=95"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U114",
+      "origin": "corpus",
+      "origin_id": "E16",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "hard",
+      "name": "E_optimization: Optimize small-cell AP placement in a 200x200m outdoor campu",
+      "prompt": "Optimize small-cell AP placement in a 200x200m outdoor campus with 3 buildings \u2014 find position that maximizes 5 GHz coverage above -75 dBm",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_create_outdoor_scene"
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct",
+            "threshold": 80,
+            "direction": ">="
+          }
+        ]
+      },
+      "assertions": [
+        "must create outdoor scene",
+        "coverage must meet target",
+        "must report optimal position",
+        "expect coverage_range_pct=[60, 95]",
+        "expect target_pct=80"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U115",
+      "origin": "corpus",
+      "origin_id": "E17",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "hard",
+      "name": "E_optimization: Place 3 APs in a 30x20m open-plan office to maximize SINR wh",
+      "prompt": "Place 3 APs in a 30x20m open-plan office to maximize SINR while minimizing mutual interference \u2014 report SINR map and each AP position",
+      "distractor": "Using scipy.optimize on a coverage landscape that is non-smooth and mostly flat fails immediately \u2014 the agent must sweep candidate positions, not gradient-descend a path-loss blob.",
+      "scene_path": null,
+      "verifier": {
+        "type": "execution_ok"
+      },
+      "assertions": [
+        "must place three aps",
+        "must report sinr map",
+        "must consider interference",
+        "expect sinr_above_0_db_pct_range=[80, 100]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U116",
+      "origin": "corpus",
+      "origin_id": "F01",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "medium",
+      "name": "F_rt_to_phy: Compute per-location BER with 5G NR LDPC in this scene",
+      "prompt": "Compute per-location BER with 5G NR LDPC in this scene",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/easy/scene_01/scene_state.json",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_ber_map"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_produce_throughput_map"
+          }
+        ]
+      },
+      "assertions": [
+        "must produce ber map",
+        "must produce throughput map",
+        "expect coverage_range_pct=[80, 100]",
+        "expect throughput_range_mbps=[5, 100]"
+      ],
+      "required_artifacts": [
+        "ber_map.npy",
+        "throughput_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U117",
+      "origin": "corpus",
+      "origin_id": "F02",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "easy",
+      "name": "F_rt_to_phy: What throughput can I expect at each location with a single ",
+      "prompt": "What throughput can I expect at each location with a single 5G small cell?",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/easy/scene_05/scene_state.json",
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_throughput_map"
+      },
+      "assertions": [
+        "must produce throughput map",
+        "must report mean throughput",
+        "expect throughput_range_mbps=[5, 100]"
+      ],
+      "required_artifacts": [
+        "throughput_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U118",
+      "origin": "corpus",
+      "origin_id": "F03",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "medium",
+      "name": "F_rt_to_phy: Show the MCS map for this medium-complexity room",
+      "prompt": "Show the MCS map for this medium-complexity room",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/medium/scene_01/scene_state.json",
+      "verifier": {
+        "type": "execution_ok"
+      },
+      "assertions": [
+        "must report mcs",
+        "expect mcs_range=[0, 27]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U119",
+      "origin": "corpus",
+      "origin_id": "F04",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "medium",
+      "name": "F_rt_to_phy: Evaluate 4x4 MIMO performance across this conference room",
+      "prompt": "Evaluate 4x4 MIMO performance across this conference room",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/easy/scene_01/scene_state.json",
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_throughput_map"
+      },
+      "assertions": [
+        "must produce throughput map",
+        "expect throughput_range_mbps=[10, 200]"
+      ],
+      "required_artifacts": [
+        "throughput_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U120",
+      "origin": "corpus",
+      "origin_id": "F05",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "medium",
+      "name": "F_rt_to_phy: Where in this room can I get at least 100 Mbps throughput?",
+      "prompt": "Where in this room can I get at least 100 Mbps throughput?",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/easy/scene_08/scene_state.json",
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_report_throughput"
+      },
+      "assertions": [
+        "must report throughput",
+        "expect throughput_range_mbps=[10, 200]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U121",
+      "origin": "corpus",
+      "origin_id": "F06",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "hard",
+      "name": "F_rt_to_phy: Compare LDPC vs Polar coding BER at the worst-case location ",
+      "prompt": "Compare LDPC vs Polar coding BER at the worst-case location in this scene",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/medium/scene_05/scene_state.json",
+      "verifier": {
+        "type": "execution_ok"
+      },
+      "assertions": [
+        "must compare codecs",
+        "expect ldpc_better_than_polar=True"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U122",
+      "origin": "corpus",
+      "origin_id": "F07",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "hard",
+      "name": "F_rt_to_phy: Site-specific link budget for this hard multi-room scene",
+      "prompt": "Site-specific link budget for this hard multi-room scene",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/hard/scene_01/scene_state.json",
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_coverage_or_throughput"
+      },
+      "assertions": [
+        "must produce coverage or throughput",
+        "expect coverage_range_pct=[60, 100]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U123",
+      "origin": "corpus",
+      "origin_id": "F08",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "medium",
+      "name": "F_rt_to_phy: Evaluate coverage quality (RSRP, MCS) across this floor plan",
+      "prompt": "Evaluate coverage quality (RSRP, MCS) across this floor plan",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/medium/scene_03/scene_state.json",
+      "verifier": {
+        "type": "execution_ok"
+      },
+      "assertions": [
+        "must report coverage",
+        "expect coverage_range_pct=[70, 100]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U124",
+      "origin": "corpus",
+      "origin_id": "F09",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "medium",
+      "name": "F_rt_to_phy: What is the maximum data rate at the cell edge in this scene",
+      "prompt": "What is the maximum data rate at the cell edge in this scene?",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/hard/scene_05/scene_state.json",
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_report_throughput"
+      },
+      "assertions": [
+        "must report throughput",
+        "expect throughput_range_mbps=[1, 50]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U125",
+      "origin": "corpus",
+      "origin_id": "F10",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "hard",
+      "name": "F_rt_to_phy: Compare LS vs LMMSE channel estimation across locations in t",
+      "prompt": "Compare LS vs LMMSE channel estimation across locations in this room",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/easy/scene_01/scene_state.json",
+      "verifier": {
+        "type": "execution_ok"
+      },
+      "assertions": [
+        "must compare estimators",
+        "expect lmmse_better_than_ls=True"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U126",
+      "origin": "corpus",
+      "origin_id": "F11",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "hard",
+      "name": "F_rt_to_phy: Site-specific link budget for a street-level user 100m from ",
+      "prompt": "Site-specific link budget for a street-level user 100m from a rooftop AP in an outdoor urban canyon at 3.5 GHz",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_create_outdoor_scene"
+      },
+      "assertions": [
+        "must create outdoor scene",
+        "must report rssi",
+        "expect rssi_range_dbm=[-90, -60]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U127",
+      "origin": "corpus",
+      "origin_id": "F12",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "medium",
+      "name": "F_rt_to_phy: Compute the uplink link budget for a 23 dBm UE at the cell e",
+      "prompt": "Compute the uplink link budget for a 23 dBm UE at the cell edge (30m from AP) with NLOS conditions \u2014 report UL throughput",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/medium/scene_05/scene_state.json",
+      "verifier": {
+        "type": "execution_ok"
+      },
+      "assertions": [
+        "must report uplink throughput",
+        "ul weaker than dl",
+        "expect ul_throughput_mbps_range=[1, 30]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U128",
+      "origin": "corpus",
+      "origin_id": "F13",
+      "tier": "T2_ray_tracing",
+      "capability": "rt_to_phy",
+      "difficulty": "medium",
+      "name": "F_rt_to_phy: Find the minimum TX power (dBm) needed to achieve 85% covera",
+      "prompt": "Find the minimum TX power (dBm) needed to achieve 85% coverage above -70 dBm in this scene, sweeping 10-30 dBm in 2 dB steps",
+      "distractor": "Skipping scene.frequency before ray tracing, or calling paths.cir() without normalize_delays=True, produces CIR that doesn't match the OFDM cyclic prefix length and creates a BER error floor from inter-symbol interference.",
+      "scene_path": "benchmark/scenes/medium/scene_02/scene_state.json",
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_power_sweep_curve"
+      },
+      "assertions": [
+        "must report min power",
+        "must produce power sweep curve",
+        "expect min_power_dbm_range=[12, 28]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U129",
+      "origin": "corpus",
+      "origin_id": "G01",
+      "tier": "T6_anchor",
+      "capability": "anchor_tutorial",
+      "difficulty": "easy",
+      "name": "G_anchor_sionna_tutorials: Compute BER for LDPC rate 1/2 with QPSK over AWGN from 0 to ",
+      "prompt": "Compute BER for LDPC rate 1/2 with QPSK over AWGN from 0 to 10 dB SNR. Use Sionna's LDPC5GEncoder with k=1024, n=2048.",
+      "distractor": "Deviating from the canonical Sionna tutorial parameters (k, n, num_bits_per_symbol, channel_model) makes the agent's output incomparable to the tutorial's published baseline.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_ber_curve"
+          },
+          {
+            "type": "value_exact",
+            "metric": "snr_at_ber_1e4_db",
+            "expected": 1.4,
+            "tolerance": 2.0
+          }
+        ]
+      },
+      "assertions": [
+        "must produce ber curve",
+        "snr tolerance db = 2.0",
+        "expect snr_for_ber_1e4_db=1.4",
+        "expect ber_at_5db=1e-07"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U130",
+      "origin": "corpus",
+      "origin_id": "G02",
+      "tier": "T6_anchor",
+      "capability": "anchor_tutorial",
+      "difficulty": "easy",
+      "name": "G_anchor_sionna_tutorials: Load Sionna's built-in 'box' scene, place a TX at (2,2,2.5),",
+      "prompt": "Load Sionna's built-in 'box' scene, place a TX at (2,2,2.5), compute coverage at height 1.5m with cell_size 0.5m at 3.5 GHz",
+      "distractor": "Deviating from the canonical Sionna tutorial parameters (k, n, num_bits_per_symbol, channel_model) makes the agent's output incomparable to the tutorial's published baseline.",
+      "scene_path": null,
+      "verifier": {
+        "type": "execution_ok"
+      },
+      "assertions": [
+        "must report coverage",
+        "expect coverage_pct=100.0",
+        "expect rss_range_dbm=[-30, -20]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U131",
+      "origin": "corpus",
+      "origin_id": "G03",
+      "tier": "T6_anchor",
+      "capability": "anchor_tutorial",
+      "difficulty": "medium",
+      "name": "G_anchor_sionna_tutorials: Create a 4x4 MIMO-OFDM resource grid with 14 symbols, 128 FF",
+      "prompt": "Create a 4x4 MIMO-OFDM resource grid with 14 symbols, 128 FFT size, 30 kHz SCS, and compute BER with LDPC at 10 dB SNR",
+      "distractor": "Deviating from the canonical Sionna tutorial parameters (k, n, num_bits_per_symbol, channel_model) makes the agent's output incomparable to the tutorial's published baseline.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_ber_or_throughput"
+      },
+      "assertions": [
+        "must produce ber or throughput",
+        "expect ber_at_10db_range=[0, 0.001]",
+        "expect throughput_range_mbps=[10, 50]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U132",
+      "origin": "corpus",
+      "origin_id": "G04",
+      "tier": "T6_anchor",
+      "capability": "anchor_tutorial",
+      "difficulty": "medium",
+      "name": "G_anchor_sionna_tutorials: Load the 'simple_street_canyon' scene, add a TX at (200,30,3",
+      "prompt": "Load the 'simple_street_canyon' scene, add a TX at (200,30,30), compute paths with max_depth=3, report number of paths found",
+      "distractor": "Deviating from the canonical Sionna tutorial parameters (k, n, num_bits_per_symbol, channel_model) makes the agent's output incomparable to the tutorial's published baseline.",
+      "scene_path": null,
+      "verifier": {
+        "type": "execution_ok"
+      },
+      "assertions": [
+        "must report paths",
+        "expect num_paths_range=[10, 10000]"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U133",
+      "origin": "corpus",
+      "origin_id": "G05",
+      "tier": "T6_anchor",
+      "capability": "anchor_tutorial",
+      "difficulty": "hard",
+      "name": "G_anchor_sionna_tutorials: Compute and display a radio map for the Munich scene at 28 G",
+      "prompt": "Compute and display a radio map for the Munich scene at 28 GHz with a TX on a rooftop",
+      "distractor": "Deviating from the canonical Sionna tutorial parameters (k, n, num_bits_per_symbol, channel_model) makes the agent's output incomparable to the tutorial's published baseline.",
+      "scene_path": null,
+      "verifier": {
+        "type": "file_exists",
+        "key": "must_produce_heatmap"
+      },
+      "assertions": [
+        "must produce heatmap",
+        "expect coverage_range_pct=[10, 80]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U134",
+      "origin": "corpus",
+      "origin_id": "G06",
+      "tier": "T6_anchor",
+      "capability": "anchor_tutorial",
+      "difficulty": "hard",
+      "name": "G_anchor_sionna_tutorials: Load the 'etoile' (Place de l'\u00c9toile, Paris) scene, place a ",
+      "prompt": "Load the 'etoile' (Place de l'\u00c9toile, Paris) scene, place a TX at (0, 0, 25), compute a radio map at 3.5 GHz at receiver height 1.5m, and report coverage percentage above -80 dBm",
+      "distractor": "Deviating from the canonical Sionna tutorial parameters (k, n, num_bits_per_symbol, channel_model) makes the agent's output incomparable to the tutorial's published baseline.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_heatmap"
+          },
+          {
+            "type": "metric_range",
+            "metric": "coverage_pct",
+            "min": 15,
+            "max": 60
+          }
+        ]
+      },
+      "assertions": [
+        "must produce heatmap",
+        "must load osm scene",
+        "coverage in range",
+        "expect coverage_range_pct=[15, 60]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "U135",
+      "origin": "corpus",
+      "origin_id": "C_R1_outdoor_canyon",
+      "tier": "T0_scene_gen",
+      "capability": "scene_outdoor_street_canyon",
+      "difficulty": "hard",
+      "name": "Outdoor street canyon",
+      "prompt": "Generate a 30 m \u00d7 100 m outdoor street canyon scene with 10 buildings (5 per side) of varying heights between 12 m and 30 m. Building material: concrete. Ground material: asphalt. Use the lib.scene_gen OutdoorScene model.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "outdoor_scene"
+          },
+          {
+            "type": "count",
+            "expected": 10
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U136",
+      "origin": "corpus",
+      "origin_id": "C_R2_3dfuture_lookup",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_3dfuture",
+      "difficulty": "medium",
+      "name": "Use 3D-FUTURE catalog model",
+      "prompt": "Generate a 5 m \u00d7 4 m office. Use the 3D-FUTURE catalog model at $FURNITURE_CATALOG_PATH/<model_id>/raw_model.obj for the desk. Pick any model_id from $FURNITURE_CATALOG_PATH/model_info.json that matches category=desk. Set FurnitureItem.model_path to that directory so get_mesh_path() resolves to a real OBJ.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "model_path"
+          },
+          {
+            "type": "code_contains",
+            "metric": "FURNITURE_CATALOG_PATH"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U137",
+      "origin": "corpus",
+      "origin_id": "C_R3_scene_edit",
+      "tier": "T0_scene_gen",
+      "capability": "scene_edit",
+      "difficulty": "medium",
+      "name": "Scene edit: add metal cabinet",
+      "prompt": "Take the existing scene_state.json (pre-shipped by the harness as a 6 m \u00d7 5 m living room with drywall walls + 1 sofa). Edit it: add 1 metal filing cabinet at (2.0, 2.0) m, theta=0 rad. Output the modified scene_state.json. Use Pydantic .model_copy(update=...) since the models are frozen.",
+      "scene_path": "benchmark/scenes/r3_seed_scene_state.json",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "metal"
+          },
+          {
+            "type": "count",
+            "expected": 2
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U138",
+      "origin": "corpus",
+      "origin_id": "C_R4_material_swap",
+      "tier": "T0_scene_gen",
+      "capability": "scene_material_swap",
+      "difficulty": "easy",
+      "name": "Same scene, swap concrete walls for drywall",
+      "prompt": "Generate a 6 m \u00d7 5 m office TWICE: once with concrete walls (output to scene_concrete.json), once with drywall (output to scene_drywall.json). Same furniture (1 desk, 1 chair) in both. The point is to make 2 scene_states that differ ONLY in wall material.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "code_contains",
+            "metric": "concrete"
+          },
+          {
+            "type": "code_contains",
+            "metric": "drywall"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_concrete.json",
+        "scene_drywall.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U139",
+      "origin": "corpus",
+      "origin_id": "C_R5_irc_strict",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor_irc_compliance",
+      "difficulty": "easy",
+      "name": "Strict IRC \u00a7R303 single bedroom",
+      "prompt": "Generate a 4 m \u00d7 4 m bedroom (room_type='bedroom') that STRICTLY meets IRC \u00a7R303: window aperture \u2265 8% of floor area, head height \u2265 0.6 m, on perimeter walls only. Use place_irc_windows() from lib.scene_gen.windows.",
+      "scene_path": null,
+      "verifier": {
+        "type": "irc_aperture",
+        "min_ratio": 0.08
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U140",
+      "origin": "corpus",
+      "origin_id": "C_S1_e2e_deployment",
+      "tier": "T4_system_level",
+      "capability": "e2e_deployment",
+      "difficulty": "hard",
+      "name": "End-to-end deployment workflow",
+      "prompt": "Generate a 12 m \u00d7 8 m office (1 task), place 3 access points at 5 GHz (1 task), run RT-based coverage (1 task), and emit action_plan.json identifying the worst blind spot + one corrective action. Final coverage_pct \u2265 85%. Use the iterative-planning-protocol if needed.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct",
+            "threshold": 85.0,
+            "direction": ">="
+          },
+          {
+            "type": "action_plan_schema"
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json",
+        "coverage_map.npy",
+        "simulation_result.json",
+        "action_plan.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U141",
+      "origin": "corpus",
+      "origin_id": "C_S2_multiband",
+      "tier": "T2_ray_tracing",
+      "capability": "multiband_coverage",
+      "difficulty": "medium",
+      "name": "Multi-band coverage comparison",
+      "prompt": "Generate a 10 m \u00d7 6 m room with 1 AP at center. Run RT-based coverage at 2.4 GHz, 5 GHz, and 28 GHz (3 separate `coverage_map_<band>.npy` files). Report coverage_pct for each in simulation_result.json keyed as coverage_pct_2g4 / coverage_pct_5g / coverage_pct_28g.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct_5g",
+            "threshold": 60.0,
+            "direction": ">="
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json",
+        "coverage_map_2g4.npy",
+        "coverage_map_5g.npy",
+        "coverage_map_28g.npy",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U142",
+      "origin": "corpus",
+      "origin_id": "C_S3_material_delta",
+      "tier": "T4_system_level",
+      "capability": "material_sensitivity",
+      "difficulty": "medium",
+      "name": "Material-sensitivity coverage delta",
+      "prompt": "Generate the SAME 8 m \u00d7 6 m office twice: once with concrete walls, once with drywall. Run coverage at 5 GHz on each. Report the coverage_pct_delta = coverage_drywall - coverage_concrete in simulation_result.json. Expected: ~5\u201315 pp improvement with drywall (less absorption).",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "metric_range",
+            "metric": "coverage_pct_delta",
+            "min": 2.0,
+            "max": 25.0
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_concrete.json",
+        "scene_drywall.json",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U143",
+      "origin": "corpus",
+      "origin_id": "C_S4_furniture_blocking",
+      "tier": "T2_ray_tracing",
+      "capability": "furniture_blocking",
+      "difficulty": "medium",
+      "name": "Furniture-driven blind spot at 60 GHz",
+      "prompt": "Generate a 6 m \u00d7 5 m room with 1 AP. Place 1 metal filing cabinet at (3, 2.5). Run coverage at both 5 GHz and 60 GHz. Compute the blind-spot area (RSS < -70 dBm) BEHIND the cabinet for each band. Report blind_area_5g_m2 and blind_area_60g_m2. Expectation: blind_area_60g > 2\u00d7 blind_area_5g (mmWave shadows more).",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "blind_area_60g_m2",
+            "threshold": 0.5,
+            "direction": ">="
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U144",
+      "origin": "corpus",
+      "origin_id": "C_S5_outdoor_to_indoor",
+      "tier": "T2_ray_tracing",
+      "capability": "outdoor_to_indoor",
+      "difficulty": "hard",
+      "name": "Outdoor-to-indoor penetration",
+      "prompt": "Generate a hybrid scene: a 6 m \u00d7 5 m indoor room AND an outdoor BS at (50, 0, 30) at 3.5 GHz, 33 dBm. Indoor room has 2 windows on its outdoor-facing wall. Run RT and report indoor coverage_pct (threshold -85 dBm).",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "metric_range",
+            "metric": "coverage_pct",
+            "min": 20.0,
+            "max": 100.0
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json",
+        "coverage_map.npy",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U145",
+      "origin": "corpus",
+      "origin_id": "C_T1_action_plan",
+      "tier": "T4_system_level",
+      "capability": "diagnose_coverage",
+      "difficulty": "medium",
+      "name": "Action-plan diagnosis from coverage map",
+      "prompt": "You're given a coverage_map.npy (2D dB grid) showing a 65% coverage 12 m \u00d7 8 m office with a clear blind zone in the southeast corner. Per references/reflection-protocol.md, emit action_plan.json validating against templates/result_schema_action_plan.json. Diagnose the blind spot's cause from the closed taxonomy, propose ONE typed action, set confidence.",
+      "scene_path": "benchmark/scenes/t1_seed_blind_corner.npy",
+      "verifier": {
+        "type": "action_plan_schema"
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "action_plan.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U146",
+      "origin": "corpus",
+      "origin_id": "C_T2_iterative_opt",
+      "tier": "T4_system_level",
+      "capability": "iterative_optimization",
+      "difficulty": "hard",
+      "name": "Iterative AP placement with constraint",
+      "prompt": "12 m \u00d7 8 m office. Place 2 APs at 5 GHz to maximize coverage, with the constraint: NO AP on the south wall (it has windows). Iterate per references/iterative-planning-protocol.md until 90% coverage OR 5 iterations. Emit planning_state.json with the full iteration history.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists"
+          },
+          {
+            "type": "iterative_convergence",
+            "min_iterations": 2,
+            "min_improvement": 0.1
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct",
+            "threshold": 70.0,
+            "direction": ">="
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "scene_state.json",
+        "planning_state.json",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U147",
+      "origin": "corpus",
+      "origin_id": "C_T3_lookup_recovery",
+      "tier": "T1_phy_link_level",
+      "capability": "lookup_error_recovery",
+      "difficulty": "medium",
+      "name": "Cryptic error \u2192 lookup.py recovery",
+      "prompt": "Compute uncoded QPSK BER over AWGN at Eb/N0 \u2208 [0, 10] dB. If you encounter the error 'CDL channel does not support multiple transmitters' OR 'could not instantiate bsdf plugin', use `python3 $RF_SKILL_DIR/scripts/lookup.py` to find the fix in the failure-principles corpus, then recover. Output simulation_result.json with the standard BER schema.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "metric_threshold",
+            "metric": "ber_gap_db",
+            "threshold": 0.5,
+            "direction": "<=",
+            "at_ber": 0.001
+          }
+        ]
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U148",
+      "origin": "corpus",
+      "origin_id": "C_T4_heredoc_only",
+      "tier": "T1_phy_link_level",
+      "capability": "heredoc_only_workflow",
+      "difficulty": "easy",
+      "name": "Heredoc-only QPSK BER (no .py file)",
+      "prompt": "Compute uncoded QPSK BER over AWGN at Eb/N0 \u2208 [0, 10] dB. Constraint: do NOT write any .py files. Use only `python3 -c \"<code>\"` heredocs via Bash. Output simulation_result.json with ber_simulated, ber_theoretical, and ber_gap_db \u2264 0.5 dB at BER=1e-3.",
+      "scene_path": null,
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "ber_gap_db",
+        "direction": "<=",
+        "threshold": 0.5,
+        "at_ber": 0.001
+      },
+      "assertions": [],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U149",
+      "origin": "floorplan_import",
+      "origin_id": "FP01",
+      "tier": "T0_scene_gen",
+      "capability": "scene_indoor",
+      "difficulty": "medium",
+      "name": "FP01: Floorplan to scene_state (office)",
+      "prompt": "I have this office floorplan: benchmark/scenes/floorplans/office/floor.png (8x6 m, representing a two-zone office with a lobby zone and a meeting zone). Parse the layout and generate the corresponding scene_state.json with at least one Room (width=8, length=6, height=2.5), correct room_type, and no furniture overlaps.",
+      "distractor": "Using wrong room dimensions (e.g., swapping width/length) or omitting rf_materials causes downstream simulation to use wrong geometry or vacuum permittivity.",
+      "scene_path": "benchmark/scenes/floorplans/office/floor.png",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_create_scene_state"
+          },
+          {
+            "type": "code_contains",
+            "metric": "in_bounds_check"
+          },
+          {
+            "type": "code_contains",
+            "metric": "collision_free_check"
+          }
+        ]
+      },
+      "assertions": [
+        "must create scene_state.json",
+        "must be in bounds",
+        "must be collision free",
+        "expect room_width=8",
+        "expect room_depth=6"
+      ],
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U150",
+      "origin": "floorplan_import",
+      "origin_id": "FP02",
+      "tier": "T2_ray_tracing",
+      "capability": "indoor_coverage_map",
+      "difficulty": "medium",
+      "name": "FP02: Floorplan coverage prediction (apartment)",
+      "prompt": "Given the apartment floorplan at benchmark/scenes/floorplans/apartment/floor.png (10x8 m) and a single AP at the center of the space (5, 4, 2.5) at 3.5 GHz, compute and save the indoor coverage map. Output coverage_map.npy (2D dBm grid) and simulation_result.json with coverage_pct (fraction of floor area >= -70 dBm).",
+      "distractor": "Placing TX outside the room bounds, or forgetting to set scene frequency before the solver, produces all-zero or wrong-permittivity coverage maps.",
+      "scene_path": "benchmark/scenes/floorplans/apartment/floor.png",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_heatmap"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_report_coverage_pct"
+          },
+          {
+            "type": "metric_range",
+            "metric": "coverage_pct",
+            "min": 60,
+            "max": 100
+          }
+        ]
+      },
+      "assertions": [
+        "must produce coverage_map.npy",
+        "must report coverage_pct",
+        "expect coverage_range_pct=[60, 100]"
+      ],
+      "required_artifacts": [
+        "coverage_map.npy",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U151",
+      "origin": "floorplan_import",
+      "origin_id": "FP03",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "hard",
+      "name": "FP03: AP placement on warehouse floorplan",
+      "prompt": "Place 2 access points in the warehouse at benchmark/scenes/floorplans/warehouse/floor.png (20x15 m, single bay, height 4 m) to maximize area where RSS >= -65 dBm at 3.5 GHz. Output optimized_deployment.json with both AP coordinates (x, y, z) and simulation_result.json with coverage_pct.",
+      "distractor": "Placing both APs at the center or ignoring the height dimension produces suboptimal coverage and fails the >= 80% threshold.",
+      "scene_path": "benchmark/scenes/floorplans/warehouse/floor.png",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct",
+            "threshold": 80,
+            "direction": ">="
+          },
+          {
+            "type": "file_exists",
+            "key": "must_report_tx_position"
+          }
+        ]
+      },
+      "assertions": [
+        "coverage_pct must be >= 80",
+        "must report AP coordinates",
+        "expect 2 APs in optimized_deployment.json"
+      ],
+      "required_artifacts": [
+        "optimized_deployment.json",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U152",
+      "origin": "floorplan_import",
+      "origin_id": "FP04",
+      "tier": "T4_system_level",
+      "capability": "opt_ap_placement",
+      "difficulty": "hard",
+      "name": "FP04: Compare 2 vs 3 APs on apartment floorplan",
+      "prompt": "For the apartment floorplan at benchmark/scenes/floorplans/apartment/floor.png (10x8 m), compare coverage with 2 vs 3 APs of your placement at 3.5 GHz (threshold -70 dBm). Output simulation_result.json with keys: recommended_n_aps (int, 2 or 3), coverage_pct_2ap (float), coverage_pct_3ap (float).",
+      "distractor": "Placing all APs in a line instead of triangulating the space makes the 3-AP advantage negligible and may produce a wrong recommendation.",
+      "scene_path": "benchmark/scenes/floorplans/apartment/floor.png",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct_3ap",
+            "threshold": 70,
+            "direction": ">="
+          },
+          {
+            "type": "metric_range",
+            "metric": "coverage_pct_2ap",
+            "min": 50,
+            "max": 100
+          }
+        ]
+      },
+      "assertions": [
+        "coverage_pct_3ap >= 70",
+        "coverage_pct_2ap in [50, 100]",
+        "recommended_n_aps present"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U153",
+      "origin": "floorplan_import",
+      "origin_id": "FP05",
+      "tier": "T4_system_level",
+      "capability": "diagnose_coverage",
+      "difficulty": "medium",
+      "name": "FP05: Diagnose dead spots in office floorplan",
+      "prompt": "Coverage in the office floorplan benchmark/scenes/floorplans/office/floor.png shows -90 dBm in the meeting room corner (near x=7, y=5). Diagnose the likely RF propagation causes (wall attenuation, distance, reflections) and emit action_plan.json per templates/result_schema_action_plan.json.",
+      "distractor": "Reporting a vague diagnosis without a typed action or confidence field fails the action_plan_schema check.",
+      "scene_path": "benchmark/scenes/floorplans/office/floor.png",
+      "verifier": {
+        "type": "action_plan_schema"
+      },
+      "assertions": [
+        "action_plan.json validates against result_schema_action_plan.json",
+        "cause from closed taxonomy",
+        "confidence field present"
+      ],
+      "required_artifacts": [
+        "action_plan.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U154",
+      "origin": "diagnose_workflow",
+      "tier": "T4_system_level",
+      "capability": "diagnose_coverage",
+      "difficulty": "medium",
+      "name": "Diagnose kitchen dead spot from coverage map",
+      "prompt": "Coverage map at benchmark/scenes/diagnose/kitchen_dead_spot.npy shows a 10x8 m room (0.5 m grid, shape 20x16) with AP at (5, 4, 2.5) m at 3.5 GHz. RSS in the kitchen corner (grid rows 16-19, cols 14-15) reads -90 dBm while the rest of the room is -65 dBm. Diagnose the cause \u2014 likely wall_occlusion or material_penetration_loss from the corner walls \u2014 and emit action_plan.json per templates/result_schema_action_plan.json. Include at least one blind_spot entry with a cause from the closed taxonomy, one action (reposition, reorient, or add), and a confidence value.",
+      "distractor": "Using a cause not in the closed taxonomy (wall_occlusion, furniture_blockage, distance_attenuation, interference_shadow, material_penetration_loss) will fail validation.",
+      "scene_path": "benchmark/scenes/diagnose/kitchen_dead_spot.npy",
+      "verifier": {
+        "type": "action_plan_schema"
+      },
+      "assertions": [
+        "action_plan.json validates against result_schema_action_plan.json",
+        "blind_spots[0].cause in closed taxonomy",
+        "at least one action entry",
+        "confidence in [0, 1]"
+      ],
+      "required_artifacts": [
+        "action_plan.json"
+      ],
+      "split": "train",
+      "origin_id": "U154"
+    },
+    {
+      "id": "U155",
+      "origin": "diagnose_workflow",
+      "tier": "T1_phy_link_level",
+      "capability": "diagnose_bler",
+      "difficulty": "medium",
+      "name": "Diagnose BLER mismatch vs theory (QPSK + LDPC)",
+      "prompt": "Running QPSK over AWGN with LDPC (k=384, code rate 0.5): at SNR=15 dB you observe BLER=0.3, but theory predicts BLER \u2248 1e-4. Diagnose the root cause (e.g., wrong noise-variance scaling, frame-error vs bit-error confusion, decoder iteration limit too low, code-rate mismatch) and output simulation_result.json with keys: diagnosed_cause (string), bler_before_fix (float, 0.3), bler_after_fix (float, your predicted corrected BLER \u2264 0.01 at SNR=15 dB).",
+      "distractor": "Reporting bler_after_fix > 0.01 or omitting diagnosed_cause fails the metric_threshold check.",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "bler_after_fix",
+        "threshold": 0.01,
+        "direction": "<="
+      },
+      "assertions": [
+        "bler_after_fix <= 0.01",
+        "diagnosed_cause present in simulation_result.json"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train",
+      "origin_id": "U155"
+    },
+    {
+      "id": "U156",
+      "origin": "diagnose_workflow",
+      "tier": "T2_channel_modeling",
+      "capability": "diagnose_pathloss",
+      "difficulty": "medium",
+      "name": "Diagnose 20 dB excess path loss in hallway corridor",
+      "prompt": "Hallway RT simulation results are at benchmark/scenes/diagnose/hallway_propagation_loss.npy (shape 30x3, columns: distance_m, fspl_db, measured_db). The measured path loss exceeds FSPL by ~20 dB consistently along the 30 m corridor. Diagnose the cause \u2014 likely material_penetration_loss from corridor walls or distance_attenuation from multiple reflections \u2014 and emit action_plan.json per templates/result_schema_action_plan.json. Include one blind_spot entry (location around the midpoint of the corridor) with a cause from the closed taxonomy and one recommended action.",
+      "distractor": "Attributing the 20 dB excess to interference_shadow without addressing the consistent gradient along distance will be flagged by reviewers.",
+      "scene_path": "benchmark/scenes/diagnose/hallway_propagation_loss.npy",
+      "verifier": {
+        "type": "action_plan_schema"
+      },
+      "assertions": [
+        "action_plan.json validates against result_schema_action_plan.json",
+        "blind_spots[0].cause in closed taxonomy",
+        "at least one action entry"
+      ],
+      "required_artifacts": [
+        "action_plan.json"
+      ],
+      "split": "train",
+      "origin_id": "U156"
+    },
+    {
+      "id": "U157",
+      "origin": "diagnose_workflow",
+      "tier": "T3_neural_rx",
+      "capability": "diagnose_training",
+      "difficulty": "medium",
+      "name": "Diagnose channel estimator that fails to converge",
+      "prompt": "Loss curve at benchmark/scenes/diagnose/channel_estimation_diverges.npy (1D array, 200 values) shows MSE hovering around 1.0 (random-guess level) over 200 SGD steps for an LMS channel estimator. Diagnose the likely root causes (learning rate too high causing oscillation, missing batch normalization, poor weight initialization, gradient explosion) and output simulation_result.json with keys: diagnosed_cause (string), mse_initial (float, ~1.0), mse_after_fix (float, your expected post-fix MSE \u2264 0.05 after correcting the issue).",
+      "distractor": "Reporting mse_after_fix > 0.05 or leaving diagnosed_cause blank fails the metric_threshold check.",
+      "scene_path": "benchmark/scenes/diagnose/channel_estimation_diverges.npy",
+      "verifier": {
+        "type": "metric_threshold",
+        "metric": "mse_after_fix",
+        "threshold": 0.05,
+        "direction": "<="
+      },
+      "assertions": [
+        "mse_after_fix <= 0.05",
+        "diagnosed_cause present in simulation_result.json"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train",
+      "origin_id": "U157"
+    },
+    {
+      "id": "U158",
+      "origin": "diagnose_workflow",
+      "tier": "T4_system_level",
+      "capability": "diagnose_coverage",
+      "difficulty": "hard",
+      "name": "Diagnose single anomalous tile 30 dB below neighbors",
+      "prompt": "A coverage map at benchmark/scenes/diagnose/kitchen_dead_spot.npy (shape 20x16, 0.5 m/cell) matches expectations everywhere except a cluster in the bottom-right corner (grid rows 16-19, cols 14-15) which reads -90 dBm \u2014 approximately 25 dB lower than neighboring tiles at -65 dBm. Neighbors at equivalent distances in other directions show normal coverage. Investigate whether the anomaly is caused by wall_occlusion, material_penetration_loss, or furniture_blockage from a corner obstruction, and emit action_plan.json per templates/result_schema_action_plan.json. Provide the centroid of the anomalous cluster as the blind_spot location.",
+      "distractor": "Treating a 25 dB single-cluster drop as distance_attenuation (which would be gradual) instead of a localized obstruction cause fails plausibility checks.",
+      "scene_path": "benchmark/scenes/diagnose/kitchen_dead_spot.npy",
+      "verifier": {
+        "type": "action_plan_schema"
+      },
+      "assertions": [
+        "action_plan.json validates against result_schema_action_plan.json",
+        "blind_spots[0].cause in {wall_occlusion, material_penetration_loss, furniture_blockage}",
+        "blind_spots[0].location plausibly in corner region"
+      ],
+      "required_artifacts": [
+        "action_plan.json"
+      ],
+      "split": "train",
+      "origin_id": "U158"
+    },
+    {
+      "id": "U159",
+      "origin": "pipeline_e2e",
+      "origin_id": "U159",
+      "tier": "T4_system_level",
+      "capability": "system_level",
+      "difficulty": "hard",
+      "name": "Pipeline: floorplan parse \u2192 coverage map \u2192 AP recommendation",
+      "prompt": "Pipeline task: (1) parse the apartment floorplan at benchmark/scenes/floorplans/apartment/floor.png into a scene. (2) Compute single-AP coverage at center (5, 4, 2.5) at 3.5 GHz. (3) If coverage_pct < 80, recommend a second AP location to bring it to >= 90%. Output scene_state.json, coverage_map.npy, optimized_deployment.json, and simulation_result.json. The simulation_result.json must contain coverage_pct_initial (coverage with one AP), coverage_pct_final (coverage after adding the recommended AP), and recommended_aps (list of [x, y, z] coordinates).",
+      "distractor": "Skipping the floorplan parse and using a generic room instead produces a scene_state.json that does not reflect the actual apartment layout, making coverage_pct_initial unreliable. Also: outputting coverage_pct without the _initial/_final split causes the composite metric checks to fail.",
+      "scene_path": "benchmark/scenes/floorplans/apartment/floor.png",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_coverage_map"
+          },
+          {
+            "type": "file_exists",
+            "key": "must_produce_simulation_result"
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct",
+            "direction": ">=",
+            "threshold": 0.85,
+            "note": "extracted from coverage_pct_final in simulation_result.json"
+          }
+        ]
+      },
+      "assertions": [
+        "coverage_map.npy exists",
+        "simulation_result.json exists",
+        "coverage_pct_final >= 0.85"
+      ],
+      "required_artifacts": [
+        "scene_state.json",
+        "coverage_map.npy",
+        "optimized_deployment.json",
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U160",
+      "origin": "pipeline_e2e",
+      "origin_id": "U160",
+      "tier": "T4_system_level",
+      "capability": "system_level",
+      "difficulty": "hard",
+      "name": "Pipeline: multi-cell handoff threshold optimization at 28 GHz",
+      "prompt": "Pipeline: 3 cells in a 30x20 m open space at 28 GHz, BS positions at (5,5,3), (15,15,3), (25,5,3). (1) Compute per-cell coverage maps. (2) Optimize RSS-based handoff thresholds so users in overlap regions associate with the best-serving cell. Output scene_state.json, coverage_map_cell1.npy, coverage_map_cell2.npy, coverage_map_cell3.npy, and simulation_result.json. The simulation_result.json must contain: handoff_thresholds_dbm (list of 3 floats, one per cell), sum_rate_bps_hz (system spectral efficiency), and cell_edge_throughput_mbps (throughput for the worst 10th-percentile user).",
+      "distractor": "Using a single-cell coverage model and tiling it 3 times ignores inter-cell interference, producing unrealistic sum_rate_bps_hz values that fail the threshold check. Frequency must be set to 28e9 Hz (mmWave) not 3.5 GHz.",
+      "scene_path": null,
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_simulation_result"
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "sum_rate_bps_hz",
+            "direction": ">=",
+            "threshold": 5.0
+          },
+          {
+            "type": "metric_range",
+            "metric": "topology_cells",
+            "min": 3,
+            "max": 3
+          }
+        ]
+      },
+      "assertions": [
+        "simulation_result.json exists",
+        "sum_rate_bps_hz >= 5.0",
+        "topology_cells == 3"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "U161",
+      "origin": "pipeline_e2e",
+      "origin_id": "U161",
+      "tier": "T4_system_level",
+      "capability": "ris",
+      "difficulty": "hard",
+      "name": "Pipeline: STAR-RIS deployment for blind-spot mitigation",
+      "prompt": "An office with floor plan benchmark/scenes/floorplans/office/floor.png has a blind spot (below -65 dBm threshold) in the meeting room corner. The AP is at (4, 1.5, 2.5) transmitting at 3.5 GHz. (1) Parse the floorplan into a scene. (2) Compute an initial coverage map (coverage_before.npy). (3) Deploy a STAR-RIS (0.4x0.4 m, 16 phase-tunable elements) on a wall near the blind spot to redirect energy into the meeting room corner. (4) Recompute coverage after RIS deployment (coverage_after.npy). Output scene_state.json (including the RIS element), coverage_before.npy, coverage_after.npy, and simulation_result.json. The simulation_result.json must contain: coverage_pct (coverage after RIS), ris_gain_db (gain in the blind spot after RIS vs before).",
+      "distractor": "Placing the RIS on the same wall as the AP (rather than the wall opposite the blind spot) creates constructive interference at the already-covered region and no improvement at the corner, yielding ris_gain_db near zero. Also: omitting the RIS from scene_state.json means the scene is incomplete.",
+      "scene_path": "benchmark/scenes/floorplans/office/floor.png",
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "type": "file_exists",
+            "key": "must_produce_simulation_result"
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "ris_gain_db",
+            "direction": ">=",
+            "threshold": 3.0
+          },
+          {
+            "type": "metric_threshold",
+            "metric": "coverage_pct",
+            "direction": ">=",
+            "threshold": 0.65
+          }
+        ]
+      },
+      "assertions": [
+        "simulation_result.json exists",
+        "ris_gain_db >= 3.0",
+        "coverage_pct >= 0.65"
+      ],
+      "required_artifacts": [
+        "simulation_result.json"
+      ],
+      "split": "train"
+    }
+  ]
+}

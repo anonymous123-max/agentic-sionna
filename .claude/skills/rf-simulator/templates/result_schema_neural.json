@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_type": "neural_component",
+  "status": "success",
+  "component": "<demapper|channel_estimator|equalizer|decoder|autoencoder|csi_compressor|beamformer>",
+  "architecture": {
+    "layers": null,
+    "hidden_dim": null,
+    "num_parameters": null
+  },
+  "training": {
+    "num_iterations": "<int — actual count, e.g., 200>",
+    "batch_size": "<int — e.g., 64 or 256>",
+    "learning_rate": "<float — e.g., 1e-3>",
+    "final_loss": "<float — loss at last iteration>",
+    "loss_history": "<REQUIRED: list of >=3 floats sampled during training (e.g., every 10 steps), strictly decreasing start->end. Do NOT leave as empty list. Example: [2.5, 1.8, 1.2, 0.8, 0.5, 0.3]>"
+  },
+  "numerical_metrics": {
+    "snr_db": [],
+    "nmse_db": null,
+    "nve": null,
+    "ber_neural": [],
+    "ber_classical": [],
+    "ber_gap_to_classical": null,
+    "accuracy": null,
+    "top1_accuracy": null,
+    "rmse": null,
+    "compression_ratio": null
+  },
+  "visual_outputs": {
+    "training_curve_path": "training_loss.png"
+  },
+  "timing": { "train_sec": 0.0, "simulate_sec": 0.0 },
+  "warnings": [],
+  "$warnings_schema": {
+    "description": "List of caveat objects. Empty means no fallbacks/defaults/degradations/assumptions applied.",
+    "items": {"kind": "fallback|default|degraded|assumption", "source": "module.path or 'agent'", "message": "free-form string"},
+    "required_keys": ["kind", "source", "message"]
+  }
+}

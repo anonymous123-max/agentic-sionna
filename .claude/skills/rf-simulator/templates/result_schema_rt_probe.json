@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "task_type": "rt_probe",
+  "status": "success",
+  "scene_name": null,
+  "tx_position": null,
+  "rx_position": null,
+  "frequency_hz": null,
+  "tx_power_dbm": null,
+  "numerical_metrics": {
+    "path_gain_db": null,
+    "num_paths": null,
+    "mean_delay_ns": null,
+    "delay_spread_ns": null
+  },
+  "method": "sionna_rt",
+  "$method_required": "sionna_rt",
+  "$notes": "Use PathSolver (NOT RadioMapSolver). Aggregate over paths.a (complex gains) and paths.tau (delays): path_gain_db = 10*log10(sum |a_i|^2); mean_delay = first moment of |a|^2 over tau; delay_spread = sqrt(second central moment). Convert seconds to ns with *1e9."
+}

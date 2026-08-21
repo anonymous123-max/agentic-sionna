@@ -1,0 +1,456 @@
+{
+  "version": "2.0",
+  "meta": {
+    "created": "2026-04-10T17:15:13.271036+00:00",
+    "modified": "2026-04-10T17:15:13.271036+00:00",
+    "name": "Benchmark Medium 04",
+    "description": "Medium benchmark scene: living_room, 8.4x6.5m, l_shaped layout, 1 TX, target 93% coverage",
+    "benchmark": {
+      "tier": "medium",
+      "index": 4,
+      "seed": 54026,
+      "target_coverage_pct": 93,
+      "shape": "l_shaped",
+      "area_m2": 54.6,
+      "center_coverage_pct": 87.5,
+      "grid_best_coverage_pct": 96.2
+    }
+  },
+  "scene": {
+    "type": "indoor",
+    "origin": "SW",
+    "coordinate_system": {
+      "x": "east",
+      "y": "north",
+      "z": "up",
+      "theta_zero": "north",
+      "units": "meters"
+    },
+    "bounds": {
+      "width": 8.4,
+      "depth": 6.5,
+      "height": 3.0
+    },
+    "frequency_hz": 3500000000.0,
+    "source_format": "benchmark_generated"
+  },
+  "rooms": [
+    {
+      "id": "room_medium_04",
+      "name": "Living Room",
+      "type": "living_room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          8.4,
+          0
+        ],
+        [
+          8.4,
+          4.2
+        ],
+        [
+          5.300000000000001,
+          4.2
+        ],
+        [
+          5.300000000000001,
+          6.5
+        ],
+        [
+          0,
+          6.5
+        ]
+      ],
+      "height": 3.0,
+      "materials": {
+        "walls": "itu_concrete",
+        "floor": "itu_concrete",
+        "ceiling": "itu_plasterboard"
+      }
+    }
+  ],
+  "walls": [
+    {
+      "id": "wall_room_medium_04_01",
+      "room_id": "room_medium_04",
+      "start": [
+        0,
+        0
+      ],
+      "end": [
+        8.4,
+        0
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": true,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_medium_04_02",
+      "room_id": "room_medium_04",
+      "start": [
+        8.4,
+        0
+      ],
+      "end": [
+        8.4,
+        4.2
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_medium_04_03",
+      "room_id": "room_medium_04",
+      "start": [
+        8.4,
+        4.2
+      ],
+      "end": [
+        5.300000000000001,
+        4.2
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_medium_04_04",
+      "room_id": "room_medium_04",
+      "start": [
+        5.300000000000001,
+        4.2
+      ],
+      "end": [
+        5.300000000000001,
+        6.5
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": true,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_medium_04_05",
+      "room_id": "room_medium_04",
+      "start": [
+        5.300000000000001,
+        6.5
+      ],
+      "end": [
+        0,
+        6.5
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_medium_04_06",
+      "room_id": "room_medium_04",
+      "start": [
+        0,
+        6.5
+      ],
+      "end": [
+        0,
+        0
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_medium_04_int_07",
+      "room_id": "room_medium_04",
+      "start": [
+        2.8,
+        1.0
+      ],
+      "end": [
+        2.8,
+        5.3
+      ],
+      "thickness": 0.12,
+      "material": "itu_plasterboard",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_medium_04_int_08",
+      "room_id": "room_medium_04",
+      "start": [
+        0.9,
+        4.1
+      ],
+      "end": [
+        7.1,
+        4.1
+      ],
+      "thickness": 0.12,
+      "material": "itu_plasterboard",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_medium_04_int_09",
+      "room_id": "room_medium_04",
+      "start": [
+        5.6,
+        1.1
+      ],
+      "end": [
+        5.6,
+        5.9
+      ],
+      "thickness": 0.12,
+      "material": "itu_plasterboard",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_medium_04_int_10",
+      "room_id": "room_medium_04",
+      "start": [
+        1.1,
+        5.7
+      ],
+      "end": [
+        7.7,
+        5.7
+      ],
+      "thickness": 0.12,
+      "material": "itu_plasterboard",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    }
+  ],
+  "furniture": [
+    {
+      "id": "furn_room_medium_04_001",
+      "type": "tv_stand",
+      "catalog_id": null,
+      "position": [
+        2.63,
+        0.5,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        1.2,
+        0.4,
+        0.5
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_medium_04_002",
+      "type": "chair",
+      "catalog_id": null,
+      "position": [
+        7.85,
+        1.39,
+        0.0
+      ],
+      "orientation_deg": 90,
+      "dimensions": [
+        0.5,
+        0.5,
+        0.9
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_medium_04_003",
+      "type": "cabinet",
+      "catalog_id": null,
+      "position": [
+        4.18,
+        5.98,
+        0.0
+      ],
+      "orientation_deg": 180,
+      "dimensions": [
+        0.8,
+        0.45,
+        0.9
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_medium_04_004",
+      "type": "wardrobe",
+      "catalog_id": null,
+      "position": [
+        0.6,
+        4.66,
+        0.0
+      ],
+      "orientation_deg": 270,
+      "dimensions": [
+        1.2,
+        0.6,
+        2.0
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_medium_04_005",
+      "type": "wardrobe",
+      "catalog_id": null,
+      "position": [
+        1.29,
+        0.6,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        1.2,
+        0.6,
+        2.0
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_medium_04_006",
+      "type": "bookcase",
+      "catalog_id": null,
+      "position": [
+        7.92,
+        4.55,
+        0.0
+      ],
+      "orientation_deg": 90,
+      "dimensions": [
+        0.8,
+        0.35,
+        1.8
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_medium_04_007",
+      "type": "tv_stand",
+      "catalog_id": null,
+      "position": [
+        5.69,
+        6.0,
+        0.0
+      ],
+      "orientation_deg": 180,
+      "dimensions": [
+        1.2,
+        0.4,
+        0.5
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_medium_04_008",
+      "type": "wardrobe",
+      "catalog_id": null,
+      "position": [
+        0.6,
+        2.75,
+        0.0
+      ],
+      "orientation_deg": 270,
+      "dimensions": [
+        1.2,
+        0.6,
+        2.0
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_medium_04_009",
+      "type": "table",
+      "catalog_id": null,
+      "position": [
+        2.3,
+        0.8,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        1.0,
+        1.0,
+        0.75
+      ],
+      "material": "itu_wood",
+      "visible": true
+    }
+  ],
+  "transmitters": [
+    {
+      "id": "tx_room_medium_04_1",
+      "name": "AP-1",
+      "position": [
+        4.2,
+        3.25,
+        2.8
+      ],
+      "power_dbm": 20.0,
+      "frequency_hz": 3500000000.0,
+      "antenna": {
+        "type": "isotropic",
+        "pattern": null,
+        "polarization": "V",
+        "mimo_config": null
+      },
+      "orientation_deg": 0,
+      "visible": true
+    }
+  ],
+  "receivers": [
+    {
+      "id": "rx_grid_medium_04",
+      "type": "grid",
+      "height": 1.5,
+      "resolution": 0.2,
+      "bounds": [
+        [
+          0,
+          0
+        ],
+        [
+          8.4,
+          6.5
+        ]
+      ],
+      "visible": true
+    }
+  ],
+  "constraints": [],
+  "simulation_results": [],
+  "export_history": [],
+  "code_artifacts": []
+}

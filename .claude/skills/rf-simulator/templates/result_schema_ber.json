@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "task_type": "ber_analysis",
+  "status": "success",
+  "method": "<monte_carlo|analytical_awgn|sim_ber>",
+  "modulation": "<BPSK|QPSK|16QAM|64QAM|256QAM>",
+  "channel": "<AWGN|rayleigh|CDL_A|CDL_B|CDL_C|CDL_D|CDL_E|UMi|UMa>",
+  "coding": "<uncoded|ldpc|polar>",
+  "numerical_metrics": {
+    "ebn0_db": [],
+    "ber_simulated": [],
+    "ber_theoretical": [],
+    "bler_simulated": [],
+    "ber_at_snr_10db": null,
+    "ber_at_snr_15db": null,
+    "ber_at_target": null,
+    "target_ber": null,
+    "ebn0_at_target_ber_db": null,
+    "ber_gap_db": null,
+    "ber_gap_to_classical": null,
+    "waterfall_ebn0_db": null,
+    "shannon_limit_db": null,
+    "num_blocks_per_point": null,
+    "min_errors_per_point": null,
+    "coding_gain_db": null
+  },
+  "visual_outputs": {
+    "ber_curve_path": "ber_curve.png"
+  },
+  "timing": { "simulate_sec": 0.0 },
+  "warnings": [],
+  "$warnings_schema": {
+    "description": "List of caveat objects. Empty means no fallbacks/defaults/degradations/assumptions applied.",
+    "items": {"kind": "fallback|default|degraded|assumption", "source": "module.path or 'agent'", "message": "free-form string"},
+    "required_keys": ["kind", "source", "message"]
+  }
+}

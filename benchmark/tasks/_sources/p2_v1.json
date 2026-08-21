@@ -1,0 +1,177 @@
+{
+  "version": "1.0",
+  "tier": "P2_pareto",
+  "design": "Pareto-frontier optimisation of antenna azimuth + TX power for single-UE downlink. 4 tasks across 2 indoor + 2 outdoor scenes. Per task the agent sweeps a 5x3 (az, tx_power) grid using Sionna RT PathSolver, computes throughput per config from a Sionna PHY LDPC QPSK 1/2 chain, and reports both the full sweep table and the indices of the non-dominated configurations (maximise throughput, minimise tx_power_mw).",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_rt_used + sionna_phy_used) + Layer C (p2_oracle: (a) hypervolume ratio >= 0.9 vs ref, (b) every claimed pareto index must be truly non-dominated in agent's own sweep, (c) per-config path_gain_db MAE <= 3 dB on >=12/15 grid points).",
+  "count": 4,
+  "tasks": [
+    {
+      "id": "P2_box_one_screen",
+      "tier": "P2_pareto",
+      "capability": "rt_pareto",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "kind": "indoor",
+      "oracle_path": "benchmark/oracles/p2_pareto/box_one_screen/oracle.json",
+      "prompt": "An indoor access point sits at (-2, 0, 4.5) m and a user is at (2, 0, 1.5) m inside the box_one_screen scene. The AP can choose its antenna azimuth and its transmit power. Find the Pareto-optimal trade-off between the user's downlink throughput and the AP's transmit power, and report the full sweep plus the non-dominated configurations. Use Sionna's ray tracer (sionna.rt) for the per-configuration path gain and Sionna's PHY chain (sionna.phy.LDPC5G + Mapper/AWGN) for the throughput model; the verifier rejects closed-form FSPL or Shannon log2(1+SNR) substitutes.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2_box_two_screens",
+      "tier": "P2_pareto",
+      "capability": "rt_pareto",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "kind": "indoor",
+      "oracle_path": "benchmark/oracles/p2_pareto/box_two_screens/oracle.json",
+      "prompt": "An indoor access point sits at (-2, 0, 4.5) m and a user is at (2, 0, 1.5) m inside the box_two_screens scene. The AP can choose its antenna azimuth and its transmit power. Find the Pareto-optimal trade-off between the user's downlink throughput and the AP's transmit power, and report the full sweep plus the non-dominated configurations. Use Sionna's ray tracer (sionna.rt) for the per-configuration path gain and Sionna's PHY chain (sionna.phy.LDPC5G + Mapper/AWGN) for the throughput model; the verifier rejects closed-form FSPL or Shannon log2(1+SNR) substitutes.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2_simple_street_canyon",
+      "tier": "P2_pareto",
+      "capability": "rt_pareto",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "kind": "outdoor",
+      "oracle_path": "benchmark/oracles/p2_pareto/simple_street_canyon/oracle.json",
+      "prompt": "An outdoor access point is mounted at (-15, 0, 15) m and a user is at (15, 0, 1.5) m in the simple_street_canyon scene. The AP can choose its antenna azimuth and its transmit power. Find the Pareto-optimal trade-off between the user's downlink throughput and the AP's transmit power, and report the full sweep plus the non-dominated configurations. Use Sionna's ray tracer (sionna.rt) for the per-configuration path gain and Sionna's PHY chain (sionna.phy.LDPC5G + Mapper/AWGN) for the throughput model; the verifier rejects closed-form FSPL or Shannon log2(1+SNR) substitutes.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2_etoile",
+      "tier": "P2_pareto",
+      "capability": "rt_pareto",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "kind": "outdoor",
+      "oracle_path": "benchmark/oracles/p2_pareto/etoile/oracle.json",
+      "prompt": "An outdoor access point is mounted at (-50, 0, 30) m and a user is at (50, 0, 1.5) m in the etoile scene. The AP can choose its antenna azimuth and its transmit power. Find the Pareto-optimal trade-off between the user's downlink throughput and the AP's transmit power, and report the full sweep plus the non-dominated configurations. Use Sionna's ray tracer (sionna.rt) for the per-configuration path gain and Sionna's PHY chain (sionna.phy.LDPC5G + Mapper/AWGN) for the throughput model; the verifier rejects closed-form FSPL or Shannon log2(1+SNR) substitutes.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p2_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}

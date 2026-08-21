@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RF deployment action plan",
+  "description": "Output of the reflection protocol. Structured diagnosis of a coverage map, ready for a planner (human or agent) to execute.",
+  "type": "object",
+  "required": ["coverage_current", "coverage_target", "blind_spots", "actions", "confidence", "stop_recommended"],
+  "properties": {
+    "coverage_current": {"type": "number", "minimum": 0, "maximum": 100,
+                         "description": "Current area coverage percentage."},
+    "coverage_target":  {"type": "number", "minimum": 0, "maximum": 100,
+                         "description": "User-specified coverage target."},
+    "blind_spots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["location", "area_m2", "cause"],
+        "properties": {
+          "location": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2,
+                       "description": "Centroid [x, y] of the blind-spot polygon, meters."},
+          "area_m2":  {"type": "number", "minimum": 0,
+                       "description": "Estimated area below P_min in this zone."},
+          "cause": {"type": "string",
+                    "enum": ["wall_occlusion", "furniture_blockage",
+                             "distance_attenuation", "interference_shadow",
+                             "material_penetration_loss"],
+                    "description": "Closed taxonomy from reflection-protocol.md D3."},
+          "notes": {"type": "string",
+                    "description": "Optional secondary cause or qualitative detail."}
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "ap_id"],
+        "properties": {
+          "type":  {"type": "string", "enum": ["reposition", "reorient", "add"]},
+          "ap_id": {"type": "string"},
+          "delta": {
+            "type": ["array", "null"],
+            "items": {"type": "number"}, "minItems": 3, "maxItems": 3,
+            "description": "Position-delta (m) for reposition; angle-delta (deg) for reorient; absolute position (m) for add."
+          },
+          "expected_gain_pp": {"type": "number",
+                                "description": "Predicted coverage-percentage improvement."}
+        }
+      }
+    },
+    "confidence":      {"type": "number", "minimum": 0, "maximum": 1,
+                        "description": "Self-assessed confidence in the diagnosis."},
+    "stop_recommended": {"type": "boolean",
+                         "description": "True if no further improvement is achievable under current scene constraints."},
+    "warnings": {
+      "type": "array",
+      "description": "List of caveat objects. Empty means no fallbacks/defaults/degradations/assumptions applied.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind":    {"enum": ["fallback", "default", "degraded", "assumption"]},
+          "source":  {"type": "string"},
+          "message": {"type": "string"}
+        },
+        "required": ["kind", "source", "message"]
+      }
+    }
+  }
+}

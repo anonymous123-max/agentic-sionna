@@ -1,0 +1,29 @@
+{
+  "scene_name": "simple_street_canyon",
+  "kind": "outdoor",
+  "ap_position": [
+    0.0,
+    0.0,
+    15.0
+  ],
+  "frequency_hz": 2400000000.0,
+  "tx_power_dbm": 20.0,
+  "cell_size_m": 1.0,
+  "max_depth": 2,
+  "samples_per_tx": 50000,
+  "grid_shape": [
+    122,
+    187
+  ],
+  "extent_m": [
+    -93.96609497070312,
+    92.4267578125,
+    -60.3305549621582,
+    60.8076286315918
+  ],
+  "solver_elapsed_s": 0.2,
+  "rss_dbm_min": -83.38352966308594,
+  "rss_dbm_max": -41.36756134033203,
+  "rss_dbm_mean": -51.93687438964844,
+  "sionna_version": "2.0.1"
+}

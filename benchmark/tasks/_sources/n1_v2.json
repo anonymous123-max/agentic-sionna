@@ -1,0 +1,361 @@
+{
+  "version": "2.0",
+  "tier": "N1_single_ap_sim",
+  "design": "Single-AP simulation on 4 Sionna built-in scenes \u00d7 2 sub-types (coverage map, point-level link probe) = 8 tasks. Natural-language prompts; all output schemas, filenames, RT-only invariants live in SKILL.md.",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_rt_used) + Layer C (n1_ref_oracle for coverage / n1_probe_oracle for link probe)",
+  "count": 8,
+  "tasks": [
+    {
+      "id": "N1_cov_box_two_screens",
+      "tier": "N1_single_ap_sim",
+      "sub_type": "coverage",
+      "capability": "single_ap_coverage",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "oracle_path": "benchmark/oracles/n1/box_two_screens.npy",
+      "prompt": "Using Sionna's built-in box-with-two-screens indoor testbed, place a base-station transmitter at (0, 0, 4.5) m with 100 mW transmit power and isotropic antenna arrays. Generate the 5 GHz coverage map for this base station and return the map and visualization.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_map.npy",
+        "coverage_map.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_coverage_npy",
+            "type": "file_exists",
+            "path": "coverage_map.npy"
+          },
+          {
+            "key": "must_create_coverage_png",
+            "type": "file_exists",
+            "path": "coverage_map.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n1_ref_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N1_cov_box_one_screen",
+      "tier": "N1_single_ap_sim",
+      "sub_type": "coverage",
+      "capability": "single_ap_coverage",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "oracle_path": "benchmark/oracles/n1/box_one_screen.npy",
+      "prompt": "Using Sionna's built-in box-with-one-screen indoor testbed, place a base-station transmitter at (0, 0, 4.5) m with 100 mW transmit power and isotropic antenna arrays. Generate the 5 GHz coverage map for this base station and return the map and visualization.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_map.npy",
+        "coverage_map.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_coverage_npy",
+            "type": "file_exists",
+            "path": "coverage_map.npy"
+          },
+          {
+            "key": "must_create_coverage_png",
+            "type": "file_exists",
+            "path": "coverage_map.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n1_ref_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N1_cov_simple_street_canyon",
+      "tier": "N1_single_ap_sim",
+      "sub_type": "coverage",
+      "capability": "single_ap_coverage",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/n1/simple_street_canyon.npy",
+      "prompt": "Using Sionna's built-in simple-street-canyon outdoor scenario, place a base-station transmitter at (0, 0, 15) m with 100 mW transmit power and isotropic antenna arrays. Generate the 5 GHz coverage map for this base station and return the map and visualization.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_map.npy",
+        "coverage_map.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_coverage_npy",
+            "type": "file_exists",
+            "path": "coverage_map.npy"
+          },
+          {
+            "key": "must_create_coverage_png",
+            "type": "file_exists",
+            "path": "coverage_map.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n1_ref_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N1_cov_etoile",
+      "tier": "N1_single_ap_sim",
+      "sub_type": "coverage",
+      "capability": "single_ap_coverage",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "oracle_path": "benchmark/oracles/n1/etoile.npy",
+      "prompt": "Using Sionna's built-in Outdoor Paris-Etoile scenario, place a base-station transmitter at (0, 0, 30) m with 100 mW transmit power and isotropic antenna arrays. Generate the 5 GHz coverage map for this base station and return the map and visualization.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_map.npy",
+        "coverage_map.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_coverage_npy",
+            "type": "file_exists",
+            "path": "coverage_map.npy"
+          },
+          {
+            "key": "must_create_coverage_png",
+            "type": "file_exists",
+            "path": "coverage_map.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n1_ref_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N1_probe_box_two_screens",
+      "tier": "N1_single_ap_sim",
+      "sub_type": "probe",
+      "capability": "single_ap_link_probe",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "oracle_path": "benchmark/oracles/n1_probe/box_two_screens.json",
+      "prompt": "Using Sionna's built-in box-with-two-screens indoor testbed, place a transmitter at (0, 0, 4.5) m and a receiver at (3, 2, 1.5) m with 100 mW transmit power and isotropic antennas at 5 GHz. Compute the propagation paths between them and return the link characteristics.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n1_probe_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N1_probe_box_one_screen",
+      "tier": "N1_single_ap_sim",
+      "sub_type": "probe",
+      "capability": "single_ap_link_probe",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "oracle_path": "benchmark/oracles/n1_probe/box_one_screen.json",
+      "prompt": "Using Sionna's built-in box-with-one-screen indoor testbed, place a transmitter at (0, 0, 4.5) m and a receiver at (3, 2, 1.5) m with 100 mW transmit power and isotropic antennas at 5 GHz. Compute the propagation paths between them and return the link characteristics.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n1_probe_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N1_probe_simple_street_canyon",
+      "tier": "N1_single_ap_sim",
+      "sub_type": "probe",
+      "capability": "single_ap_link_probe",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_path": "benchmark/oracles/n1_probe/simple_street_canyon.json",
+      "prompt": "Using Sionna's built-in simple-street-canyon outdoor scenario, place a transmitter at (0, 0, 15) m and a receiver at (5, 0, 8) m with 100 mW transmit power and isotropic antennas at 5 GHz. Compute the propagation paths between them and return the link characteristics.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n1_probe_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N1_probe_etoile",
+      "tier": "N1_single_ap_sim",
+      "sub_type": "probe",
+      "capability": "single_ap_link_probe",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "oracle_path": "benchmark/oracles/n1_probe/etoile.json",
+      "prompt": "Using Sionna's built-in Outdoor Paris-Etoile scenario, place a transmitter at (0, 0, 30) m and a receiver at (5, 0, 25) m with 100 mW transmit power and isotropic antennas at 5 GHz. Compute the propagation paths between them and return the link characteristics.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n1_probe_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}

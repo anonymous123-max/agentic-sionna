@@ -1,0 +1,157 @@
+{
+  "version": "1.0",
+  "tier": "N2_freq_edit",
+  "design": "Frequency-edit + recompute on 4 Sionna built-in scenes. Agent must run baseline RT coverage at 5 GHz, change scene.frequency to 2.4 GHz, recompute, and emit a delta map. Tests whether the agent can edit a scene parameter and re-run.",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_rt_used) + Layer C (n2_freq_oracle: before vs 5GHz ref, after vs 2.4GHz ref, mean delta > +3 dB)",
+  "count": 4,
+  "tasks": [
+    {
+      "id": "N2_box_two_screens",
+      "tier": "N2_freq_edit",
+      "capability": "scene_freq_edit",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "ap_position": [0.0, 0.0, 4.5],
+      "freq_before_hz": 5000000000.0,
+      "freq_after_hz": 2400000000.0,
+      "tx_power_dbm": 20.0,
+      "cell_size_m": 0.25,
+      "max_depth": 3,
+      "samples_per_tx": 100000,
+      "oracle_before_path": "benchmark/oracles/n1/box_two_screens.npy",
+      "oracle_after_path": "benchmark/oracles/n2_freq/box_two_screens_2ghz.npy",
+      "prompt": "TASK: Compute a baseline single-AP coverage map at 5 GHz on the Sionna built-in scene \"box_two_screens\", then re-run the same setup at 2.4 GHz, and emit a delta map showing the frequency-induced coverage change.\n\nSETUP (the same TX placement / antennas / solver params apply to BOTH frequencies):\n- Scene:    sionna.rt.scene.box_two_screens\n- AP:       (0.0, 0.0, 4.5) meters\n- TX power: 20 dBm\n- Antenna:  PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- Solver:   RadioMapSolver, max_depth=3, samples_per_tx=100000, cell_size=(0.25, 0.25)\n\nIMPORTANT — solver call style:\n- Use the DEFAULT grid (derived from scene bbox). Do NOT pass `center` or `size` to the solver — the verifier compares your grid against a reference computed with the default settings.\n\nSTEP 1 — baseline at 5 GHz:\n  scene.frequency = 5e9\n  run RadioMapSolver  → coverage map in W\n  Convert to RSS in dBm (use NaN for cells where path_gain == 0)\n  Save: coverage_5ghz.npy, coverage_5ghz.png\n\nSTEP 2 — re-run at 2.4 GHz:\n  scene.frequency = 2.4e9       # same scene, same TX, same antennas\n  run RadioMapSolver  → coverage map in W (same other params)\n  Save: coverage_2ghz.npy, coverage_2ghz.png\n\nSTEP 3 — delta:\n  delta_dbm = coverage_2ghz - coverage_5ghz\n  Save: coverage_delta.png  (RdBu_r colormap, vmin=-10, vmax=+20, centered on 0)\n\nOUTPUT simulation_result.json schema:\n{\n  \"scene_name\":      \"box_two_screens\",\n  \"edit_action\":     \"frequency 5GHz -> 2.4GHz\",\n  \"freq_before_hz\":  5e9,\n  \"freq_after_hz\":   2.4e9,\n  \"before\": {\"rss_dbm_min\": _, \"rss_dbm_max\": _, \"rss_dbm_mean\": _},\n  \"after\":  {\"rss_dbm_min\": _, \"rss_dbm_max\": _, \"rss_dbm_mean\": _},\n  \"delta_dbm_mean\":  float,    // expect > 0 (lower freq → less FSPL → stronger RSS)\n  \"method\":          \"sionna_rt\"\n}\n\nCONSTRAINTS:\n- MUST use Sionna RT for BOTH frequencies. Do NOT fall back to analytical FSPL.\n- If `import sionna` fails in default python, use $RF_SIONNA_PY.\n- Set `scene.frequency` BEFORE calling the solver each time.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_5ghz.npy",
+        "coverage_2ghz.npy",
+        "coverage_delta.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_coverage_5ghz_npy", "type": "file_exists", "path": "coverage_5ghz.npy"},
+          {"key": "must_create_coverage_2ghz_npy", "type": "file_exists", "path": "coverage_2ghz.npy"},
+          {"key": "must_create_coverage_delta_png", "type": "file_exists", "path": "coverage_delta.png"},
+          {"key": "must_create_result_json", "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check", "type": "code_contains"},
+          {"metric": "n2_freq_oracle_check", "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "N2_box_one_screen",
+      "tier": "N2_freq_edit",
+      "capability": "scene_freq_edit",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "ap_position": [0.0, 0.0, 4.5],
+      "freq_before_hz": 5000000000.0,
+      "freq_after_hz": 2400000000.0,
+      "tx_power_dbm": 20.0,
+      "cell_size_m": 0.25,
+      "max_depth": 3,
+      "samples_per_tx": 100000,
+      "oracle_before_path": "benchmark/oracles/n1/box_one_screen.npy",
+      "oracle_after_path": "benchmark/oracles/n2_freq/box_one_screen_2ghz.npy",
+      "prompt": "TASK: Compute a baseline single-AP coverage map at 5 GHz on the Sionna built-in scene \"box_one_screen\", then re-run the same setup at 2.4 GHz, and emit a delta map.\n\nSETUP (same TX/antennas/solver params apply to BOTH frequencies):\n- Scene:    sionna.rt.scene.box_one_screen\n- AP:       (0.0, 0.0, 4.5) meters\n- TX power: 20 dBm\n- Antenna:  PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- Solver:   RadioMapSolver, max_depth=3, samples_per_tx=100000, cell_size=(0.25, 0.25)\n- Use the DEFAULT grid; do NOT pass `center` or `size` to the solver.\n\nSTEP 1: scene.frequency = 5e9, run solver, save coverage_5ghz.npy/.png\nSTEP 2: scene.frequency = 2.4e9, run solver again (same other params), save coverage_2ghz.npy/.png\nSTEP 3: delta = coverage_2ghz − coverage_5ghz, save coverage_delta.png (RdBu_r, vmin=-10, vmax=+20)\n\nOUTPUT simulation_result.json: {scene_name, edit_action: \"frequency 5GHz -> 2.4GHz\", freq_before_hz, freq_after_hz, before:{rss_dbm_min/max/mean}, after:{rss_dbm_min/max/mean}, delta_dbm_mean (expect > 0), method: \"sionna_rt\"}\n\nCONSTRAINTS: MUST use Sionna RT for both frequencies; do NOT fall back to FSPL. Use $RF_SIONNA_PY if `import sionna` fails.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_5ghz.npy",
+        "coverage_2ghz.npy",
+        "coverage_delta.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_coverage_5ghz_npy", "type": "file_exists", "path": "coverage_5ghz.npy"},
+          {"key": "must_create_coverage_2ghz_npy", "type": "file_exists", "path": "coverage_2ghz.npy"},
+          {"key": "must_create_coverage_delta_png", "type": "file_exists", "path": "coverage_delta.png"},
+          {"key": "must_create_result_json", "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check", "type": "code_contains"},
+          {"metric": "n2_freq_oracle_check", "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "N2_simple_street_canyon",
+      "tier": "N2_freq_edit",
+      "capability": "scene_freq_edit",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "ap_position": [0.0, 0.0, 15.0],
+      "freq_before_hz": 5000000000.0,
+      "freq_after_hz": 2400000000.0,
+      "tx_power_dbm": 20.0,
+      "cell_size_m": 1.0,
+      "max_depth": 2,
+      "samples_per_tx": 50000,
+      "oracle_before_path": "benchmark/oracles/n1/simple_street_canyon.npy",
+      "oracle_after_path": "benchmark/oracles/n2_freq/simple_street_canyon_2ghz.npy",
+      "prompt": "TASK: Compute a baseline single-AP coverage map at 5 GHz on the Sionna built-in scene \"simple_street_canyon\" (outdoor street canyon ~186x121 m), then re-run at 2.4 GHz, and emit a delta map.\n\nSETUP (same TX/antennas/solver params for BOTH frequencies):\n- Scene:    sionna.rt.scene.simple_street_canyon\n- AP:       (0.0, 0.0, 15.0) meters (mid-canyon, 15 m above ground)\n- TX power: 20 dBm\n- Antenna:  PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- Solver:   RadioMapSolver, max_depth=2, samples_per_tx=50000, cell_size=(1.0, 1.0)\n- Use the DEFAULT grid; do NOT pass `center` or `size` to the solver.\n\nSTEP 1: scene.frequency = 5e9, run solver, save coverage_5ghz.npy/.png (RSS in dBm, NaN where no path)\nSTEP 2: scene.frequency = 2.4e9, run solver (same other params), save coverage_2ghz.npy/.png\nSTEP 3: delta = coverage_2ghz − coverage_5ghz, save coverage_delta.png (RdBu_r, vmin=-10, vmax=+20)\n\nOUTPUT simulation_result.json: {scene_name, edit_action: \"frequency 5GHz -> 2.4GHz\", freq_before_hz, freq_after_hz, before:{rss_dbm_min/max/mean}, after:{rss_dbm_min/max/mean}, delta_dbm_mean (expect > 0), method: \"sionna_rt\"}\n\nCONSTRAINTS: MUST use Sionna RT for both frequencies; do NOT fall back to FSPL. Use $RF_SIONNA_PY if `import sionna` fails. Outdoor coverage is sparse — use NaN for cells with no path, not a constant.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_5ghz.npy",
+        "coverage_2ghz.npy",
+        "coverage_delta.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_coverage_5ghz_npy", "type": "file_exists", "path": "coverage_5ghz.npy"},
+          {"key": "must_create_coverage_2ghz_npy", "type": "file_exists", "path": "coverage_2ghz.npy"},
+          {"key": "must_create_coverage_delta_png", "type": "file_exists", "path": "coverage_delta.png"},
+          {"key": "must_create_result_json", "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check", "type": "code_contains"},
+          {"metric": "n2_freq_oracle_check", "type": "code_contains"}
+        ]
+      }
+    },
+    {
+      "id": "N2_etoile",
+      "tier": "N2_freq_edit",
+      "capability": "scene_freq_edit",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "ap_position": [0.0, 0.0, 30.0],
+      "freq_before_hz": 5000000000.0,
+      "freq_after_hz": 2400000000.0,
+      "tx_power_dbm": 20.0,
+      "cell_size_m": 2.0,
+      "max_depth": 2,
+      "samples_per_tx": 50000,
+      "oracle_before_path": "benchmark/oracles/n1/etoile.npy",
+      "oracle_after_path": "benchmark/oracles/n2_freq/etoile_2ghz.npy",
+      "prompt": "TASK: Compute a baseline single-AP coverage map at 5 GHz on the Sionna built-in scene \"etoile\" (Place de l'Etoile, Paris, ~854x676 m), then re-run at 2.4 GHz, and emit a delta map.\n\nSETUP (same TX/antennas/solver params for BOTH frequencies):\n- Scene:    sionna.rt.scene.etoile\n- AP:       (0.0, 0.0, 30.0) meters (rooftop height at scene origin)\n- TX power: 20 dBm\n- Antenna:  PlanarArray(1, 1, pattern=\"iso\", polarization=\"V\")\n- Solver:   RadioMapSolver, max_depth=2, samples_per_tx=50000, cell_size=(2.0, 2.0)\n- Use the DEFAULT grid; do NOT pass `center` or `size` to the solver.\n\nSTEP 1: scene.frequency = 5e9, run solver, save coverage_5ghz.npy/.png\nSTEP 2: scene.frequency = 2.4e9, run solver (same other params), save coverage_2ghz.npy/.png\nSTEP 3: delta = coverage_2ghz − coverage_5ghz, save coverage_delta.png (RdBu_r, vmin=-10, vmax=+20)\n\nOUTPUT simulation_result.json: {scene_name, edit_action: \"frequency 5GHz -> 2.4GHz\", freq_before_hz, freq_after_hz, before:{rss_dbm_min/max/mean}, after:{rss_dbm_min/max/mean}, delta_dbm_mean (expect > 0), method: \"sionna_rt\"}\n\nCONSTRAINTS: MUST use Sionna RT for both frequencies; do NOT fall back to FSPL. Use $RF_SIONNA_PY if `import sionna` fails. Coverage will be very sparse (street-level paths only) — use NaN for cells with no path.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_5ghz.npy",
+        "coverage_2ghz.npy",
+        "coverage_delta.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {"key": "must_create_simulation_py", "type": "file_exists", "path": "simulation.py"},
+          {"key": "must_create_coverage_5ghz_npy", "type": "file_exists", "path": "coverage_5ghz.npy"},
+          {"key": "must_create_coverage_2ghz_npy", "type": "file_exists", "path": "coverage_2ghz.npy"},
+          {"key": "must_create_coverage_delta_png", "type": "file_exists", "path": "coverage_delta.png"},
+          {"key": "must_create_result_json", "type": "file_exists", "path": "simulation_result.json"},
+          {"metric": "sionna_rt_used_check", "type": "code_contains"},
+          {"metric": "n2_freq_oracle_check", "type": "code_contains"}
+        ]
+      }
+    }
+  ]
+}

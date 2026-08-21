@@ -1,0 +1,22 @@
+{
+  "task_id": "N4_ber_16qam_awgn",
+  "metric_type": "ber",
+  "modulation": "16-QAM",
+  "codec": "uncoded",
+  "channel": "AWGN",
+  "eb_n0_db": [
+    4.0,
+    6.0,
+    8.0,
+    10.0,
+    12.0
+  ],
+  "metric_values": [
+    0.05861845741925091,
+    0.027871306319660734,
+    0.009247213737517437,
+    0.0017541506178927247,
+    0.00013865868881261898
+  ],
+  "source": "analytical Gray-coded square 16-QAM"
+}

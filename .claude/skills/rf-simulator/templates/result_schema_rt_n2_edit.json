@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "task_type": "rt_n2_edit",
+  "status": "success",
+  "scene_name": null,
+  "edit_type": null,
+  "$edit_type_enum": ["frequency", "power", "position", "antenna"],
+  "edit_action": null,
+  "before_state": {
+    "frequency_hz": null,
+    "tx_power_dbm": null,
+    "tx_position": null,
+    "antenna": null
+  },
+  "after_state": {
+    "frequency_hz": null,
+    "tx_power_dbm": null,
+    "tx_position": null,
+    "antenna": null
+  },
+  "before_metrics": {
+    "rss_dbm_min": null,
+    "rss_dbm_max": null,
+    "rss_dbm_mean": null,
+    "coverage_shape": null
+  },
+  "after_metrics": {
+    "rss_dbm_min": null,
+    "rss_dbm_max": null,
+    "rss_dbm_mean": null,
+    "coverage_shape": null
+  },
+  "delta_dbm_mean": null,
+  "method": "sionna_rt",
+  "$notes": "Required files: simulation.py, coverage_before.npy, coverage_before.png, coverage_after.npy, coverage_after.png, coverage_delta.png, simulation_result.json. Both before and after MUST use Sionna RT (no FSPL fallback). edit_type must match the prompt's edit operation."
+}

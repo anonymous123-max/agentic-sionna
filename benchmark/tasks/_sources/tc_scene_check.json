@@ -1,0 +1,1478 @@
+{
+  "version": "1.0",
+  "tier": "TC_scene_check",
+  "design": "20 scene-only sanity-check tasks (no RF simulation)",
+  "count": 30,
+  "tasks": [
+    {
+      "id": "TCsc_S01",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S01",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S01 (home office)",
+      "prompt": "Generate a 5 m \u00d7 4 m home office (drywall walls) containing one desk, one office chair, one bookshelf. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 5 m \u00d7 4 m",
+        "expect expected_furniture=['desk', 'office chair', 'bookshelf']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_bookshelf",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S02",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S02",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S02 (living room)",
+      "prompt": "Generate a 6 m \u00d7 5 m living room (drywall walls) containing one sofa, one coffee table, one tv stand, one armchair. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 6 m \u00d7 5 m",
+        "expect expected_furniture=['sofa', 'coffee table', 'tv stand', 'armchair']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sofa_coffee_table_tv_stand_armchair",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S03",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S03",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S03 (bedroom)",
+      "prompt": "Generate a 4 m \u00d7 4 m bedroom (drywall walls) containing one double bed, one nightstand, one wardrobe, one dresser. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 4 m \u00d7 4 m",
+        "expect expected_furniture=['double bed', 'nightstand', 'wardrobe', 'dresser']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "double_bed_nightstand_wardrobe_dresser",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S04",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S04",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S04 (dining room)",
+      "prompt": "Generate a 6 m \u00d7 4 m dining room (drywall walls) containing one round table, one chair, one buffet. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 6 m \u00d7 4 m",
+        "expect expected_furniture=['round table', 'chair', 'buffet']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "round_table_chair_buffet",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S05",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S05",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S05 (conference room)",
+      "prompt": "Generate a 5 m \u00d7 4 m conference room (drywall walls) containing one meeting table, one chair. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 5 m \u00d7 4 m",
+        "expect expected_furniture=['meeting table', 'chair']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "meeting_table_chair",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S06",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S06",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S06 (home library)",
+      "prompt": "Generate a 6 m \u00d7 5 m home library (drywall walls) containing one bookshelf, one reading chair, one side table, one floor lamp. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 6 m \u00d7 5 m",
+        "expect expected_furniture=['bookshelf', 'reading chair', 'side table', 'floor lamp']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "bookshelf_reading_chair_side_table_floor_lamp",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S07",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S07",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S07 (kitchen)",
+      "prompt": "Generate a 5 m \u00d7 4 m kitchen (drywall walls) containing one kitchen counter, one refrigerator, one oven, one dining table. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 5 m \u00d7 4 m",
+        "expect expected_furniture=['kitchen counter', 'refrigerator', 'oven', 'dining table']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "kitchen_counter_refrigerator_oven_dining_table",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S08",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S08",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S08 (hobby room)",
+      "prompt": "Generate a 5 m \u00d7 4 m hobby room (drywall walls) containing one craft table, one supply cabinet, one craft stool, one storage shelf. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 5 m \u00d7 4 m",
+        "expect expected_furniture=['craft table', 'supply cabinet', 'craft stool', 'storage shelf']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "craft_table_supply_cabinet_craft_stool_storage_shelf",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S09",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S09",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S09 (music room)",
+      "prompt": "Generate a 5 m \u00d7 4 m music room (drywall walls) containing one upright piano, one piano bench, one music stand, one armchair. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 5 m \u00d7 4 m",
+        "expect expected_furniture=['upright piano', 'piano bench', 'music stand', 'armchair']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "upright_piano_piano_bench_music_stand_armchair",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S10",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S10",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S10 (multipurpose room)",
+      "prompt": "Generate a 7 m \u00d7 5 m multipurpose room (drywall walls) containing one foldable table, one chair, one storage cabinet. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 7 m \u00d7 5 m",
+        "expect expected_furniture=['foldable table', 'chair', 'storage cabinet']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "foldable_table_chair_storage_cabinet",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S11",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S11",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S11 (L-shaped home office + study)",
+      "prompt": "Generate a 8 m \u00d7 4 m L-shaped home office + study (drywall walls (L-shape: long arm 6x4, short arm 4x3)) containing one desk, one office chair, one bookshelf, one filing cabinet. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 8 m \u00d7 4 m",
+        "expect expected_furniture=['desk', 'office chair', 'bookshelf', 'filing cabinet']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_bookshelf_filing_cabinet",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S12",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S12",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S12 (L-shaped living + dining)",
+      "prompt": "Generate a 8 m \u00d7 4 m L-shaped living + dining (drywall walls (L-shape: long arm 7x4 living, short arm 4x3 dining)) containing one sofa, one tv stand, one round table, one chair. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 8 m \u00d7 4 m",
+        "expect expected_furniture=['sofa', 'tv stand', 'round table', 'chair']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sofa_tv_stand_round_table_chair",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S13",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S13",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S13 (Partitioned 2-tenant office)",
+      "prompt": "Generate a 10 m \u00d7 6 m Partitioned 2-tenant office (drywall walls + 1 full-height drywall partition at x=5) containing one desk, one office chair, one partition wall. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 10 m \u00d7 6 m",
+        "expect expected_furniture=['desk', 'office chair', 'partition wall']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_partition_wall",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S14",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S14",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S14 (Open-plan studio with half-height kitchenette partition)",
+      "prompt": "Generate a 8 m \u00d7 6 m Open-plan studio with half-height kitchenette partition (drywall walls + 1 half-height drywall partition (1.2 m tall) splitting living from kitchenette) containing one bed, one sofa, one kitchen counter, one dining table, one half-height partition. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 8 m \u00d7 6 m",
+        "expect expected_furniture=['bed', 'sofa', 'kitchen counter', 'dining table', 'half-height partition']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "bed_sofa_kitchen_counter_dining_table_half_height_partition",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S15",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S15",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S15 (3-bedroom apartment with central corridor)",
+      "prompt": "Generate a 12 m \u00d7 9 m 3-bedroom apartment with central corridor (drywall walls (3 bedrooms 3x3 m each + 12x2 m corridor)) containing one double bed, one wardrobe. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 12 m \u00d7 9 m",
+        "expect expected_furniture=['double bed', 'wardrobe']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "double_bed_wardrobe",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S16",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S16",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S16 (2-bedroom apartment with shared bathroom)",
+      "prompt": "Generate a 10 m \u00d7 7 m 2-bedroom apartment with shared bathroom (drywall walls (2 bedrooms + living + kitchen + bathroom)) containing one double bed, one wardrobe, one sofa, one coffee table, one kitchen counter. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 10 m \u00d7 7 m",
+        "expect expected_furniture=['double bed', 'wardrobe', 'sofa', 'coffee table', 'kitchen counter']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "double_bed_wardrobe_sofa_coffee_table_kitchen_counter",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S17",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S17",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S17 (Two-room office with central corridor)",
+      "prompt": "Generate a 10 m \u00d7 5 m Two-room office with central corridor (drywall walls (2 offices 4x5 + 2x5 corridor in between)) containing one desk, one office chair, one bookshelf. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 10 m \u00d7 5 m",
+        "expect expected_furniture=['desk', 'office chair', 'bookshelf']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_bookshelf",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S18",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S18",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S18 (Office suite with cubicles + meeting room)",
+      "prompt": "Generate a 14 m \u00d7 9 m Office suite with cubicles + meeting room (drywall walls + 4 fabric cubicle partitions (1.5 m tall) + 1 full-height meeting-room partition) containing one desk, one office chair, one meeting table, one fabric cubicle partition. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 14 m \u00d7 9 m",
+        "expect expected_furniture=['desk', 'office chair', 'meeting table', 'fabric cubicle partition']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_meeting_table_fabric_cubicle_partition",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S19",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S19",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S19 (Hostel dorm cluster)",
+      "prompt": "Generate a 14 m \u00d7 8 m Hostel dorm cluster (drywall walls (4 dorm rooms 3x4 each + 14x2 corridor + 4x2 shared bathroom)) containing one bunk bed, one locker. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 14 m \u00d7 8 m",
+        "expect expected_furniture=['bunk bed', 'locker']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "bunk_bed_locker",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S20",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S20",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S20 (Studio with separate bathroom)",
+      "prompt": "Generate a 8 m \u00d7 5 m Studio with separate bathroom (drywall walls (6x5 studio + 2x5 bathroom)) containing one double bed, one sofa, one kitchen counter. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 8 m \u00d7 5 m",
+        "expect expected_furniture=['double bed', 'sofa', 'kitchen counter']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "double_bed_sofa_kitchen_counter",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S21",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S21",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S21 (small office)",
+      "prompt": "Generate a 4 m \u00d7 3 m small office (drywall walls) containing one desk, one office chair, one filing cabinet. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 4 m \u00d7 3 m",
+        "expect expected_furniture=['desk', 'office chair', 'filing cabinet']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_filing_cabinet",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S22",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S22",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S22 (reading nook)",
+      "prompt": "Generate a 5 m \u00d7 4 m reading nook (drywall walls) containing one armchair, one side table. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 5 m \u00d7 4 m",
+        "expect expected_furniture=['armchair', 'side table']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "armchair_side_table",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S23",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S23",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S23 (home study)",
+      "prompt": "Generate a 5 m \u00d7 4 m home study (drywall walls) containing one desk, one office chair, one bookshelf. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 5 m \u00d7 4 m",
+        "expect expected_furniture=['desk', 'office chair', 'bookshelf']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_bookshelf",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S24",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S24",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S24 (small bedroom)",
+      "prompt": "Generate a 4 m \u00d7 3 m small bedroom (drywall walls) containing one single bed, one nightstand, one dresser. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 4 m \u00d7 3 m",
+        "expect expected_furniture=['single bed', 'nightstand', 'dresser']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "single_bed_nightstand_dresser",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S25",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S25",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "easy",
+      "split": "train",
+      "name": "Scene-only check: S25 (art studio)",
+      "prompt": "Generate a 5 m \u00d7 4 m art studio (drywall walls) containing one easel, one drafting table, one storage cabinet. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 5 m \u00d7 4 m",
+        "expect expected_furniture=['easel', 'drafting table', 'storage cabinet']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "easel_drafting_table_storage_cabinet",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S26",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S26",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S26 (Open-plan dining + kitchen)",
+      "prompt": "Generate a 8 m \u00d7 5 m Open-plan dining + kitchen (drywall walls (open-plan, no partition)) containing one dining table, one kitchen counter. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 8 m \u00d7 5 m",
+        "expect expected_furniture=['dining table', 'kitchen counter']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "dining_table_kitchen_counter",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S27",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S27",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S27 (Split office: 2 zones)",
+      "prompt": "Generate a 10 m \u00d7 6 m Split office: 2 zones (drywall walls + 1 full-height drywall partition at x=5 dividing 2 work zones) containing one desk, one office chair, one bookshelf. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 10 m \u00d7 6 m",
+        "expect expected_furniture=['desk', 'office chair', 'bookshelf']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_bookshelf",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S28",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S28",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S28 (Two-bedroom apartment)",
+      "prompt": "Generate a 10 m \u00d7 7 m Two-bedroom apartment (drywall walls (2 bedrooms 4x3 + living 4x4)) containing one double bed, one sofa. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 10 m \u00d7 7 m",
+        "expect expected_furniture=['double bed', 'sofa']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "double_bed_sofa",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S29",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S29",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S29 (Large open studio apartment)",
+      "prompt": "Generate a 12 m \u00d7 8 m Large open studio apartment (drywall walls (single open zone, no partitions)) containing one double bed, one sofa. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 12 m \u00d7 8 m",
+        "expect expected_furniture=['double bed', 'sofa']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "double_bed_sofa",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TCsc_S30",
+      "origin": "scene_check",
+      "origin_id": "TCsc_S30",
+      "tier": "TC_scene_check",
+      "capability": "scene_only",
+      "difficulty": "hard",
+      "split": "train",
+      "name": "Scene-only check: S30 (Home office + meeting room)",
+      "prompt": "Generate a 8 m \u00d7 5 m Home office + meeting room (drywall walls + 1 full-height drywall partition (5x5 office + 3x5 meeting)) containing one desk, one office chair, one meeting table. Write a valid scene_state.json with rooms, walls, furniture, materials. No simulation needed for this task.",
+      "distractor": "Wrong: putting furniture outside the room bounds or overlapping. Right: place each item at a unique position inside the room and check AABB.",
+      "scene_path": null,
+      "required_artifacts": [
+        "scene_state.json"
+      ],
+      "assertions": [
+        "must create scene state",
+        "must be collision free",
+        "must be in bounds",
+        "must be loadable by Sionna RT",
+        "expect room dims 8 m \u00d7 5 m",
+        "expect expected_furniture=['desk', 'office chair', 'meeting table']"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_scene_state",
+            "type": "file_exists"
+          },
+          {
+            "metric": "collision_free_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "in_bounds_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_loadable_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "desk_office_chair_meeting_table",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}

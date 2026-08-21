@@ -1,0 +1,78 @@
+{
+  "task_family": "S1_fixed_deployment",
+  "scene_name": "simple_street_canyon",
+  "ap_positions": [
+    [
+      -15.0,
+      0.0,
+      15.0
+    ],
+    [
+      15.0,
+      0.0,
+      15.0
+    ]
+  ],
+  "ue_positions": [
+    [
+      -20.0,
+      0.0,
+      1.5
+    ],
+    [
+      -5.0,
+      0.0,
+      1.5
+    ],
+    [
+      5.0,
+      0.0,
+      1.5
+    ],
+    [
+      20.0,
+      0.0,
+      1.5
+    ]
+  ],
+  "tx_power_dbm": 0.0,
+  "noise_dbm": -85.0,
+  "frequency_hz": 5000000000.0,
+  "path_gain_db": [
+    [
+      -69.14,
+      -69.809,
+      -72.421,
+      -75.266
+    ],
+    [
+      -75.288,
+      -72.421,
+      -69.809,
+      -69.14
+    ]
+  ],
+  "serving_ap": [
+    0,
+    0,
+    1,
+    1
+  ],
+  "sinr_db": [
+    5.71,
+    2.38,
+    2.38,
+    5.69
+  ],
+  "per_user_rate_bps_hz": [
+    2.2392,
+    1.4485,
+    1.4485,
+    2.234
+  ],
+  "sum_throughput_bps_hz": 7.3702,
+  "mean_throughput_bps_hz": 1.8426,
+  "fairness_index": 0.9563,
+  "method": "sionna_rt",
+  "sionna_version": "2.0.1"
+}

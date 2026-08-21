@@ -1,0 +1,77 @@
+{
+  "task_family": "S2_fixed_scheduler",
+  "scene_name": "simple_street_canyon",
+  "ap_position": [
+    0.0,
+    0.0,
+    15.0
+  ],
+  "ue_positions": [
+    [
+      -20.0,
+      0.0,
+      1.5
+    ],
+    [
+      -5.0,
+      0.0,
+      1.5
+    ],
+    [
+      5.0,
+      0.0,
+      1.5
+    ],
+    [
+      20.0,
+      0.0,
+      1.5
+    ]
+  ],
+  "tx_power_dbm": 0.0,
+  "noise_dbm": -85.0,
+  "frequency_hz": 5000000000.0,
+  "scheduler": "proportional_fair",
+  "alpha": 0.1,
+  "num_slots": 10,
+  "path_gain_db": [
+    -72.465,
+    -68.647,
+    -68.647,
+    -72.44
+  ],
+  "sinr_db": [
+    12.53,
+    16.35,
+    16.35,
+    12.56
+  ],
+  "instantaneous_rate_bps_hz": [
+    4.2423,
+    5.4654,
+    5.4654,
+    4.2502
+  ],
+  "scheduled_ue": [
+    1,
+    2,
+    3,
+    0,
+    1,
+    2,
+    3,
+    0,
+    1,
+    2
+  ],
+  "per_user_throughput_bps_hz": [
+    0.8485,
+    1.6396,
+    1.6396,
+    0.85
+  ],
+  "sum_throughput_bps_hz": 4.9777,
+  "fairness_index": 0.9084,
+  "method": "sionna_rt",
+  "sionna_version": "2.0.1"
+}

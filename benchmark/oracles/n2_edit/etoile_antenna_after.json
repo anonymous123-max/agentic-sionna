@@ -1,0 +1,51 @@
+{
+  "scene_name": "etoile",
+  "state": {
+    "freq": 5000000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      0,
+      0,
+      30
+    ],
+    "antenna": "panel_4x4_face_east"
+  },
+  "cell_size": 2.0,
+  "max_depth": 2,
+  "samples_per_tx": 50000,
+  "grid_shape": [
+    339,
+    427
+  ],
+  "elapsed_s": 0.02,
+  "rss_dbm_min": -120.0,
+  "rss_dbm_max": -35.63140106201172,
+  "rss_dbm_mean": -86.13878631591797,
+  "valid_cells": 10693,
+  "total_cells": 144753,
+  "edit_type": "antenna",
+  "before_state": {
+    "freq": 5000000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      0,
+      0,
+      30
+    ],
+    "antenna": "iso"
+  },
+  "after_state": {
+    "freq": 5000000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      0,
+      0,
+      30
+    ],
+    "antenna": "panel_4x4_face_east"
+  },
+  "before_ref": "benchmark/oracles/n1/etoile.npy",
+  "delta_mean_db": -21.625,
+  "delta_std_db": 14.689,
+  "sionna_version": "2.0.1"
+}

@@ -1,0 +1,1988 @@
+{
+  "version": "2.1",
+  "description": "RadioTwinAgent evaluation \u2014 99 tasks with ground truth, expected params, three-level validation. v2.1 adds outdoor, mmWave beam management, mobility, interference, uplink, and power efficiency tasks.",
+  "generated": "2026-04-10",
+  "evaluation_standard": {
+    "pass_at_k": 3,
+    "levels": [
+      "L1_execution",
+      "L2_format",
+      "L3_correctness"
+    ],
+    "tolerance_ber_db": 5.0,
+    "tolerance_coverage_pp": 15.0,
+    "tolerance_throughput_pct": 50
+  },
+  "categories": {
+    "A_ber_analysis": {
+      "description": "BER/BLER coded modulation performance",
+      "template": "template_ber.py",
+      "count": 10,
+      "tasks": [
+        {
+          "id": "A01",
+          "prompt": "Compare LDPC vs Polar codes at rate 1/2 over AWGN from 0 to 10 dB SNR using 16-QAM",
+          "difficulty": "medium",
+          "expected_params": {
+            "codec": "ldpc",
+            "code_rate_k": 1024,
+            "code_rate_n": 2048,
+            "num_bits_per_symbol": 4,
+            "snr_range_db": [
+              0,
+              10
+            ]
+          },
+          "ground_truth": {
+            "snr_for_ber_1e4_db": 5.3,
+            "ber_at_10db": 1e-07,
+            "coding_gain_db": 7.0,
+            "spectral_efficiency": 2.0
+          },
+          "validation": {
+            "must_produce_ber_curve": true,
+            "ber_must_decrease_with_snr": true,
+            "snr_tolerance_db": 3.0
+          }
+        },
+        {
+          "id": "A02",
+          "prompt": "What's the BER for QPSK with LDPC rate 3/4 at 15 dB SNR over AWGN?",
+          "difficulty": "easy",
+          "expected_params": {
+            "codec": "ldpc",
+            "code_rate_k": 768,
+            "code_rate_n": 1024,
+            "num_bits_per_symbol": 2
+          },
+          "ground_truth": {
+            "snr_for_ber_1e4_db": 0.9,
+            "ber_at_10db": 1e-07,
+            "coding_gain_db": 7.5
+          },
+          "validation": {
+            "must_produce_ber_curve": true,
+            "snr_tolerance_db": 3.0
+          }
+        },
+        {
+          "id": "A03",
+          "prompt": "Show me the BER waterfall for 64-QAM LDPC rate 1/2 over Rayleigh fading",
+          "difficulty": "medium",
+          "expected_params": {
+            "codec": "ldpc",
+            "code_rate_k": 1024,
+            "code_rate_n": 2048,
+            "num_bits_per_symbol": 6,
+            "channel_type": "rayleigh"
+          },
+          "ground_truth": {
+            "snr_for_ber_1e4_db": 9.6,
+            "coding_gain_db": 7.0
+          },
+          "validation": {
+            "must_produce_ber_curve": true,
+            "rayleigh_worse_than_awgn": true
+          }
+        },
+        {
+          "id": "A04",
+          "prompt": "Compare BPSK, QPSK, 16-QAM, and 64-QAM at rate 1/2 LDPC over AWGN",
+          "difficulty": "medium",
+          "expected_params": {
+            "codec": "ldpc",
+            "num_bits_per_symbol": [
+              1,
+              2,
+              4,
+              6
+            ]
+          },
+          "ground_truth": {
+            "higher_order_needs_more_snr": true
+          },
+          "validation": {
+            "must_produce_multiple_curves": true,
+            "curves_ordered_by_modulation": true
+          }
+        },
+        {
+          "id": "A05",
+          "prompt": "What SNR do I need for BER below 1e-5 with 256-QAM LDPC rate 5/6?",
+          "difficulty": "hard",
+          "expected_params": {
+            "codec": "ldpc",
+            "code_rate_k": 5120,
+            "code_rate_n": 6144,
+            "num_bits_per_symbol": 8,
+            "target_ber": 1e-05
+          },
+          "ground_truth": {
+            "snr_for_ber_1e5_db": 14.9,
+            "coding_gain_db": 7.7
+          },
+          "validation": {
+            "must_report_snr": true,
+            "snr_tolerance_db": 3.0
+          }
+        },
+        {
+          "id": "A06",
+          "prompt": "Simulate Polar code BER at rate 1/3 with QPSK from -2 to 8 dB",
+          "difficulty": "easy",
+          "expected_params": {
+            "codec": "polar",
+            "code_rate_k": 341,
+            "code_rate_n": 1024,
+            "num_bits_per_symbol": 2,
+            "snr_range_db": [
+              -2,
+              8
+            ]
+          },
+          "ground_truth": {
+            "snr_for_ber_1e4_db": 2.9,
+            "coding_gain_db": 5.5
+          },
+          "validation": {
+            "must_produce_ber_curve": true,
+            "codec_must_be_polar": true
+          }
+        },
+        {
+          "id": "A07",
+          "prompt": "Show coding gain of LDPC rate 1/2 vs uncoded QPSK",
+          "difficulty": "easy",
+          "expected_params": {
+            "codec": "ldpc",
+            "code_rate_k": 1024,
+            "code_rate_n": 2048,
+            "num_bits_per_symbol": 2
+          },
+          "ground_truth": {
+            "coding_gain_db": 7.0,
+            "coding_gain_range_db": [
+              5,
+              10
+            ]
+          },
+          "validation": {
+            "must_report_coding_gain": true,
+            "gain_in_range": true
+          }
+        },
+        {
+          "id": "A08",
+          "prompt": "BER performance of 16-QAM with rate 2/3 LDPC over both AWGN and Rayleigh",
+          "difficulty": "medium",
+          "expected_params": {
+            "codec": "ldpc",
+            "num_bits_per_symbol": 4,
+            "channel_type": [
+              "awgn",
+              "rayleigh"
+            ]
+          },
+          "ground_truth": {
+            "awgn_better_than_rayleigh": true
+          },
+          "validation": {
+            "must_produce_two_curves": true
+          }
+        },
+        {
+          "id": "A09",
+          "prompt": "What's the spectral efficiency of 64-QAM rate 3/4 LDPC?",
+          "difficulty": "easy",
+          "expected_params": {
+            "codec": "ldpc",
+            "code_rate_k": 768,
+            "code_rate_n": 1024,
+            "num_bits_per_symbol": 6
+          },
+          "ground_truth": {
+            "spectral_efficiency": 4.5,
+            "tolerance_pct": 10
+          },
+          "validation": {
+            "must_report_spectral_efficiency": true
+          }
+        },
+        {
+          "id": "A10",
+          "prompt": "Simulate BER for Polar code rate 1/2 with 16-QAM, target BER 1e-4",
+          "difficulty": "easy",
+          "expected_params": {
+            "codec": "polar",
+            "code_rate_k": 512,
+            "code_rate_n": 1024,
+            "num_bits_per_symbol": 4,
+            "target_ber": 0.0001
+          },
+          "ground_truth": {
+            "snr_for_ber_1e4_db": 6.5,
+            "coding_gain_db": 5.8
+          },
+          "validation": {
+            "must_produce_ber_curve": true,
+            "must_report_target_snr": true
+          }
+        }
+      ]
+    },
+    "B_indoor_coverage": {
+      "description": "Indoor and outdoor coverage mapping \u2014 agent creates scene + runs simulation. Includes multi-AP interference scenarios.",
+      "template": "template_rt_coverage.py",
+      "count": 18,
+      "tasks": [
+        {
+          "id": "B01",
+          "prompt": "Generate a coverage map for a single AP at 3.5 GHz in a 10x8m conference room",
+          "difficulty": "easy",
+          "expected_params": {
+            "frequency_hz": 3500000000.0,
+            "room_width": 10,
+            "room_depth": 8
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              80,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_report_coverage_pct": true,
+            "coverage_in_range": true
+          }
+        },
+        {
+          "id": "B02",
+          "prompt": "Show me WiFi coverage at 5.8 GHz in a 6x5m office with 4 desks",
+          "difficulty": "easy",
+          "expected_params": {
+            "frequency_hz": 5800000000.0,
+            "room_width": 6,
+            "room_depth": 5
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              70,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_report_coverage_pct": true,
+            "must_place_furniture": true
+          }
+        },
+        {
+          "id": "B03",
+          "prompt": "Coverage map for an L-shaped living room, 12x8m overall, AP at ceiling center",
+          "difficulty": "medium",
+          "expected_params": {
+            "room_width": 12,
+            "room_depth": 8,
+            "shape": "l_shaped"
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              60,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_create_l_shaped_room": true
+          }
+        },
+        {
+          "id": "B04",
+          "prompt": "Compare coverage at different AP heights: 1.5m, 2.0m, and ceiling in a bedroom",
+          "difficulty": "hard",
+          "expected_params": {
+            "tx_heights": [
+              1.5,
+              2.0,
+              2.8
+            ]
+          },
+          "ground_truth": {
+            "must_produce_3_maps": true
+          },
+          "validation": {
+            "must_produce_multiple_heatmaps": true
+          }
+        },
+        {
+          "id": "B05",
+          "prompt": "Show signal strength in a 15x10m open office with glass partitions",
+          "difficulty": "medium",
+          "expected_params": {
+            "room_width": 15,
+            "room_depth": 10,
+            "wall_material": "glass"
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              70,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_use_glass_material": true
+          }
+        },
+        {
+          "id": "B06",
+          "prompt": "Coverage in a small bathroom, 3x2.5m, AP in adjacent bedroom",
+          "difficulty": "hard",
+          "expected_params": {
+            "room_width": 3,
+            "room_depth": 2.5,
+            "tx_in_adjacent_room": true
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              30,
+              90
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_model_through_wall": true
+          }
+        },
+        {
+          "id": "B07",
+          "prompt": "Map coverage at 28 GHz mmWave in a 20x15m factory floor",
+          "difficulty": "medium",
+          "expected_params": {
+            "frequency_hz": 28000000000.0,
+            "room_width": 20,
+            "room_depth": 15
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              20,
+              80
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_use_mmwave_frequency": true
+          }
+        },
+        {
+          "id": "B08",
+          "prompt": "Show me where coverage drops below -75 dBm in a 2-room apartment",
+          "difficulty": "hard",
+          "expected_params": {
+            "threshold_dbm": -75,
+            "num_rooms": 2
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              50,
+              95
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_create_multi_room": true
+          }
+        },
+        {
+          "id": "B09",
+          "prompt": "Coverage with two APs in a 25x15m open plan office",
+          "difficulty": "medium",
+          "expected_params": {
+            "num_tx": 2,
+            "room_width": 25,
+            "room_depth": 15
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              80,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_place_two_tx": true
+          }
+        },
+        {
+          "id": "B10",
+          "prompt": "Signal strength at desk height (0.75m) vs standing height (1.5m) in an office",
+          "difficulty": "medium",
+          "expected_params": {
+            "rx_heights": [
+              0.75,
+              1.5
+            ],
+            "room_width": 8,
+            "room_depth": 6
+          },
+          "ground_truth": {
+            "must_produce_2_maps": true
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_compare_heights": true
+          }
+        },
+        {
+          "id": "B11",
+          "prompt": "Coverage map for a corridor, 20m long, 2m wide, AP at one end",
+          "difficulty": "easy",
+          "expected_params": {
+            "room_width": 2,
+            "room_depth": 20
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              40,
+              90
+            ],
+            "signal_decreases_with_distance": true
+          },
+          "validation": {
+            "must_produce_heatmap": true
+          }
+        },
+        {
+          "id": "B12",
+          "prompt": "Show WiFi 6E coverage at 6 GHz in a studio apartment with kitchen island",
+          "difficulty": "medium",
+          "expected_params": {
+            "frequency_hz": 6000000000.0
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              60,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true
+          }
+        },
+        {
+          "id": "B13",
+          "prompt": "Coverage in a bedroom with concrete walls and a large wardrobe blocking LOS",
+          "difficulty": "medium",
+          "expected_params": {
+            "wall_material": "concrete"
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              60,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_include_furniture_obstruction": true
+          }
+        },
+        {
+          "id": "B14",
+          "prompt": "Map the dead zones in a 3-room house with one AP in the living room",
+          "difficulty": "hard",
+          "expected_params": {
+            "num_rooms": 3,
+            "num_tx": 1
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              40,
+              85
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_identify_dead_zones": true
+          }
+        },
+        {
+          "id": "B15",
+          "prompt": "Coverage analysis at 60 GHz in a 4x3m meeting room",
+          "difficulty": "easy",
+          "expected_params": {
+            "frequency_hz": 60000000000.0,
+            "room_width": 4,
+            "room_depth": 3
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              50,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_report_coverage_pct": true
+          }
+        },
+        {
+          "id": "B16",
+          "prompt": "Generate a coverage map at 3.5 GHz for an outdoor urban canyon: 100x50m street bounded by 20m tall buildings on both sides, AP on the south building rooftop",
+          "difficulty": "hard",
+          "expected_params": {
+            "frequency_hz": 3500000000.0,
+            "scene_type": "outdoor",
+            "environment": "urban_canyon"
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              40,
+              90
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_create_outdoor_scene": true,
+            "must_include_building_walls": true
+          }
+        },
+        {
+          "id": "B17",
+          "prompt": "Show me 28 GHz mmWave outdoor coverage with a rooftop AP serving a 200x200m block around it",
+          "difficulty": "hard",
+          "expected_params": {
+            "frequency_hz": 28000000000.0,
+            "scene_type": "outdoor",
+            "tx_height_m": 25
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              20,
+              70
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_use_mmwave": true,
+            "mmwave_shorter_range_than_sub6": true
+          }
+        },
+        {
+          "id": "B18",
+          "prompt": "Map SINR for two co-channel APs 15m apart in a 20x15m open office at 3.5 GHz, showing interference-limited zones",
+          "difficulty": "hard",
+          "expected_params": {
+            "frequency_hz": 3500000000.0,
+            "num_tx": 2,
+            "co_channel": true
+          },
+          "ground_truth": {
+            "sinr_range_db": [
+              -5,
+              25
+            ],
+            "interference_limited": true
+          },
+          "validation": {
+            "must_produce_sinr_map": true,
+            "must_use_two_aps": true,
+            "must_identify_interference_zones": true
+          }
+        }
+      ]
+    },
+    "C_mimo_ofdm": {
+      "description": "MIMO-OFDM link-level evaluation including mmWave beam management, Doppler/mobility, and channel coherence time",
+      "template": "template_mimo_ofdm.py",
+      "count": 15,
+      "tasks": [
+        {
+          "id": "C01",
+          "prompt": "Simulate a 4x4 MIMO-OFDM link at 3.5 GHz with 30 kHz SCS and LDPC rate 1/2",
+          "difficulty": "easy",
+          "expected_params": {
+            "num_tx_ant": 4,
+            "num_rx_ant": 4,
+            "subcarrier_spacing_khz": 30,
+            "codec": "ldpc"
+          },
+          "ground_truth": {
+            "throughput_range_mbps": [
+              10,
+              50
+            ],
+            "array_gain_db_range": [
+              3,
+              9
+            ]
+          },
+          "validation": {
+            "must_produce_ber_curve": true,
+            "must_report_throughput": true
+          }
+        },
+        {
+          "id": "C02",
+          "prompt": "Compare 2x2 vs 4x4 vs 8x8 antenna arrays for 16-QAM LDPC at 3.5 GHz",
+          "difficulty": "medium",
+          "expected_params": {
+            "configs": [
+              [
+                2,
+                2
+              ],
+              [
+                4,
+                4
+              ],
+              [
+                8,
+                8
+              ]
+            ],
+            "num_bits_per_symbol": 4
+          },
+          "ground_truth": {
+            "larger_array_better": true
+          },
+          "validation": {
+            "must_produce_multiple_curves": true,
+            "larger_array_lower_ber": true
+          }
+        },
+        {
+          "id": "C03",
+          "prompt": "What throughput can I expect with a 4x4 MIMO link using 64-QAM rate 3/4?",
+          "difficulty": "easy",
+          "expected_params": {
+            "num_tx_ant": 4,
+            "num_rx_ant": 4,
+            "num_bits_per_symbol": 6,
+            "code_rate_k": 768,
+            "code_rate_n": 1024
+          },
+          "ground_truth": {
+            "throughput_range_mbps": [
+              20,
+              80
+            ]
+          },
+          "validation": {
+            "must_report_throughput": true,
+            "throughput_in_range": true
+          }
+        },
+        {
+          "id": "C04",
+          "prompt": "Compare LS vs LMMSE channel estimation for 2x2 MIMO QPSK",
+          "difficulty": "medium",
+          "expected_params": {
+            "channel_estimators": [
+              "ls",
+              "lmmse"
+            ],
+            "num_tx_ant": 2,
+            "num_rx_ant": 2,
+            "num_bits_per_symbol": 2
+          },
+          "ground_truth": {
+            "lmmse_better_than_ls": true
+          },
+          "validation": {
+            "must_produce_two_curves": true
+          }
+        },
+        {
+          "id": "C05",
+          "prompt": "Simulate 5G NR link with 120 kHz SCS for mmWave at 28 GHz, 4x4 MIMO",
+          "difficulty": "medium",
+          "expected_params": {
+            "subcarrier_spacing_khz": 120,
+            "frequency_hz": 28000000000.0,
+            "num_tx_ant": 4,
+            "num_rx_ant": 4
+          },
+          "ground_truth": {
+            "throughput_range_mbps": [
+              50,
+              400
+            ]
+          },
+          "validation": {
+            "must_produce_ber_curve": true,
+            "must_use_120khz_scs": true
+          }
+        },
+        {
+          "id": "C06",
+          "prompt": "BER curve for 8x8 MIMO with 256-QAM LDPC rate 5/6 over TDL-A channel",
+          "difficulty": "hard",
+          "expected_params": {
+            "num_tx_ant": 8,
+            "num_rx_ant": 8,
+            "num_bits_per_symbol": 8,
+            "channel_model": "tdl_a"
+          },
+          "ground_truth": {
+            "throughput_range_mbps": [
+              50,
+              200
+            ]
+          },
+          "validation": {
+            "must_produce_ber_curve": true
+          }
+        },
+        {
+          "id": "C07",
+          "prompt": "How does cyclic prefix length affect BER for 4x4 MIMO at 30 kHz SCS?",
+          "difficulty": "hard",
+          "expected_params": {
+            "cyclic_prefix_lengths": [
+              6,
+              18
+            ],
+            "num_tx_ant": 4,
+            "num_rx_ant": 4
+          },
+          "ground_truth": {
+            "longer_cp_similar_or_better": true
+          },
+          "validation": {
+            "must_compare_cp_lengths": true
+          }
+        },
+        {
+          "id": "C08",
+          "prompt": "Simulate SISO (1x1) vs 4x4 MIMO with same modulation and coding",
+          "difficulty": "easy",
+          "expected_params": {
+            "configs": [
+              [
+                1,
+                1
+              ],
+              [
+                4,
+                4
+              ]
+            ]
+          },
+          "ground_truth": {
+            "mimo_gain_visible": true,
+            "mimo_gain_db_range": [
+              3,
+              12
+            ]
+          },
+          "validation": {
+            "must_produce_two_curves": true,
+            "mimo_better_than_siso": true
+          }
+        },
+        {
+          "id": "C09",
+          "prompt": "What MCS can I use at 10 dB SNR with 2x2 MIMO?",
+          "difficulty": "easy",
+          "expected_params": {
+            "target_snr_db": 10,
+            "num_tx_ant": 2,
+            "num_rx_ant": 2
+          },
+          "ground_truth": {
+            "mcs_range": [
+              4,
+              20
+            ]
+          },
+          "validation": {
+            "must_report_mcs": true
+          }
+        },
+        {
+          "id": "C10",
+          "prompt": "Evaluate 5G NR PDSCH with 4x4 MIMO, 16-QAM, LS estimation over TDL-C",
+          "difficulty": "hard",
+          "expected_params": {
+            "channel_model": "tdl_c",
+            "channel_estimator": "ls",
+            "num_tx_ant": 4,
+            "num_rx_ant": 4,
+            "num_bits_per_symbol": 4
+          },
+          "ground_truth": {
+            "throughput_range_mbps": [
+              10,
+              50
+            ]
+          },
+          "validation": {
+            "must_produce_ber_curve": true
+          }
+        },
+        {
+          "id": "C11",
+          "prompt": "Perform a beam sweep for a 64-element uniform planar array at 28 GHz \u2014 find the best beam for a user at (50, 30, 1.5)m relative to the AP",
+          "difficulty": "medium",
+          "expected_params": {
+            "frequency_hz": 28000000000.0,
+            "num_tx_ant": 64,
+            "array_type": "upa_8x8",
+            "beam_sweep": true
+          },
+          "ground_truth": {
+            "best_beam_snr_gain_db_range": [
+              10,
+              25
+            ]
+          },
+          "validation": {
+            "must_produce_beam_snr_table": true,
+            "must_identify_best_beam": true
+          }
+        },
+        {
+          "id": "C12",
+          "prompt": "Simulate beam tracking for a pedestrian user walking at 1 m/s in a circle around a 28 GHz AP with 32-element array \u2014 show how beam selection changes over 30 seconds",
+          "difficulty": "hard",
+          "expected_params": {
+            "frequency_hz": 28000000000.0,
+            "num_tx_ant": 32,
+            "user_speed_ms": 1.0,
+            "duration_s": 30
+          },
+          "ground_truth": {
+            "beam_switches_range": [
+              5,
+              30
+            ]
+          },
+          "validation": {
+            "must_produce_beam_timeline": true,
+            "must_track_user_position": true
+          }
+        },
+        {
+          "id": "C13",
+          "prompt": "Codebook-based beam selection for a 16-element array at 3.5 GHz \u2014 evaluate 16 DFT codebook beams and report SNR per beam",
+          "difficulty": "medium",
+          "expected_params": {
+            "frequency_hz": 3500000000.0,
+            "num_tx_ant": 16,
+            "codebook_type": "dft",
+            "num_beams": 16
+          },
+          "ground_truth": {
+            "best_beam_snr_db_range": [
+              5,
+              30
+            ]
+          },
+          "validation": {
+            "must_report_per_beam_snr": true,
+            "must_use_dft_codebook": true
+          }
+        },
+        {
+          "id": "C14",
+          "prompt": "Evaluate how Doppler affects BER for a 4x4 MIMO link at 3.5 GHz with QPSK rate 1/2 LDPC under TDL-A at user speeds 0, 30, 60, and 120 km/h",
+          "difficulty": "hard",
+          "expected_params": {
+            "frequency_hz": 3500000000.0,
+            "channel_model": "tdl_a",
+            "speeds_kmh": [
+              0,
+              30,
+              60,
+              120
+            ]
+          },
+          "ground_truth": {
+            "ber_increases_with_speed": true,
+            "speed_ber_monotonic": true
+          },
+          "validation": {
+            "must_produce_ber_vs_speed_curve": true,
+            "doppler_degrades_ber": true
+          }
+        },
+        {
+          "id": "C15",
+          "prompt": "Estimate the channel coherence time at 3.5 GHz for a vehicular user moving at 60 km/h using the EVA channel model \u2014 report in milliseconds",
+          "difficulty": "medium",
+          "expected_params": {
+            "frequency_hz": 3500000000.0,
+            "channel_model": "eva",
+            "user_speed_kmh": 60
+          },
+          "ground_truth": {
+            "coherence_time_ms_range": [
+              2,
+              8
+            ]
+          },
+          "validation": {
+            "must_report_coherence_time_ms": true,
+            "value_in_range": true
+          }
+        }
+      ]
+    },
+    "D_scene_generation": {
+      "description": "Natural language to 3D indoor scene with furniture \u2014 scene creation only, no simulation",
+      "template": null,
+      "count": 20,
+      "tasks": [
+        {
+          "id": "D01",
+          "prompt": "Create a small bedroom with a bed, nightstand, and wardrobe",
+          "difficulty": "easy",
+          "expected_params": {
+            "room_type": "bedroom"
+          },
+          "ground_truth": {
+            "expected_furniture": [
+              "bed",
+              "nightstand",
+              "wardrobe"
+            ],
+            "min_furniture": 3,
+            "room_dims_range": {
+              "width": [
+                3,
+                6
+              ],
+              "depth": [
+                3,
+                5
+              ]
+            }
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_be_collision_free": true,
+            "must_be_in_bounds": true,
+            "must_have_rf_materials": true
+          }
+        },
+        {
+          "id": "D02",
+          "prompt": "Generate a 6x5m office with 4 desks and 4 chairs",
+          "difficulty": "easy",
+          "expected_params": {
+            "room_width": 6,
+            "room_depth": 5,
+            "furniture": [
+              {
+                "type": "desk",
+                "count": 4
+              },
+              {
+                "type": "chair",
+                "count": 4
+              }
+            ]
+          },
+          "ground_truth": {
+            "expected_furniture": [
+              "desk",
+              "chair"
+            ],
+            "min_furniture": 6,
+            "room_width": 6,
+            "room_depth": 5
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_match_dimensions": true,
+            "must_be_collision_free": true
+          }
+        },
+        {
+          "id": "D03",
+          "prompt": "Create an L-shaped living room with a sofa, coffee table, and TV stand",
+          "difficulty": "medium",
+          "expected_params": {
+            "shape": "l_shaped"
+          },
+          "ground_truth": {
+            "expected_furniture": [
+              "sofa",
+              "coffee table",
+              "tv stand"
+            ],
+            "polygon_vertices_gt_4": true
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_be_l_shaped": true,
+            "must_be_collision_free": true
+          }
+        },
+        {
+          "id": "D04",
+          "prompt": "Design a 10x8m conference room with a large table and 8 chairs",
+          "difficulty": "easy",
+          "expected_params": {
+            "room_width": 10,
+            "room_depth": 8
+          },
+          "ground_truth": {
+            "expected_furniture": [
+              "table",
+              "chair"
+            ],
+            "min_furniture": 6,
+            "room_width": 10,
+            "room_depth": 8
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_match_dimensions": true
+          }
+        },
+        {
+          "id": "D05",
+          "prompt": "Make a studio apartment with kitchen area, bed, desk, and bookshelf",
+          "difficulty": "medium",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "bed",
+              "desk",
+              "bookshelf"
+            ],
+            "min_furniture": 4
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_be_collision_free": true
+          }
+        },
+        {
+          "id": "D06",
+          "prompt": "Create a bedroom with the bed against the north wall and desk near the window",
+          "difficulty": "medium",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "bed",
+              "desk"
+            ],
+            "bed_near_north": true
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_place_furniture_as_requested": true
+          }
+        },
+        {
+          "id": "D07",
+          "prompt": "Generate a 3-room apartment: living room, bedroom, kitchen",
+          "difficulty": "hard",
+          "expected_params": {
+            "num_rooms": 3
+          },
+          "ground_truth": {
+            "room_count": 3
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_have_multiple_rooms": true
+          }
+        },
+        {
+          "id": "D08",
+          "prompt": "Create a hospital ward with 4 beds and privacy curtains",
+          "difficulty": "hard",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "bed"
+            ],
+            "min_furniture": 4
+          },
+          "validation": {
+            "must_create_scene_state": true
+          }
+        },
+        {
+          "id": "D09",
+          "prompt": "Make a small cafe with 6 tables and a counter",
+          "difficulty": "medium",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "table"
+            ],
+            "min_furniture": 4
+          },
+          "validation": {
+            "must_create_scene_state": true
+          }
+        },
+        {
+          "id": "D10",
+          "prompt": "Design a home office with standing desk, bookcase, and filing cabinet",
+          "difficulty": "easy",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "desk",
+              "bookcase",
+              "cabinet"
+            ],
+            "min_furniture": 3
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_be_collision_free": true
+          }
+        },
+        {
+          "id": "D11",
+          "prompt": "Create a large open-plan office, 20x15m, with 10 workstations",
+          "difficulty": "hard",
+          "expected_params": {
+            "room_width": 20,
+            "room_depth": 15
+          },
+          "ground_truth": {
+            "min_furniture": 8,
+            "room_width": 20,
+            "room_depth": 15
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_match_dimensions": true
+          }
+        },
+        {
+          "id": "D12",
+          "prompt": "Generate a hotel room with king bed, desk, TV stand, and en-suite bathroom",
+          "difficulty": "hard",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "bed",
+              "desk",
+              "tv stand"
+            ],
+            "min_furniture": 3
+          },
+          "validation": {
+            "must_create_scene_state": true
+          }
+        },
+        {
+          "id": "D13",
+          "prompt": "Make a classroom with 20 desks in rows facing a whiteboard",
+          "difficulty": "hard",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "desk"
+            ],
+            "min_furniture": 10
+          },
+          "validation": {
+            "must_create_scene_state": true
+          }
+        },
+        {
+          "id": "D14",
+          "prompt": "Create a retail store, 12x8m, with shelving units along the walls",
+          "difficulty": "medium",
+          "expected_params": {
+            "room_width": 12,
+            "room_depth": 8
+          },
+          "ground_truth": {
+            "min_furniture": 3,
+            "room_width": 12,
+            "room_depth": 8
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_match_dimensions": true
+          }
+        },
+        {
+          "id": "D15",
+          "prompt": "Design a server room, 5x4m, with 3 server racks",
+          "difficulty": "medium",
+          "expected_params": {
+            "room_width": 5,
+            "room_depth": 4
+          },
+          "ground_truth": {
+            "expected_furniture": [
+              "server rack",
+              "cabinet",
+              "rack"
+            ],
+            "min_furniture": 3
+          },
+          "validation": {
+            "must_create_scene_state": true
+          }
+        },
+        {
+          "id": "D16",
+          "prompt": "Create a dining room with a table for 6 and a sideboard",
+          "difficulty": "easy",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "table",
+              "chair"
+            ],
+            "min_furniture": 4
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_be_collision_free": true
+          }
+        },
+        {
+          "id": "D17",
+          "prompt": "Generate a gym with treadmills and weight benches",
+          "difficulty": "medium",
+          "expected_params": {},
+          "ground_truth": {
+            "min_furniture": 3
+          },
+          "validation": {
+            "must_create_scene_state": true
+          }
+        },
+        {
+          "id": "D18",
+          "prompt": "Make a library reading room with bookshelves and study desks",
+          "difficulty": "medium",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "bookshelf",
+              "bookcase",
+              "desk"
+            ],
+            "min_furniture": 3
+          },
+          "validation": {
+            "must_create_scene_state": true
+          }
+        },
+        {
+          "id": "D19",
+          "prompt": "Create a factory floor, 30x20m, with assembly tables and storage cabinets",
+          "difficulty": "hard",
+          "expected_params": {
+            "room_width": 30,
+            "room_depth": 20
+          },
+          "ground_truth": {
+            "min_furniture": 4,
+            "room_width": 30,
+            "room_depth": 20
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_match_dimensions": true
+          }
+        },
+        {
+          "id": "D20",
+          "prompt": "Design a reception area with a front desk, waiting chairs, and coffee table",
+          "difficulty": "easy",
+          "expected_params": {},
+          "ground_truth": {
+            "expected_furniture": [
+              "desk",
+              "chair",
+              "table"
+            ],
+            "min_furniture": 3
+          },
+          "validation": {
+            "must_create_scene_state": true,
+            "must_be_collision_free": true
+          }
+        }
+      ]
+    },
+    "E_optimization": {
+      "description": "TX placement optimization on existing benchmark scenes, including outdoor and multi-cell interference-aware placement",
+      "template": "template_rt_coverage.py",
+      "count": 17,
+      "tasks": [
+        {
+          "id": "E01",
+          "prompt": "Find the optimal AP position to maximize coverage above -70 dBm",
+          "difficulty": "easy",
+          "scene_path": "benchmark/scenes/easy/scene_01/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 97.5,
+            "center_coverage_pct": 90.8,
+            "target_pct": 91
+          },
+          "validation": {
+            "coverage_must_meet_target": true,
+            "must_report_tx_position": true
+          }
+        },
+        {
+          "id": "E02",
+          "prompt": "Achieve 85% coverage above -70 dBm in this L-shaped room",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_01/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 96.2,
+            "center_coverage_pct": 89.9,
+            "target_pct": 93
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E03",
+          "prompt": "Optimize AP placement for this multi-room floor plan",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/hard/scene_02/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 97.1,
+            "center_coverage_pct": 89.0,
+            "target_pct": 95
+          },
+          "validation": {
+            "coverage_must_meet_target": true,
+            "must_report_tx_position": true
+          }
+        },
+        {
+          "id": "E04",
+          "prompt": "Find the best AP position in this partitioned office",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_03/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 94.8,
+            "center_coverage_pct": 90.7,
+            "target_pct": 93
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E05",
+          "prompt": "Maximize coverage in this large multi-room scene",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/hard/scene_07/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 96.2,
+            "center_coverage_pct": 92.5,
+            "target_pct": 95
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E06",
+          "prompt": "Add a second AP to cover the dead zones in this scene",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/hard/scene_08/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 98.1,
+            "center_coverage_pct": 92.0,
+            "target_pct": 95
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E07",
+          "prompt": "Optimize for this easy rectangular room",
+          "difficulty": "easy",
+          "scene_path": "benchmark/scenes/easy/scene_05/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 92.3,
+            "center_coverage_pct": 87.9,
+            "target_pct": 91
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E08",
+          "prompt": "Find best AP position in this medium complexity scene",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_05/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 96.6,
+            "center_coverage_pct": 92.0,
+            "target_pct": 93
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E09",
+          "prompt": "Optimize coverage for minimum number of APs",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/hard/scene_05/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 97.3,
+            "center_coverage_pct": 92.8,
+            "target_pct": 95
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E10",
+          "prompt": "Optimize AP position considering wall obstructions",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_07/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 97.7,
+            "center_coverage_pct": 90.5,
+            "target_pct": 93
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E11",
+          "prompt": "Achieve target coverage in this corridor-like scene",
+          "difficulty": "easy",
+          "scene_path": "benchmark/scenes/easy/scene_03/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 93.5,
+            "center_coverage_pct": 89.3,
+            "target_pct": 91
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E12",
+          "prompt": "Optimize for this hard scene with many partitions",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/hard/scene_01/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 97.8,
+            "center_coverage_pct": 92.0,
+            "target_pct": 95
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E13",
+          "prompt": "Find optimal AP for this medium L-shaped room",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_09/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 94.1,
+            "center_coverage_pct": 88.2,
+            "target_pct": 93
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E14",
+          "prompt": "Optimize coverage for this easy room with furniture",
+          "difficulty": "easy",
+          "scene_path": "benchmark/scenes/easy/scene_08/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 94.0,
+            "center_coverage_pct": 89.6,
+            "target_pct": 91
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E15",
+          "prompt": "Maximize coverage in this challenging hard scene",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/hard/scene_06/scene_state.json",
+          "ground_truth": {
+            "grid_search_best_pct": 95.3,
+            "center_coverage_pct": 88.7,
+            "target_pct": 95
+          },
+          "validation": {
+            "coverage_must_meet_target": true
+          }
+        },
+        {
+          "id": "E16",
+          "prompt": "Optimize small-cell AP placement in a 200x200m outdoor campus with 3 buildings \u2014 find position that maximizes 5 GHz coverage above -75 dBm",
+          "difficulty": "hard",
+          "expected_params": {
+            "frequency_hz": 5000000000.0,
+            "scene_type": "outdoor",
+            "area_range_m": [
+              200,
+              200
+            ]
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              60,
+              95
+            ],
+            "target_pct": 80
+          },
+          "validation": {
+            "must_create_outdoor_scene": true,
+            "coverage_must_meet_target": true,
+            "must_report_optimal_position": true
+          }
+        },
+        {
+          "id": "E17",
+          "prompt": "Place 3 APs in a 30x20m open-plan office to maximize SINR while minimizing mutual interference \u2014 report SINR map and each AP position",
+          "difficulty": "hard",
+          "expected_params": {
+            "num_tx": 3,
+            "room_width": 30,
+            "room_depth": 20,
+            "objective": "max_sinr"
+          },
+          "ground_truth": {
+            "sinr_above_0_db_pct_range": [
+              80,
+              100
+            ]
+          },
+          "validation": {
+            "must_place_three_aps": true,
+            "must_report_sinr_map": true,
+            "must_consider_interference": true
+          }
+        }
+      ]
+    },
+    "F_rt_to_phy": {
+      "description": "Hybrid RT-to-PHY site-specific link analysis including outdoor link budget, uplink scenarios, and TX power optimization",
+      "template": "template_rt_to_phy.py",
+      "count": 13,
+      "tasks": [
+        {
+          "id": "F01",
+          "prompt": "Compute per-location BER with 5G NR LDPC in this scene",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/easy/scene_01/scene_state.json",
+          "expected_params": {
+            "codec": "ldpc",
+            "num_tx_ant": 2,
+            "num_rx_ant": 2
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              80,
+              100
+            ],
+            "throughput_range_mbps": [
+              5,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_ber_map": true,
+            "must_produce_throughput_map": true
+          }
+        },
+        {
+          "id": "F02",
+          "prompt": "What throughput can I expect at each location with a single 5G small cell?",
+          "difficulty": "easy",
+          "scene_path": "benchmark/scenes/easy/scene_05/scene_state.json",
+          "expected_params": {
+            "num_tx_ant": 2,
+            "num_rx_ant": 2
+          },
+          "ground_truth": {
+            "throughput_range_mbps": [
+              5,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_throughput_map": true,
+            "must_report_mean_throughput": true
+          }
+        },
+        {
+          "id": "F03",
+          "prompt": "Show the MCS map for this medium-complexity room",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_01/scene_state.json",
+          "expected_params": {},
+          "ground_truth": {
+            "mcs_range": [
+              0,
+              27
+            ]
+          },
+          "validation": {
+            "must_report_mcs": true
+          }
+        },
+        {
+          "id": "F04",
+          "prompt": "Evaluate 4x4 MIMO performance across this conference room",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/easy/scene_01/scene_state.json",
+          "expected_params": {
+            "num_tx_ant": 4,
+            "num_rx_ant": 4
+          },
+          "ground_truth": {
+            "throughput_range_mbps": [
+              10,
+              200
+            ]
+          },
+          "validation": {
+            "must_produce_throughput_map": true
+          }
+        },
+        {
+          "id": "F05",
+          "prompt": "Where in this room can I get at least 100 Mbps throughput?",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/easy/scene_08/scene_state.json",
+          "expected_params": {},
+          "ground_truth": {
+            "throughput_range_mbps": [
+              10,
+              200
+            ]
+          },
+          "validation": {
+            "must_report_throughput": true
+          }
+        },
+        {
+          "id": "F06",
+          "prompt": "Compare LDPC vs Polar coding BER at the worst-case location in this scene",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/medium/scene_05/scene_state.json",
+          "expected_params": {
+            "codecs": [
+              "ldpc",
+              "polar"
+            ]
+          },
+          "ground_truth": {
+            "ldpc_better_than_polar": true
+          },
+          "validation": {
+            "must_compare_codecs": true
+          }
+        },
+        {
+          "id": "F07",
+          "prompt": "Site-specific link budget for this hard multi-room scene",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/hard/scene_01/scene_state.json",
+          "expected_params": {},
+          "ground_truth": {
+            "coverage_range_pct": [
+              60,
+              100
+            ]
+          },
+          "validation": {
+            "must_produce_coverage_or_throughput": true
+          }
+        },
+        {
+          "id": "F08",
+          "prompt": "Evaluate coverage quality (RSRP, MCS) across this floor plan",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_03/scene_state.json",
+          "expected_params": {},
+          "ground_truth": {
+            "coverage_range_pct": [
+              70,
+              100
+            ]
+          },
+          "validation": {
+            "must_report_coverage": true
+          }
+        },
+        {
+          "id": "F09",
+          "prompt": "What is the maximum data rate at the cell edge in this scene?",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/hard/scene_05/scene_state.json",
+          "expected_params": {},
+          "ground_truth": {
+            "throughput_range_mbps": [
+              1,
+              50
+            ]
+          },
+          "validation": {
+            "must_report_throughput": true
+          }
+        },
+        {
+          "id": "F10",
+          "prompt": "Compare LS vs LMMSE channel estimation across locations in this room",
+          "difficulty": "hard",
+          "scene_path": "benchmark/scenes/easy/scene_01/scene_state.json",
+          "expected_params": {
+            "channel_estimators": [
+              "ls",
+              "lmmse"
+            ]
+          },
+          "ground_truth": {
+            "lmmse_better_than_ls": true
+          },
+          "validation": {
+            "must_compare_estimators": true
+          }
+        },
+        {
+          "id": "F11",
+          "prompt": "Site-specific link budget for a street-level user 100m from a rooftop AP in an outdoor urban canyon at 3.5 GHz",
+          "difficulty": "hard",
+          "expected_params": {
+            "frequency_hz": 3500000000.0,
+            "scene_type": "outdoor",
+            "tx_height_m": 20,
+            "rx_height_m": 1.5,
+            "distance_m": 100
+          },
+          "ground_truth": {
+            "rssi_range_dbm": [
+              -90,
+              -60
+            ]
+          },
+          "validation": {
+            "must_create_outdoor_scene": true,
+            "must_report_rssi": true
+          }
+        },
+        {
+          "id": "F12",
+          "prompt": "Compute the uplink link budget for a 23 dBm UE at the cell edge (30m from AP) with NLOS conditions \u2014 report UL throughput",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_05/scene_state.json",
+          "expected_params": {
+            "link_direction": "uplink",
+            "ue_power_dbm": 23,
+            "distance_m": 30
+          },
+          "ground_truth": {
+            "ul_throughput_mbps_range": [
+              1,
+              30
+            ]
+          },
+          "validation": {
+            "must_report_uplink_throughput": true,
+            "ul_weaker_than_dl": true
+          }
+        },
+        {
+          "id": "F13",
+          "prompt": "Find the minimum TX power (dBm) needed to achieve 85% coverage above -70 dBm in this scene, sweeping 10-30 dBm in 2 dB steps",
+          "difficulty": "medium",
+          "scene_path": "benchmark/scenes/medium/scene_02/scene_state.json",
+          "expected_params": {
+            "power_sweep_dbm": [
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30
+            ],
+            "target_coverage_pct": 85
+          },
+          "ground_truth": {
+            "min_power_dbm_range": [
+              12,
+              28
+            ]
+          },
+          "validation": {
+            "must_report_min_power": true,
+            "must_produce_power_sweep_curve": true
+          }
+        }
+      ]
+    },
+    "G_anchor_sionna_tutorials": {
+      "description": "Anchor tasks from Sionna tutorials \u2014 known correct output for external validation. Covers PHY, RT indoor, MIMO-OFDM, street canyon, Munich coverage, and Paris \u00c9toile outdoor scenes.",
+      "template": null,
+      "count": 6,
+      "tasks": [
+        {
+          "id": "G01",
+          "prompt": "Compute BER for LDPC rate 1/2 with QPSK over AWGN from 0 to 10 dB SNR. Use Sionna's LDPC5GEncoder with k=1024, n=2048.",
+          "difficulty": "easy",
+          "expected_params": {
+            "codec": "ldpc",
+            "code_rate_k": 1024,
+            "code_rate_n": 2048,
+            "num_bits_per_symbol": 2
+          },
+          "ground_truth": {
+            "snr_for_ber_1e4_db": 1.4,
+            "ber_at_5db": 1e-07
+          },
+          "validation": {
+            "must_produce_ber_curve": true,
+            "snr_tolerance_db": 2.0
+          },
+          "source": "Sionna tutorial: 5G NR LDPC"
+        },
+        {
+          "id": "G02",
+          "prompt": "Load Sionna's built-in 'box' scene, place a TX at (2,2,2.5), compute coverage at height 1.5m with cell_size 0.5m at 3.5 GHz",
+          "difficulty": "easy",
+          "expected_params": {
+            "scene": "box",
+            "frequency_hz": 3500000000.0,
+            "tx_position": [
+              2,
+              2,
+              2.5
+            ]
+          },
+          "ground_truth": {
+            "coverage_pct": 100.0,
+            "rss_range_dbm": [
+              -30,
+              -20
+            ]
+          },
+          "validation": {
+            "must_report_coverage": true
+          },
+          "source": "Sionna tutorial: Ray Tracing Primer"
+        },
+        {
+          "id": "G03",
+          "prompt": "Create a 4x4 MIMO-OFDM resource grid with 14 symbols, 128 FFT size, 30 kHz SCS, and compute BER with LDPC at 10 dB SNR",
+          "difficulty": "medium",
+          "expected_params": {
+            "num_tx_ant": 4,
+            "num_rx_ant": 4,
+            "fft_size": 128,
+            "subcarrier_spacing_khz": 30
+          },
+          "ground_truth": {
+            "ber_at_10db_range": [
+              0,
+              0.001
+            ],
+            "throughput_range_mbps": [
+              10,
+              50
+            ]
+          },
+          "validation": {
+            "must_produce_ber_or_throughput": true
+          },
+          "source": "Sionna tutorial: MIMO OFDM"
+        },
+        {
+          "id": "G04",
+          "prompt": "Load the 'simple_street_canyon' scene, add a TX at (200,30,30), compute paths with max_depth=3, report number of paths found",
+          "difficulty": "medium",
+          "expected_params": {
+            "scene": "simple_street_canyon",
+            "max_depth": 3
+          },
+          "ground_truth": {
+            "num_paths_range": [
+              10,
+              10000
+            ]
+          },
+          "validation": {
+            "must_report_paths": true
+          },
+          "source": "Sionna tutorial: Ray Tracing"
+        },
+        {
+          "id": "G05",
+          "prompt": "Compute and display a radio map for the Munich scene at 28 GHz with a TX on a rooftop",
+          "difficulty": "hard",
+          "expected_params": {
+            "scene": "munich",
+            "frequency_hz": 28000000000.0
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              10,
+              80
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true
+          },
+          "source": "Sionna tutorial: Munich Coverage"
+        },
+        {
+          "id": "G06",
+          "prompt": "Load the 'etoile' (Place de l'\u00c9toile, Paris) scene, place a TX at (0, 0, 25), compute a radio map at 3.5 GHz at receiver height 1.5m, and report coverage percentage above -80 dBm",
+          "difficulty": "hard",
+          "expected_params": {
+            "scene": "etoile",
+            "frequency_hz": 3500000000.0,
+            "tx_position": [
+              0,
+              0,
+              25
+            ],
+            "rx_height_m": 1.5,
+            "threshold_dbm": -80
+          },
+          "ground_truth": {
+            "coverage_range_pct": [
+              15,
+              60
+            ]
+          },
+          "validation": {
+            "must_produce_heatmap": true,
+            "must_load_osm_scene": true,
+            "coverage_in_range": true
+          },
+          "source": "Sionna tutorial: \u00c9toile outdoor coverage"
+        }
+      ]
+    }
+  }
+}

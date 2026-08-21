@@ -1,0 +1,238 @@
+{
+  "task_family": "P2_pareto",
+  "scene_name": "etoile",
+  "kind": "outdoor",
+  "tx_position": [
+    -50.0,
+    0.0,
+    30.0
+  ],
+  "ue_position": [
+    50.0,
+    0.0,
+    1.5
+  ],
+  "frequency_hz": 5000000000.0,
+  "noise_dbm": -85.0,
+  "downtilt_fixed_deg": 0.0,
+  "azimuth_deg_grid": [
+    -90.0,
+    -45.0,
+    0.0,
+    45.0,
+    90.0
+  ],
+  "tx_power_dbm_grid": [
+    -6.0,
+    -3.0,
+    1.0
+  ],
+  "antenna": {
+    "num_rows": 1,
+    "num_cols": 1,
+    "pattern": "tr38901",
+    "polarization": "V"
+  },
+  "phy": {
+    "codec": "ldpc",
+    "k": 1024,
+    "n": 2048,
+    "modulation": "QPSK",
+    "code_rate": 0.5,
+    "throughput_model": "code_rate * bps * (1 - BLER)"
+  },
+  "pareto_objectives": {
+    "maximize": [
+      "throughput"
+    ],
+    "minimize": [
+      "tx_power_mw"
+    ]
+  },
+  "sweep_table": [
+    {
+      "az_deg": -90.0,
+      "tx_power_dbm": -6.0,
+      "tx_power_mw": 0.25119,
+      "path_gain_db": -104.488,
+      "num_paths": 7,
+      "snr_db": -25.488,
+      "ebn0_db": -25.488,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -90.0,
+      "tx_power_dbm": -3.0,
+      "tx_power_mw": 0.50119,
+      "path_gain_db": -104.488,
+      "num_paths": 7,
+      "snr_db": -22.488,
+      "ebn0_db": -22.488,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -90.0,
+      "tx_power_dbm": 1.0,
+      "tx_power_mw": 1.25893,
+      "path_gain_db": -104.488,
+      "num_paths": 7,
+      "snr_db": -18.488,
+      "ebn0_db": -18.488,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "tx_power_dbm": -6.0,
+      "tx_power_mw": 0.25119,
+      "path_gain_db": -87.146,
+      "num_paths": 7,
+      "snr_db": -8.146,
+      "ebn0_db": -8.146,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "tx_power_dbm": -3.0,
+      "tx_power_mw": 0.50119,
+      "path_gain_db": -87.146,
+      "num_paths": 7,
+      "snr_db": -5.146,
+      "ebn0_db": -5.146,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "tx_power_dbm": 1.0,
+      "tx_power_mw": 1.25893,
+      "path_gain_db": -87.146,
+      "num_paths": 7,
+      "snr_db": -1.146,
+      "ebn0_db": -1.146,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 0.0,
+      "tx_power_dbm": -6.0,
+      "tx_power_mw": 0.25119,
+      "path_gain_db": -81.148,
+      "num_paths": 7,
+      "snr_db": -2.148,
+      "ebn0_db": -2.148,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 0.0,
+      "tx_power_dbm": -3.0,
+      "tx_power_mw": 0.50119,
+      "path_gain_db": -81.148,
+      "num_paths": 7,
+      "snr_db": 0.852,
+      "ebn0_db": 0.852,
+      "bler": 0.60525,
+      "throughput": 0.39475
+    },
+    {
+      "az_deg": 0.0,
+      "tx_power_dbm": 1.0,
+      "tx_power_mw": 1.25893,
+      "path_gain_db": -81.148,
+      "num_paths": 7,
+      "snr_db": 4.852,
+      "ebn0_db": 4.852,
+      "bler": 0.0,
+      "throughput": 1.0
+    },
+    {
+      "az_deg": 45.0,
+      "tx_power_dbm": -6.0,
+      "tx_power_mw": 0.25119,
+      "path_gain_db": -86.604,
+      "num_paths": 7,
+      "snr_db": -7.604,
+      "ebn0_db": -7.604,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 45.0,
+      "tx_power_dbm": -3.0,
+      "tx_power_mw": 0.50119,
+      "path_gain_db": -86.604,
+      "num_paths": 7,
+      "snr_db": -4.604,
+      "ebn0_db": -4.604,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 45.0,
+      "tx_power_dbm": 1.0,
+      "tx_power_mw": 1.25893,
+      "path_gain_db": -86.604,
+      "num_paths": 7,
+      "snr_db": -0.604,
+      "ebn0_db": -0.604,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "tx_power_dbm": -6.0,
+      "tx_power_mw": 0.25119,
+      "path_gain_db": -100.864,
+      "num_paths": 7,
+      "snr_db": -21.864,
+      "ebn0_db": -21.864,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "tx_power_dbm": -3.0,
+      "tx_power_mw": 0.50119,
+      "path_gain_db": -100.864,
+      "num_paths": 7,
+      "snr_db": -18.864,
+      "ebn0_db": -18.864,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "tx_power_dbm": 1.0,
+      "tx_power_mw": 1.25893,
+      "path_gain_db": -100.864,
+      "num_paths": 7,
+      "snr_db": -14.864,
+      "ebn0_db": -14.864,
+      "bler": 1.0,
+      "throughput": 0.0
+    }
+  ],
+  "pareto_set": [
+    0,
+    3,
+    6,
+    7,
+    8,
+    9,
+    12
+  ],
+  "pareto_hypervolume": 0.299118,
+  "hv_ref_point": {
+    "throughput": 0.0,
+    "tx_power_mw": 1.25893
+  },
+  "elapsed_s": {
+    "rt": 0.7
+  },
+  "method": "sionna_rt + sionna_phy",
+  "sionna_version": "2.0.1"
+}

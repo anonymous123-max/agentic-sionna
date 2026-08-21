@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="500" font-family="sans-serif" font-size="13">
+<text x="350.0" y="22" text-anchor="middle" font-size="15" font-weight="bold">Token efficiency: pass-rate gain vs token overhead</text>
+<line x1="70" y1="430" x2="630" y2="430" stroke="black"/>
+<line x1="70" y1="70" x2="70" y2="430" stroke="black"/>
+<line x1="70" y1="250.0" x2="630" y2="250.0" stroke="#888" stroke-dasharray="4,4"/>
+<text x="350.0" y="480" text-anchor="middle">Extra tokens vs no-skill baseline (mean per trial)</text>
+<text x="20" y="250.0" text-anchor="middle" transform="rotate(-90 20 250.0)">Pass-rate gain (pp)</text>
+<circle cx="70.0" cy="186.0" r="6" fill="#2196f3" stroke="black"/>
+<text x="80.0" y="182.0" font-size="11">paired_gemma4_31b_v4</text>
+<circle cx="70.0" cy="294.4" r="6" fill="#2196f3" stroke="black"/>
+<text x="80.0" y="290.4" font-size="11">paired_llama31_8b_v4</text>
+<circle cx="70.0" cy="356.6" r="6" fill="#2196f3" stroke="black"/>
+<text x="80.0" y="352.6" font-size="11">paired_qwen3_6_v4</text>
+</svg>

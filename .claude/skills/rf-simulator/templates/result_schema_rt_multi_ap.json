@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "task_type": "rt_multi_ap",
+  "status": "success",
+  "scene_name": null,
+  "num_aps": null,
+  "ap_positions": null,
+  "frequency_hz": null,
+  "tx_power_dbm": null,
+  "per_ap_metrics": [
+    {
+      "ap_id": 0,
+      "rss_dbm_min": null,
+      "rss_dbm_max": null,
+      "rss_dbm_mean": null
+    }
+  ],
+  "best_server_metrics": {
+    "rss_dbm_min": null,
+    "rss_dbm_max": null,
+    "rss_dbm_mean": null
+  },
+  "serving_ap_fractions": null,
+  "coverage_shape": null,
+  "method": "sionna_rt",
+  "$notes": "Use ONE RadioMapSolver call with multiple Transmitter objects. cm.rss has shape (num_tx, n_y, n_x). Convert each per-AP RSS to dBm. Derive best-server with np.fmax.reduce, serving-AP with np.argmax. Save coverage_ap_0.npy/coverage_ap_1.npy, coverage_best_server.npy, serving_ap_map.npy, coverage_summary.png, simulation_result.json."
+}

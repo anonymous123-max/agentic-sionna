@@ -1,0 +1,80 @@
+# ─── OS / editor ──────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# ─── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[codz]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# ─── Environments (LOCAL ONLY — never commit) ─────────────────
+.env
+.env.local
+.env.*.local
+.venv/
+venv/
+
+# ─── Secrets (belt & suspenders) ──────────────────────────────
+api-key.txt
+api-key*.txt
+*.credentials
+*.credentials.json
+secrets/
+.secrets*
+.claude/settings.local.json
+.claude/.credentials.json
+
+# ─── Node ─────────────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+
+# ─── Large local-only assets (kept on disk, excluded from git) ─
+# 3D-FUTURE furniture dataset (~19 GB): user downloads from Tianchi,
+# points FUTURE_DATASET_PATH at their local copy. Do NOT commit meshes.
+3D-FUTURE.tar.gz
+3D-FUTURE-*.zip
+3D-FUTURE-*.tar.*
+data/3D-FUTURE-model/
+data/3D-FUTURE-model.*/
+
+# Other bulk local artefacts
+scene.zip
+
+# ─── Runtime / working-directory leftovers ────────────────────
+outputs/
+run.log
+nohup.out
+simulation.py
+simulation_result.json
+scratchpad/
+
+# ─── RAG / vector store binary index ──────────────────────────
+# Rebuild locally with scripts/seed_memory.py + index_sionna_docs.py
+.claude/skills/rf-simulator/memory/chroma_db/
+
+# ─── Benchmark: raw trial output stays LOCAL (rerun to regenerate) ─
+# Aggregate metrics (metrics_*.csv, paper_appendix_table.md) ARE
+# tracked so reviewers can see summary numbers without rerunning.
+benchmark/results/
+benchmark/plots/
+benchmark/parallel_logs/
+benchmark/_studies_archive/
+benchmark/_review_dataset/
+benchmark/_review_demo/
+benchmark/_review_demo_simple/
+benchmark/_smoke_rt/out/
+
+# ─── Planning / dev-only docs ─────────────────────────────────
+.planning/

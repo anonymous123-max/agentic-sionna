@@ -1,0 +1,31 @@
+{
+  "scene_name": "etoile",
+  "kind": "outdoor",
+  "ap_position": [
+    0.0,
+    0.0,
+    30.0
+  ],
+  "frequency_hz": 5000000000.0,
+  "tx_power_dbm": 20.0,
+  "cell_size_m": 2.0,
+  "max_depth": 2,
+  "samples_per_tx": 50000,
+  "grid_shape": [
+    339,
+    427
+  ],
+  "extent_m": [
+    -426.8314208984375,
+    426.8314208984375,
+    -338.0602722167969,
+    338.0602722167969
+  ],
+  "solver_elapsed_s": 0.2,
+  "rss_dbm_min": -106.24310302734375,
+  "rss_dbm_max": -52.924896240234375,
+  "rss_dbm_mean": -64.51421356201172,
+  "valid_cells": 10693,
+  "total_cells": 144753,
+  "sionna_version": "2.0.1"
+}

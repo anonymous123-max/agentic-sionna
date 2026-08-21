@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'P1: {d[\\\\\"completed\\\\\"]}/{d[\\\\\"total_trials\\\\\"]} errors={d[\\\\\"errors\\\\\"]} eta_min={d[\\\\\"eta_sec\\\\\"]//60} finished={d.get\\(\\\\\"finished_at\\\\\", \\\\\"-\\\\\"\\)}'\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'P1 status: {d[\\\\\"completed\\\\\"]}/{d[\\\\\"total_trials\\\\\"]} finished_at={d.get\\(\\\\\"finished_at\\\\\",\\\\\"-\\\\\"\\)} pass_rate={d[\\\\\"aggregate\\\\\"].get\\(\\\\\"pass_rate\\\\\",\\\\\"-\\\\\"\\)}'\\)\")"
+    ]
+  }
+}

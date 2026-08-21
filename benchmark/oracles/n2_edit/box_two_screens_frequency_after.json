@@ -1,0 +1,51 @@
+{
+  "scene_name": "box_two_screens",
+  "state": {
+    "freq": 2400000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      0,
+      0,
+      4.5
+    ],
+    "antenna": "iso"
+  },
+  "cell_size": 0.25,
+  "max_depth": 3,
+  "samples_per_tx": 100000,
+  "grid_shape": [
+    40,
+    40
+  ],
+  "elapsed_s": 0.02,
+  "rss_dbm_min": -30.57910919189453,
+  "rss_dbm_max": -22.827228546142578,
+  "rss_dbm_mean": -25.88446807861328,
+  "valid_cells": 1600,
+  "total_cells": 1600,
+  "edit_type": "frequency",
+  "before_state": {
+    "freq": 5000000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      0,
+      0,
+      4.5
+    ],
+    "antenna": "iso"
+  },
+  "after_state": {
+    "freq": 2400000000.0,
+    "power_dbm": 20.0,
+    "ap": [
+      0,
+      0,
+      4.5
+    ],
+    "antenna": "iso"
+  },
+  "before_ref": "benchmark/oracles/n1/box_two_screens.npy",
+  "delta_mean_db": 6.402,
+  "delta_std_db": 0.413,
+  "sionna_version": "2.0.1"
+}

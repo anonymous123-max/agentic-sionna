@@ -1,0 +1,325 @@
+{
+  "version": "2.0",
+  "meta": {
+    "created": "2026-04-10T17:15:07.600165+00:00",
+    "modified": "2026-04-10T17:15:07.600165+00:00",
+    "name": "Benchmark Easy 01",
+    "description": "Easy benchmark scene: conference, 5.2x6.1m, rectangle layout, 1 TX, target 92% coverage",
+    "benchmark": {
+      "tier": "easy",
+      "index": 1,
+      "seed": 42015,
+      "target_coverage_pct": 91,
+      "shape": "rectangle",
+      "area_m2": 31.7,
+      "center_coverage_pct": 90.8,
+      "grid_best_coverage_pct": 97.5
+    }
+  },
+  "scene": {
+    "type": "indoor",
+    "origin": "SW",
+    "coordinate_system": {
+      "x": "east",
+      "y": "north",
+      "z": "up",
+      "theta_zero": "north",
+      "units": "meters"
+    },
+    "bounds": {
+      "width": 5.2,
+      "depth": 6.1,
+      "height": 3.0
+    },
+    "frequency_hz": 3500000000.0,
+    "source_format": "benchmark_generated"
+  },
+  "rooms": [
+    {
+      "id": "room_easy_01",
+      "name": "Conference",
+      "type": "conference",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          5.2,
+          0
+        ],
+        [
+          5.2,
+          6.1
+        ],
+        [
+          0,
+          6.1
+        ]
+      ],
+      "height": 3.0,
+      "materials": {
+        "walls": "itu_concrete",
+        "floor": "itu_concrete",
+        "ceiling": "itu_plasterboard"
+      }
+    }
+  ],
+  "walls": [
+    {
+      "id": "wall_room_easy_01_01",
+      "room_id": "room_easy_01",
+      "start": [
+        0,
+        0
+      ],
+      "end": [
+        5.2,
+        0
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": true,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_easy_01_02",
+      "room_id": "room_easy_01",
+      "start": [
+        5.2,
+        0
+      ],
+      "end": [
+        5.2,
+        6.1
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_easy_01_03",
+      "room_id": "room_easy_01",
+      "start": [
+        5.2,
+        6.1
+      ],
+      "end": [
+        0,
+        6.1
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_easy_01_04",
+      "room_id": "room_easy_01",
+      "start": [
+        0,
+        6.1
+      ],
+      "end": [
+        0,
+        0
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": true,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_easy_01_int_05",
+      "room_id": "room_easy_01",
+      "start": [
+        3.2,
+        1.1
+      ],
+      "end": [
+        3.2,
+        4.9
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_easy_01_int_06",
+      "room_id": "room_easy_01",
+      "start": [
+        1.0,
+        2.3
+      ],
+      "end": [
+        4.3,
+        2.3
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_easy_01_int_07",
+      "room_id": "room_easy_01",
+      "start": [
+        2.0,
+        0.3
+      ],
+      "end": [
+        2.0,
+        4.4
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    }
+  ],
+  "furniture": [
+    {
+      "id": "furn_room_easy_01_001",
+      "type": "tv_stand",
+      "catalog_id": null,
+      "position": [
+        2.15,
+        0.5,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        1.2,
+        0.4,
+        0.5
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_01_002",
+      "type": "wardrobe",
+      "catalog_id": null,
+      "position": [
+        4.6,
+        1.13,
+        0.0
+      ],
+      "orientation_deg": 90,
+      "dimensions": [
+        1.2,
+        0.6,
+        2.0
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_01_003",
+      "type": "tv_stand",
+      "catalog_id": null,
+      "position": [
+        2.96,
+        5.6,
+        0.0
+      ],
+      "orientation_deg": 180,
+      "dimensions": [
+        1.2,
+        0.4,
+        0.5
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_01_004",
+      "type": "bookcase",
+      "catalog_id": null,
+      "position": [
+        0.47,
+        0.89,
+        0.0
+      ],
+      "orientation_deg": 270,
+      "dimensions": [
+        0.8,
+        0.35,
+        1.8
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_01_005",
+      "type": "chair",
+      "catalog_id": null,
+      "position": [
+        3.64,
+        0.55,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        0.5,
+        0.5,
+        0.9
+      ],
+      "material": "itu_wood",
+      "visible": true
+    }
+  ],
+  "transmitters": [
+    {
+      "id": "tx_room_easy_01_1",
+      "name": "AP-1",
+      "position": [
+        2.6,
+        3.05,
+        2.8
+      ],
+      "power_dbm": 20.0,
+      "frequency_hz": 3500000000.0,
+      "antenna": {
+        "type": "isotropic",
+        "pattern": null,
+        "polarization": "V",
+        "mimo_config": null
+      },
+      "orientation_deg": 0,
+      "visible": true
+    }
+  ],
+  "receivers": [
+    {
+      "id": "rx_grid_easy_01",
+      "type": "grid",
+      "height": 1.5,
+      "resolution": 0.2,
+      "bounds": [
+        [
+          0,
+          0
+        ],
+        [
+          5.2,
+          6.1
+        ]
+      ],
+      "visible": true
+    }
+  ],
+  "constraints": [],
+  "simulation_results": [],
+  "export_history": [],
+  "code_artifacts": []
+}

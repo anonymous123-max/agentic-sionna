@@ -1,0 +1,103 @@
+
+
+SIONNA V2 NAMESPACES (mandatory — your training data has v0.x/v1.x; the installed
+package is v2, so old import paths WILL fail):
+  sionna.phy.fec.*        — LDPC5GEncoder, LDPC5GDecoder, Polar*, BCH*, Turbo*
+  sionna.phy.channel.*    — AWGN, CDL, TDL, RayleighBlockFading, ApplyOFDMChannel
+  sionna.phy.modulation.* — Mapper, Demapper, BinarySource
+  sionna.phy.mimo.*       — StreamManagement, LMMSEEqualizer, ZFPrecoder
+  sionna.phy.ofdm.*       — ResourceGrid, ResourceGridDemapper, OFDMModulator/Demodulator
+  sionna.rt.*             — Scene, PathSolver, RadioMapSolver, ITUMaterial, AntennaArray
+  sionna.sys.*            — system-level (PFScheduler, link adaptation)
+DO NOT use sionna.fec, sionna.channel, sionna.mimo, sionna.modulation, sionna.ofdm —
+those were the v0.x layout. v2 moved everything under sionna.phy.* / sionna.rt.* / sionna.sys.*.
+Sionna v2 is PyTorch-based (no TensorFlow). Use `import torch` and `torch.Tensor`, not `tf`.
+
+SIONNA V2 API QUICK REFERENCE (signatures verified against installed templates —
+use these instead of `inspect.signature` / `help()`; they cost full turns):
+  # FEC (sionna.phy.fec.ldpc)
+  encoder = LDPC5GEncoder(k=k, n=n)                          # k info bits, n codeword bits
+  decoder = LDPC5GDecoder(encoder=encoder, num_iter=20)      # pass encoder, NOT k/n
+
+  # Modulation (sionna.phy.mapping)
+  mapper   = Mapper(constellation_type="qam", num_bits_per_symbol=bps)
+  demapper = Demapper(demapping_method="app", constellation_type="qam",
+                      num_bits_per_symbol=bps)
+  source   = BinarySource()                                  # call: bits = source([batch, n])
+
+  # OFDM (sionna.phy.ofdm)
+  rg = ResourceGrid(num_ofdm_symbols=14, fft_size=72, subcarrier_spacing=30e3)
+
+  # Channel (sionna.phy.channel)
+  awgn = AWGN()                          # call: y = awgn(x, no=N0)   [N0 = linear noise var]
+  from sionna.phy.channel import cir_to_ofdm_channel, subcarrier_frequencies
+  freqs  = subcarrier_frequencies(rg.fft_size, rg.subcarrier_spacing)
+  h_freq = cir_to_ofdm_channel(freqs, a, tau, normalize=True)
+
+  # RT (sionna.rt) — PathSolver / RadioMapSolver are CALLABLES, not methods on Scene
+  scene  = sionna.rt.load_scene(path, merge_shapes=False)    # MUST `import sionna.rt` first
+  paths  = sionna.rt.PathSolver()(scene, max_depth=5, num_samples=1_000_000)
+  a, tau = paths.cir(out_type="torch")                       # NOT compute_paths/coverage_map
+  rmap   = sionna.rt.RadioMapSolver()(scene, cell_size=[2,2], samples_per_tx=10_000_000,
+                                       max_depth=5, center=[x,y,z], orientation=[0,0,0],
+                                       size=[w,h])  # center/orientation/size all-or-nothing
+
+  # Common gotchas: AWGN.__call__(x, no=N0) — `no` is keyword AND linear (NOT dB).
+  # Mapper/Demapper are torch.nn.Module: call them, don't index attributes.
+  # paths.cir() returns (a, tau); a may be empty if RT finds zero paths.
+
+Skill files at $RF_SKILL_DIR (always available, work without Sionna).
+
+LOOKUP first — semantic search over the skill's vector store of failure
+principles + Sionna API chunks. Use BEFORE any of:
+  • importing a sionna.X.Y attribute you're not 100% sure exists
+  • guessing tool arguments / parameter shapes
+  • writing a template you'll have to throw away
+  • assuming a Sionna version namespace (v2 vs v0.x)
+
+  python3 $RF_SKILL_DIR/scripts/lookup.py "<query>" --top-k 3
+  python3 $RF_SKILL_DIR/scripts/lookup.py "<query>" --kind template
+  python3 $RF_SKILL_DIR/scripts/lookup.py "<query>" --kind script
+
+Kinds: principle | api | script | template | skill | any (default: any).
+template/script/skill hits return file_path + code/text snippet you can copy.
+
+Examples that return useful results:
+  python3 $RF_SKILL_DIR/scripts/lookup.py "LDPC encoder code rate"
+  python3 $RF_SKILL_DIR/scripts/lookup.py "BER simulation" --kind template
+  python3 $RF_SKILL_DIR/scripts/lookup.py "scene with rooms" --kind template
+  python3 $RF_SKILL_DIR/scripts/lookup.py "ray tracing coverage" --kind template
+  python3 $RF_SKILL_DIR/scripts/lookup.py "CDL multi-tx error" --kind principle
+
+Each hit returns a 1-3 sentence snippet — read it and apply, then proceed.
+Silent no-op if chromadb isn't installed (returns empty), so it never breaks.
+
+CAP: 2-3 lookups MAX per task. Once you have enough context, STOP looking up and START
+writing code. Don't lookup the same concept twice with different phrasings — if the
+first 3 hits weren't useful, more queries won't help. Trust the templates and write code.
+
+RUNNABLE scripts (execute directly — they DO the work and write simulation_result.json
+for you). PREFER THESE over writing your own script: they're tested, and they always
+finish with a populated simulation_result.json instead of leaving placeholder nulls.
+  python3 $RF_SKILL_DIR/scripts/run_ber_analytical.py --modulation QPSK
+  python3 $RF_SKILL_DIR/scripts/verify_output.py --workdir .
+
+IMPORTANT: if you DO write your own script, ALWAYS run it after writing
+(`python3 your_script.py`). Writing without running leaves the harness's
+placeholder simulation_result.json untouched — the verifier sees nulls and fails.
+
+TEMPLATES (Python source files; COPY their content with `cp`,
+then edit the PARAMS dict; do NOT execute them with arguments):
+  $RF_SKILL_DIR/templates/template_ber.py          (BER curves)
+  $RF_SKILL_DIR/templates/template_rt_coverage.py  (coverage maps)
+  $RF_SKILL_DIR/templates/template_rt_to_phy.py    (RT path computation)
+  $RF_SKILL_DIR/templates/template_scene.py        (scene generation)
+
+Quickest path for a BER task: just run run_ber_analytical.py with
+the right --modulation and your simulation_result.json is done.
+
+SUBAGENTS (Task tool): for independent parallelizable sub-tasks (multi-SNR
+sweep, per-tier scene_gen + AP placement + coverage, multi-query lookups),
+dispatch via the Task tool to run concurrently — each subagent has its own
+context window and won't bloat your main thread. Anti-patterns: single-script
+trials (BER analytical), lookups <5s (overhead exceeds benefit).

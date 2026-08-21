@@ -1,0 +1,325 @@
+{
+  "version": "1.0",
+  "tier": "N3_multi_ap_sim",
+  "design": "Multi-AP simulation on 4 Sionna built-in scenes, 2 APs per scene with symmetric placement. Agent must compute per-AP coverage, best-server map, and serving-AP assignment.",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_rt_used) + Layer C (n3_multi_ap_oracle: per-AP vs ref + best_server consistency + serving_ap consistency + metadata)",
+  "count": 4,
+  "tasks": [
+    {
+      "id": "N3_2ap_box_two_screens",
+      "tier": "N3_multi_ap_sim",
+      "capability": "multi_ap_sim",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "ap_positions": [
+        [
+          -3,
+          0,
+          4.5
+        ],
+        [
+          3,
+          0,
+          4.5
+        ]
+      ],
+      "oracle_dir": "benchmark/oracles/n3_multi_ap/box_two_screens",
+      "prompt": "Using Sionna's built-in box-with-two-screens indoor testbed, deploy two access points: AP 0 at (-3, 0, 4.5) m and AP 1 at (3, 0, 4.5) m, each transmitting 100 mW at 5 GHz with isotropic antennas. Compute the per-AP coverage maps, the joint best-server coverage map, and the serving-AP assignment for each cell.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_ap_0.npy",
+        "coverage_ap_1.npy",
+        "coverage_best_server.npy",
+        "serving_ap_map.npy",
+        "coverage_summary.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_ap0_npy",
+            "type": "file_exists",
+            "path": "coverage_ap_0.npy"
+          },
+          {
+            "key": "must_create_ap1_npy",
+            "type": "file_exists",
+            "path": "coverage_ap_1.npy"
+          },
+          {
+            "key": "must_create_best_server_npy",
+            "type": "file_exists",
+            "path": "coverage_best_server.npy"
+          },
+          {
+            "key": "must_create_serving_ap_npy",
+            "type": "file_exists",
+            "path": "serving_ap_map.npy"
+          },
+          {
+            "key": "must_create_summary_png",
+            "type": "file_exists",
+            "path": "coverage_summary.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n3_multi_ap_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N3_2ap_box_one_screen",
+      "tier": "N3_multi_ap_sim",
+      "capability": "multi_ap_sim",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "ap_positions": [
+        [
+          -3,
+          0,
+          4.5
+        ],
+        [
+          3,
+          0,
+          4.5
+        ]
+      ],
+      "oracle_dir": "benchmark/oracles/n3_multi_ap/box_one_screen",
+      "prompt": "Using Sionna's built-in box-with-one-screen indoor testbed, deploy two access points: AP 0 at (-3, 0, 4.5) m and AP 1 at (3, 0, 4.5) m, each transmitting 100 mW at 5 GHz with isotropic antennas. Compute the per-AP coverage maps, the joint best-server coverage map, and the serving-AP assignment for each cell.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_ap_0.npy",
+        "coverage_ap_1.npy",
+        "coverage_best_server.npy",
+        "serving_ap_map.npy",
+        "coverage_summary.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_ap0_npy",
+            "type": "file_exists",
+            "path": "coverage_ap_0.npy"
+          },
+          {
+            "key": "must_create_ap1_npy",
+            "type": "file_exists",
+            "path": "coverage_ap_1.npy"
+          },
+          {
+            "key": "must_create_best_server_npy",
+            "type": "file_exists",
+            "path": "coverage_best_server.npy"
+          },
+          {
+            "key": "must_create_serving_ap_npy",
+            "type": "file_exists",
+            "path": "serving_ap_map.npy"
+          },
+          {
+            "key": "must_create_summary_png",
+            "type": "file_exists",
+            "path": "coverage_summary.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n3_multi_ap_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N3_2ap_simple_street_canyon",
+      "tier": "N3_multi_ap_sim",
+      "capability": "multi_ap_sim",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "ap_positions": [
+        [
+          -40,
+          0,
+          15
+        ],
+        [
+          40,
+          0,
+          15
+        ]
+      ],
+      "oracle_dir": "benchmark/oracles/n3_multi_ap/simple_street_canyon",
+      "prompt": "Using Sionna's built-in simple-street-canyon outdoor scenario, deploy two access points: AP 0 at (-40, 0, 15) m and AP 1 at (40, 0, 15) m, each transmitting 100 mW at 5 GHz with isotropic antennas. Compute the per-AP coverage maps, the joint best-server coverage map, and the serving-AP assignment for each cell.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_ap_0.npy",
+        "coverage_ap_1.npy",
+        "coverage_best_server.npy",
+        "serving_ap_map.npy",
+        "coverage_summary.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_ap0_npy",
+            "type": "file_exists",
+            "path": "coverage_ap_0.npy"
+          },
+          {
+            "key": "must_create_ap1_npy",
+            "type": "file_exists",
+            "path": "coverage_ap_1.npy"
+          },
+          {
+            "key": "must_create_best_server_npy",
+            "type": "file_exists",
+            "path": "coverage_best_server.npy"
+          },
+          {
+            "key": "must_create_serving_ap_npy",
+            "type": "file_exists",
+            "path": "serving_ap_map.npy"
+          },
+          {
+            "key": "must_create_summary_png",
+            "type": "file_exists",
+            "path": "coverage_summary.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n3_multi_ap_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N3_2ap_etoile",
+      "tier": "N3_multi_ap_sim",
+      "capability": "multi_ap_sim",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "ap_positions": [
+        [
+          -150,
+          0,
+          30
+        ],
+        [
+          150,
+          0,
+          30
+        ]
+      ],
+      "oracle_dir": "benchmark/oracles/n3_multi_ap/etoile",
+      "prompt": "Using Sionna's built-in Outdoor Paris-Etoile scenario, deploy two access points: AP 0 at (-150, 0, 30) m and AP 1 at (150, 0, 30) m, each transmitting 100 mW at 5 GHz with isotropic antennas. Compute the per-AP coverage maps, the joint best-server coverage map, and the serving-AP assignment for each cell.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_ap_0.npy",
+        "coverage_ap_1.npy",
+        "coverage_best_server.npy",
+        "serving_ap_map.npy",
+        "coverage_summary.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_ap0_npy",
+            "type": "file_exists",
+            "path": "coverage_ap_0.npy"
+          },
+          {
+            "key": "must_create_ap1_npy",
+            "type": "file_exists",
+            "path": "coverage_ap_1.npy"
+          },
+          {
+            "key": "must_create_best_server_npy",
+            "type": "file_exists",
+            "path": "coverage_best_server.npy"
+          },
+          {
+            "key": "must_create_serving_ap_npy",
+            "type": "file_exists",
+            "path": "serving_ap_map.npy"
+          },
+          {
+            "key": "must_create_summary_png",
+            "type": "file_exists",
+            "path": "coverage_summary.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n3_multi_ap_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}

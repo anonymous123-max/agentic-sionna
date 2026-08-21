@@ -1,0 +1,289 @@
+{
+  "version": "2.0",
+  "tier": "N2_ap_config_edit",
+  "design": "AP configuration edit + before/after rerun on 4 Sionna built-in scenes \u00d7 4 edit types (one each: frequency, power, position, antenna). Natural-language prompts; output schema and recipes live in SKILL.md.",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_rt_used) + Layer C (n2_edit_oracle vs precomputed before/after Sionna RT references)",
+  "count": 4,
+  "tasks": [
+    {
+      "id": "N2_freq_box_two_screens",
+      "tier": "N2_ap_config_edit",
+      "edit_type": "frequency",
+      "capability": "ap_config_edit",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "oracle_before_path": "benchmark/oracles/n1/box_two_screens.npy",
+      "oracle_after_path": "benchmark/oracles/n2_edit/box_two_screens_frequency_after.npy",
+      "expected_delta_mean_db": 6.4,
+      "expected_delta_std_db": 1.0,
+      "prompt": "Using Sionna's built-in box-with-two-screens indoor testbed, place a base-station transmitter at (0, 0, 4.5) m with 100 mW transmit power and isotropic antenna arrays. Generate the 5 GHz coverage map, then re-tune the transmitter to 2.4 GHz and generate that coverage map. Return both maps and the per-cell delta.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_before.npy",
+        "coverage_before.png",
+        "coverage_after.npy",
+        "coverage_after.png",
+        "coverage_delta.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_before_npy",
+            "type": "file_exists",
+            "path": "coverage_before.npy"
+          },
+          {
+            "key": "must_create_before_png",
+            "type": "file_exists",
+            "path": "coverage_before.png"
+          },
+          {
+            "key": "must_create_after_npy",
+            "type": "file_exists",
+            "path": "coverage_after.npy"
+          },
+          {
+            "key": "must_create_after_png",
+            "type": "file_exists",
+            "path": "coverage_after.png"
+          },
+          {
+            "key": "must_create_delta_png",
+            "type": "file_exists",
+            "path": "coverage_delta.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n2_edit_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N2_power_box_one_screen",
+      "tier": "N2_ap_config_edit",
+      "edit_type": "power",
+      "capability": "ap_config_edit",
+      "difficulty": "easy",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "oracle_before_path": "benchmark/oracles/n1/box_one_screen.npy",
+      "oracle_after_path": "benchmark/oracles/n2_edit/box_one_screen_power_after.npy",
+      "expected_delta_mean_db": -10.0,
+      "expected_delta_std_db": 1.0,
+      "prompt": "Using Sionna's built-in box-with-one-screen indoor testbed, place a base-station transmitter at (0, 0, 4.5) m with isotropic antenna arrays at 5 GHz. Generate the coverage map at 100 mW transmit power, then reduce the transmit power to 10 mW (10 dBm) and regenerate. Return both maps and the per-cell delta.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_before.npy",
+        "coverage_before.png",
+        "coverage_after.npy",
+        "coverage_after.png",
+        "coverage_delta.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_before_npy",
+            "type": "file_exists",
+            "path": "coverage_before.npy"
+          },
+          {
+            "key": "must_create_before_png",
+            "type": "file_exists",
+            "path": "coverage_before.png"
+          },
+          {
+            "key": "must_create_after_npy",
+            "type": "file_exists",
+            "path": "coverage_after.npy"
+          },
+          {
+            "key": "must_create_after_png",
+            "type": "file_exists",
+            "path": "coverage_after.png"
+          },
+          {
+            "key": "must_create_delta_png",
+            "type": "file_exists",
+            "path": "coverage_delta.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n2_edit_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N2_position_simple_street_canyon",
+      "tier": "N2_ap_config_edit",
+      "edit_type": "position",
+      "capability": "ap_config_edit",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "oracle_before_path": "benchmark/oracles/n1/simple_street_canyon.npy",
+      "oracle_after_path": "benchmark/oracles/n2_edit/simple_street_canyon_position_after.npy",
+      "prompt": "Using Sionna's built-in simple-street-canyon outdoor scenario, place a base-station transmitter at (0, 0, 15) m with 100 mW transmit power and isotropic antenna arrays at 5 GHz. Generate the coverage map, then relocate the transmitter to (-30, 0, 15) m and regenerate. Return both maps and the per-cell delta.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_before.npy",
+        "coverage_before.png",
+        "coverage_after.npy",
+        "coverage_after.png",
+        "coverage_delta.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_before_npy",
+            "type": "file_exists",
+            "path": "coverage_before.npy"
+          },
+          {
+            "key": "must_create_before_png",
+            "type": "file_exists",
+            "path": "coverage_before.png"
+          },
+          {
+            "key": "must_create_after_npy",
+            "type": "file_exists",
+            "path": "coverage_after.npy"
+          },
+          {
+            "key": "must_create_after_png",
+            "type": "file_exists",
+            "path": "coverage_after.png"
+          },
+          {
+            "key": "must_create_delta_png",
+            "type": "file_exists",
+            "path": "coverage_delta.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n2_edit_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N2_antenna_etoile",
+      "tier": "N2_ap_config_edit",
+      "edit_type": "antenna",
+      "capability": "ap_config_edit",
+      "difficulty": "hard",
+      "split": "train",
+      "scene_name": "etoile",
+      "oracle_before_path": "benchmark/oracles/n1/etoile.npy",
+      "oracle_after_path": "benchmark/oracles/n2_edit/etoile_antenna_after.npy",
+      "prompt": "Using Sionna's built-in Outdoor Paris-Etoile scenario, place a base-station transmitter at (0, 0, 30) m with 100 mW transmit power at 5 GHz, initially with isotropic antenna arrays. Generate the coverage map, then switch to a directional 4\u00d74 panel antenna (3GPP tr38901 element pattern) pointed along the +x axis and regenerate. Return both maps and the per-cell delta.",
+      "required_artifacts": [
+        "simulation.py",
+        "coverage_before.npy",
+        "coverage_before.png",
+        "coverage_after.npy",
+        "coverage_after.png",
+        "coverage_delta.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_before_npy",
+            "type": "file_exists",
+            "path": "coverage_before.npy"
+          },
+          {
+            "key": "must_create_before_png",
+            "type": "file_exists",
+            "path": "coverage_before.png"
+          },
+          {
+            "key": "must_create_after_npy",
+            "type": "file_exists",
+            "path": "coverage_after.npy"
+          },
+          {
+            "key": "must_create_after_png",
+            "type": "file_exists",
+            "path": "coverage_after.png"
+          },
+          {
+            "key": "must_create_delta_png",
+            "type": "file_exists",
+            "path": "coverage_delta.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n2_edit_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}

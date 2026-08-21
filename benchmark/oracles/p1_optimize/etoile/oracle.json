@@ -1,0 +1,215 @@
+{
+  "task_family": "P1_optimize",
+  "scene_name": "etoile",
+  "kind": "outdoor",
+  "tx_position": [
+    -50.0,
+    0.0,
+    30.0
+  ],
+  "ue_position": [
+    50.0,
+    0.0,
+    1.5
+  ],
+  "tx_power_dbm": 0.1,
+  "noise_dbm": -85.0,
+  "frequency_hz": 5000000000.0,
+  "max_depth": 3,
+  "samples_per_src": 500000,
+  "azimuth_deg_grid": [
+    -90.0,
+    -45.0,
+    0.0,
+    45.0,
+    90.0
+  ],
+  "downtilt_deg_grid": [
+    0.0,
+    45.0,
+    90.0
+  ],
+  "antenna": {
+    "num_rows": 1,
+    "num_cols": 1,
+    "pattern": "tr38901",
+    "polarization": "V"
+  },
+  "phy": {
+    "codec": "ldpc",
+    "k": 1024,
+    "n": 2048,
+    "modulation": "QPSK",
+    "code_rate": 0.5,
+    "throughput_model": "code_rate * bps * (1 - BLER)"
+  },
+  "sweep_table": [
+    {
+      "az_deg": -90.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -104.488,
+      "num_paths": 7,
+      "snr_db": -19.388,
+      "ebn0_db": -19.388,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -90.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -113.046,
+      "num_paths": 7,
+      "snr_db": -27.946,
+      "ebn0_db": -27.946,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -90.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -140.349,
+      "num_paths": 7,
+      "snr_db": -55.249,
+      "ebn0_db": -55.249,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -87.146,
+      "num_paths": 7,
+      "snr_db": -2.046,
+      "ebn0_db": -2.046,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -100.923,
+      "num_paths": 7,
+      "snr_db": -15.823,
+      "ebn0_db": -15.823,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -121.345,
+      "num_paths": 7,
+      "snr_db": -36.245,
+      "ebn0_db": -36.245,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 0.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -81.148,
+      "num_paths": 7,
+      "snr_db": 3.952,
+      "ebn0_db": 3.952,
+      "bler": 0.0,
+      "throughput": 1.0
+    },
+    {
+      "az_deg": 0.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -90.718,
+      "num_paths": 7,
+      "snr_db": -5.618,
+      "ebn0_db": -5.618,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 0.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -110.573,
+      "num_paths": 7,
+      "snr_db": -25.473,
+      "ebn0_db": -25.473,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 45.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -86.604,
+      "num_paths": 7,
+      "snr_db": -1.504,
+      "ebn0_db": -1.504,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 45.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -99.767,
+      "num_paths": 7,
+      "snr_db": -14.667,
+      "ebn0_db": -14.667,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 45.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -123.066,
+      "num_paths": 7,
+      "snr_db": -37.966,
+      "ebn0_db": -37.966,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -100.864,
+      "num_paths": 7,
+      "snr_db": -15.764,
+      "ebn0_db": -15.764,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -109.838,
+      "num_paths": 7,
+      "snr_db": -24.738,
+      "ebn0_db": -24.738,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -140.349,
+      "num_paths": 7,
+      "snr_db": -55.249,
+      "ebn0_db": -55.249,
+      "bler": 1.0,
+      "throughput": 0.0
+    }
+  ],
+  "best": {
+    "az_deg": 0.0,
+    "dt_deg": 0.0,
+    "throughput": 1.0,
+    "snr_db": 3.952
+  },
+  "worst": {
+    "az_deg": -90.0,
+    "dt_deg": 0.0,
+    "throughput": 0.0,
+    "snr_db": -19.388
+  },
+  "elapsed_s": {
+    "rt": 2.9
+  },
+  "method": "sionna_rt + sionna_phy",
+  "sionna_version": "2.0.1"
+}

@@ -1,0 +1,31 @@
+
+
+Skill files at $RF_SKILL_DIR. Bash-only access; the Glob/Grep tools do NOT
+expand env vars — never use them on $RF_SKILL_DIR.
+
+FAST PATH (most tasks):
+  cp $RF_SKILL_DIR/templates/template_<task>.py simulation.py
+  # Edit ONLY the PARAMS = {...} block, then:
+  $RF_SIONNA_PY simulation.py && $RF_SIONNA_PY $RF_SKILL_DIR/scripts/verify_output.py --workdir .
+
+Pick <task> by keyword: ber (BER/BLER/LDPC/Polar), rt_coverage (coverage/
+heatmap/radio map/MCS map), rt_to_phy (RT+link/CIR), scene (room/floor
+plan/office), optimize (AP placement), mimo_ofdm, neural_train,
+system_level. If none fit cleanly, read the matching recipe in
+$RF_SKILL_DIR/SKILL.md (routing table) and write a Sionna-based script —
+do NOT skip Sionna in favour of a closed-form analytical formula. The
+verifier's Layer B rejects any output whose `method` is `analytical`,
+`fspl`, `tr38901`-as-path-loss, `closed_form`, `numpy_3gpp_*`, or whose
+`simulation.py` has no non-commented `import sionna`.
+
+Wrong-template guard: do NOT run run_ber_analytical.py for scene/coverage
+tasks; do NOT cp template_scene.py for a BER task.
+
+If you DO write your own script, ALWAYS run it with $RF_SIONNA_PY immediately
+after — the harness placeholder simulation_result.json has nulls that fail
+every check.
+
+SIONNA V2 NAMESPACES (Sionna IS available via $RF_SIONNA_PY — use it):
+  sionna.phy.{fec,channel,modulation,mimo,ofdm}, sionna.rt.{Scene,
+  PathSolver,RadioMapSolver}, sionna.sys.*. Old paths (sionna.fec,
+  sionna.channel, sionna.mimo) ARE GONE; v2 is PyTorch-based.

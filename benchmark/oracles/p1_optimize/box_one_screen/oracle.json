@@ -1,0 +1,215 @@
+{
+  "task_family": "P1_optimize",
+  "scene_name": "box_one_screen",
+  "kind": "indoor",
+  "tx_position": [
+    -2.0,
+    0.0,
+    4.5
+  ],
+  "ue_position": [
+    2.0,
+    0.0,
+    1.5
+  ],
+  "tx_power_dbm": -29.2,
+  "noise_dbm": -85.0,
+  "frequency_hz": 5000000000.0,
+  "max_depth": 3,
+  "samples_per_src": 500000,
+  "azimuth_deg_grid": [
+    -90.0,
+    -45.0,
+    0.0,
+    45.0,
+    90.0
+  ],
+  "downtilt_deg_grid": [
+    0.0,
+    45.0,
+    90.0
+  ],
+  "antenna": {
+    "num_rows": 1,
+    "num_cols": 1,
+    "pattern": "tr38901",
+    "polarization": "V"
+  },
+  "phy": {
+    "codec": "ldpc",
+    "k": 1024,
+    "n": 2048,
+    "modulation": "QPSK",
+    "code_rate": 0.5,
+    "throughput_model": "code_rate * bps * (1 - BLER)"
+  },
+  "sweep_table": [
+    {
+      "az_deg": -90.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -55.412,
+      "num_paths": 38,
+      "snr_db": 0.388,
+      "ebn0_db": 0.388,
+      "bler": 0.98758,
+      "throughput": 0.01242
+    },
+    {
+      "az_deg": -90.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -58.34,
+      "num_paths": 38,
+      "snr_db": -2.54,
+      "ebn0_db": -2.54,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -90.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -68.533,
+      "num_paths": 38,
+      "snr_db": -12.733,
+      "ebn0_db": -12.733,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -53.83,
+      "num_paths": 38,
+      "snr_db": 1.97,
+      "ebn0_db": 1.97,
+      "bler": 0.0012,
+      "throughput": 0.9988
+    },
+    {
+      "az_deg": -45.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -54.331,
+      "num_paths": 38,
+      "snr_db": 1.469,
+      "ebn0_db": 1.469,
+      "bler": 0.04641,
+      "throughput": 0.95359
+    },
+    {
+      "az_deg": -45.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -60.584,
+      "num_paths": 38,
+      "snr_db": -4.784,
+      "ebn0_db": -4.784,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 0.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -52.169,
+      "num_paths": 38,
+      "snr_db": 3.631,
+      "ebn0_db": 3.631,
+      "bler": 0.0,
+      "throughput": 1.0
+    },
+    {
+      "az_deg": 0.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -51.777,
+      "num_paths": 38,
+      "snr_db": 4.023,
+      "ebn0_db": 4.023,
+      "bler": 0.0,
+      "throughput": 1.0
+    },
+    {
+      "az_deg": 0.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -56.474,
+      "num_paths": 38,
+      "snr_db": -0.674,
+      "ebn0_db": -0.674,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 45.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -53.83,
+      "num_paths": 38,
+      "snr_db": 1.97,
+      "ebn0_db": 1.97,
+      "bler": 0.0012,
+      "throughput": 0.9988
+    },
+    {
+      "az_deg": 45.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -54.331,
+      "num_paths": 38,
+      "snr_db": 1.469,
+      "ebn0_db": 1.469,
+      "bler": 0.04641,
+      "throughput": 0.95359
+    },
+    {
+      "az_deg": 45.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -60.584,
+      "num_paths": 38,
+      "snr_db": -4.784,
+      "ebn0_db": -4.784,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "dt_deg": 0.0,
+      "path_gain_db": -55.412,
+      "num_paths": 38,
+      "snr_db": 0.388,
+      "ebn0_db": 0.388,
+      "bler": 0.98758,
+      "throughput": 0.01242
+    },
+    {
+      "az_deg": 90.0,
+      "dt_deg": 45.0,
+      "path_gain_db": -58.34,
+      "num_paths": 38,
+      "snr_db": -2.54,
+      "ebn0_db": -2.54,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "dt_deg": 90.0,
+      "path_gain_db": -68.533,
+      "num_paths": 38,
+      "snr_db": -12.733,
+      "ebn0_db": -12.733,
+      "bler": 1.0,
+      "throughput": 0.0
+    }
+  ],
+  "best": {
+    "az_deg": 0.0,
+    "dt_deg": 0.0,
+    "throughput": 1.0,
+    "snr_db": 3.631
+  },
+  "worst": {
+    "az_deg": -90.0,
+    "dt_deg": 45.0,
+    "throughput": 0.0,
+    "snr_db": -2.54
+  },
+  "elapsed_s": {
+    "rt": 1.4
+  },
+  "method": "sionna_rt + sionna_phy",
+  "sionna_version": "2.0.1"
+}

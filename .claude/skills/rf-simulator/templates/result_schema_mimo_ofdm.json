@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "task_type": "mimo_ofdm",
+  "status": "success",
+  "system": {
+    "num_tx_ant": null,
+    "num_rx_ant": null,
+    "num_streams": null,
+    "modulation": null,
+    "channel_model": null,
+    "n_fft": null,
+    "scs_hz": null
+  },
+  "numerical_metrics": {
+    "snr_db": [],
+    "ber_simulated": [],
+    "bler_simulated": [],
+    "ber_at_snr_15db": null,
+    "sum_rate_bps_hz": null,
+    "peak_se_bpshz": null,
+    "effective_se_bpshz": null,
+    "nmse_db": null,
+    "nve": null,
+    "max_doppler_hz": null,
+    "post_eq_sinr_db": null,
+    "array_gain_db": null
+  },
+  "visual_outputs": { "ber_curve_path": "ber_curve.png" },
+  "timing": { "simulate_sec": 0.0 },
+  "warnings": [],
+  "$warnings_schema": {
+    "description": "List of caveat objects. Empty means no fallbacks/defaults/degradations/assumptions applied.",
+    "items": {"kind": "fallback|default|degraded|assumption", "source": "module.path or 'agent'", "message": "free-form string"},
+    "required_keys": ["kind", "source", "message"]
+  }
+}

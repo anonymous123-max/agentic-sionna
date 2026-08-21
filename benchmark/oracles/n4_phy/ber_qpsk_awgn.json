@@ -1,0 +1,22 @@
+{
+  "task_id": "N4_ber_qpsk_awgn",
+  "metric_type": "ber",
+  "modulation": "QPSK",
+  "codec": "uncoded",
+  "channel": "AWGN",
+  "eb_n0_db": [
+    0.0,
+    2.0,
+    4.0,
+    6.0,
+    8.0
+  ],
+  "metric_values": [
+    0.07864960352514258,
+    0.03750612835892598,
+    0.01250081804073755,
+    0.002388290780932807,
+    0.00019090777407599314
+  ],
+  "source": "analytical 0.5*erfc(sqrt(Eb/N0))"
+}

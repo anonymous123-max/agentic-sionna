@@ -1,0 +1,237 @@
+{
+  "task_family": "P2_pareto",
+  "scene_name": "simple_street_canyon",
+  "kind": "outdoor",
+  "tx_position": [
+    -15.0,
+    0.0,
+    15.0
+  ],
+  "ue_position": [
+    15.0,
+    0.0,
+    1.5
+  ],
+  "frequency_hz": 5000000000.0,
+  "noise_dbm": -85.0,
+  "downtilt_fixed_deg": 0.0,
+  "azimuth_deg_grid": [
+    -90.0,
+    -45.0,
+    0.0,
+    45.0,
+    90.0
+  ],
+  "tx_power_dbm_grid": [
+    -18.0,
+    -14.0,
+    -11.0
+  ],
+  "antenna": {
+    "num_rows": 1,
+    "num_cols": 1,
+    "pattern": "tr38901",
+    "polarization": "V"
+  },
+  "phy": {
+    "codec": "ldpc",
+    "k": 1024,
+    "n": 2048,
+    "modulation": "QPSK",
+    "code_rate": 0.5,
+    "throughput_model": "code_rate * bps * (1 - BLER)"
+  },
+  "pareto_objectives": {
+    "maximize": [
+      "throughput"
+    ],
+    "minimize": [
+      "tx_power_mw"
+    ]
+  },
+  "sweep_table": [
+    {
+      "az_deg": -90.0,
+      "tx_power_dbm": -18.0,
+      "tx_power_mw": 0.01585,
+      "path_gain_db": -85.572,
+      "num_paths": 14,
+      "snr_db": -18.572,
+      "ebn0_db": -18.572,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -90.0,
+      "tx_power_dbm": -14.0,
+      "tx_power_mw": 0.03981,
+      "path_gain_db": -85.572,
+      "num_paths": 14,
+      "snr_db": -14.572,
+      "ebn0_db": -14.572,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -90.0,
+      "tx_power_dbm": -11.0,
+      "tx_power_mw": 0.07943,
+      "path_gain_db": -85.572,
+      "num_paths": 14,
+      "snr_db": -11.572,
+      "ebn0_db": -11.572,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "tx_power_dbm": -18.0,
+      "tx_power_mw": 0.01585,
+      "path_gain_db": -73.844,
+      "num_paths": 14,
+      "snr_db": -6.844,
+      "ebn0_db": -6.844,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "tx_power_dbm": -14.0,
+      "tx_power_mw": 0.03981,
+      "path_gain_db": -73.844,
+      "num_paths": 14,
+      "snr_db": -2.844,
+      "ebn0_db": -2.844,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": -45.0,
+      "tx_power_dbm": -11.0,
+      "tx_power_mw": 0.07943,
+      "path_gain_db": -73.844,
+      "num_paths": 14,
+      "snr_db": 0.156,
+      "ebn0_db": 0.156,
+      "bler": 0.99501,
+      "throughput": 0.00499
+    },
+    {
+      "az_deg": 0.0,
+      "tx_power_dbm": -18.0,
+      "tx_power_mw": 0.01585,
+      "path_gain_db": -68.987,
+      "num_paths": 14,
+      "snr_db": -1.987,
+      "ebn0_db": -1.987,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 0.0,
+      "tx_power_dbm": -14.0,
+      "tx_power_mw": 0.03981,
+      "path_gain_db": -68.987,
+      "num_paths": 14,
+      "snr_db": 2.013,
+      "ebn0_db": 2.013,
+      "bler": 0.0,
+      "throughput": 1.0
+    },
+    {
+      "az_deg": 0.0,
+      "tx_power_dbm": -11.0,
+      "tx_power_mw": 0.07943,
+      "path_gain_db": -68.987,
+      "num_paths": 14,
+      "snr_db": 5.013,
+      "ebn0_db": 5.013,
+      "bler": 0.0,
+      "throughput": 1.0
+    },
+    {
+      "az_deg": 45.0,
+      "tx_power_dbm": -18.0,
+      "tx_power_mw": 0.01585,
+      "path_gain_db": -71.405,
+      "num_paths": 14,
+      "snr_db": -4.405,
+      "ebn0_db": -4.405,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 45.0,
+      "tx_power_dbm": -14.0,
+      "tx_power_mw": 0.03981,
+      "path_gain_db": -71.405,
+      "num_paths": 14,
+      "snr_db": -0.405,
+      "ebn0_db": -0.405,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 45.0,
+      "tx_power_dbm": -11.0,
+      "tx_power_mw": 0.07943,
+      "path_gain_db": -71.405,
+      "num_paths": 14,
+      "snr_db": 2.595,
+      "ebn0_db": 2.595,
+      "bler": 0.0,
+      "throughput": 1.0
+    },
+    {
+      "az_deg": 90.0,
+      "tx_power_dbm": -18.0,
+      "tx_power_mw": 0.01585,
+      "path_gain_db": -81.113,
+      "num_paths": 14,
+      "snr_db": -14.113,
+      "ebn0_db": -14.113,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "tx_power_dbm": -14.0,
+      "tx_power_mw": 0.03981,
+      "path_gain_db": -81.113,
+      "num_paths": 14,
+      "snr_db": -10.113,
+      "ebn0_db": -10.113,
+      "bler": 1.0,
+      "throughput": 0.0
+    },
+    {
+      "az_deg": 90.0,
+      "tx_power_dbm": -11.0,
+      "tx_power_mw": 0.07943,
+      "path_gain_db": -81.113,
+      "num_paths": 14,
+      "snr_db": -7.113,
+      "ebn0_db": -7.113,
+      "bler": 1.0,
+      "throughput": 0.0
+    }
+  ],
+  "pareto_set": [
+    0,
+    3,
+    6,
+    7,
+    9,
+    12
+  ],
+  "pareto_hypervolume": 0.03962,
+  "hv_ref_point": {
+    "throughput": 0.0,
+    "tx_power_mw": 0.07943
+  },
+  "elapsed_s": {
+    "rt": 0.4
+  },
+  "method": "sionna_rt + sionna_phy",
+  "sionna_version": "2.0.1"
+}

@@ -1,0 +1,31 @@
+{
+  "version": "0.1",
+  "description": "Second-pass viewer-generation benchmark. For each PASSING simulation trial in a base benchmark run, the agent is asked to generate a viewer.html that visualizes the sim result. The base trial's workdir (with simulation_result.json + artifacts) is the INPUT; viewer.html is the EXPECTED OUTPUT. This isolates 'viewer-gen capability' from 'sim capability' — a model that gets the sim wrong won't be tested on viewing it.",
+  "task_template": {
+    "id_prefix": "V",
+    "tier": "T8_viewer_gen",
+    "capability": "viewer_gen",
+    "difficulty_inherits_from": "base_trial",
+    "split_inherits_from": "base_trial",
+    "prompt_template": "You are generating a viewer.html for an existing simulation. The current directory contains a completed simulation:\n  - simulation_result.json (contains the canonical metrics)\n  - {extra_artifacts_list} (data files to visualize)\n\nFollow `$RF_SKILL_DIR/references/viewer-spec.md` to produce a `viewer.html` in the current directory that:\n  1. Renders the scene / data using HTML5 canvas + Plotly + Three.js (CDN imports, no build step)\n  2. Loads the simulation data via fetch('./simulation_result.json') and any artifact files\n  3. Has the dashboard theme (dark-mode CSS variables per viewer-spec.md)\n  4. NO chatbox (per viewer-spec.md `Chatbox policy` — no ANTHROPIC_API_KEY in deployment)\n\nCommit only viewer.html; do not modify simulation_result.json.\n\nTask context for the original sim:\n{base_task_summary}",
+    "required_artifacts": ["viewer.html"],
+    "runner_checks": [
+      {"kind": "artifact", "name": "viewer.html"},
+      {"kind": "viewer_html_validity",
+       "rationale": "viewer.html must parse as HTML and contain at least: <canvas> OR <div id=plot>, <script>, fetch reference to simulation_result.json"},
+      {"kind": "viewer_no_chatbox",
+       "rationale": "deployment has no LLM backend; chat input must not be rendered"}
+    ]
+  },
+  "task_filters": {
+    "base_pass_required": true,
+    "base_sim_status_must_not_be": "placeholder_pre_shipped_by_harness",
+    "tier_whitelist": [
+      "T0_scene_gen",
+      "T2_ray_tracing",
+      "T2_channel_modeling",
+      "T4_system_level"
+    ],
+    "rationale": "Only run viewer-gen on tasks that produce visualizable artifacts (scenes, coverage maps, ray paths, system layouts). Skip pure-numerical tasks (T1 BER curves, T3 neural loss curves) where a viewer adds no signal."
+  }
+}

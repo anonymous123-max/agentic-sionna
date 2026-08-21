@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "task_type": "scene_gen",
+  "status": "success",
+  "method": "<template_scene|hand_written>",
+  "numerical_metrics": {
+    "num_rooms": 0,
+    "num_walls": 0,
+    "num_furniture": 0,
+    "num_transmitters": 0,
+    "scene_area_m2": 0.0
+  },
+  "warnings": [],
+  "$warnings_schema": {
+    "description": "List of caveat objects. Empty means no fallbacks/defaults/degradations/assumptions applied.",
+    "items": {"kind": "fallback|default|degraded|assumption", "source": "module.path or 'agent'", "message": "free-form string"},
+    "required_keys": ["kind", "source", "message"]
+  }
+}

@@ -1,0 +1,522 @@
+{
+  "version": "1.0",
+  "description": "60-task benchmark suite for Sionna/RF skill evaluation",
+  "methodology": "See BENCHMARK_METHODOLOGY.md for experimental protocol",
+  "difficulty_distribution": {"easy": "30%", "medium": "50%", "hard": "20%"},
+  "tiers": {
+    "T1_phy_link_level": {
+      "tasks": 18,
+      "description": "PHY link-level: BER, OFDM, MIMO, channel models, FEC, modulation"
+    },
+    "T2_ray_tracing": {
+      "tasks": 9,
+      "description": "Sionna RT: scene setup, CIR/CFR, radio maps, differentiable optimization"
+    },
+    "T3_ml_neural": {
+      "tasks": 15,
+      "description": "ML integration: neural receivers, autoencoders, RIS, beamforming, ISAC"
+    },
+    "T4_system_level": {
+      "tasks": 8,
+      "description": "Sionna SYS: multi-cell, scheduling, power control, digital twin"
+    },
+    "T5_emerging": {
+      "tasks": 10,
+      "description": "Frontier: channel charting, OTFS, THz, federated learning, semantic comm"
+    }
+  },
+  "tasks": [
+    {
+      "id": "T01", "tier": 1, "difficulty": "easy",
+      "name": "BER curve: AWGN uncoded baseline",
+      "prompt": "Simulate uncoded QPSK over AWGN for Eb/N0 from -2 to 10 dB. Plot BER vs Eb/N0 on log-scale y-axis and overlay the theoretical QPSK curve.",
+      "distractor": "Using Es/N0 instead of Eb/N0 shifts the curve by 3 dB",
+      "verifier": {"metric": "ber_gap_db", "threshold": 0.5, "at_ber": 1e-3},
+      "assertions": [
+        "BER at Eb/N0=6dB within 0.5dB of theory (≈2.4e-3)",
+        "Curve strictly non-increasing",
+        "Y-axis is log-scale"
+      ]
+    },
+    {
+      "id": "T02", "tier": 1, "difficulty": "medium",
+      "name": "BER curve: LDPC coded 5G NR",
+      "prompt": "Simulate 5G NR LDPC (BG1, rate 0.5, k=1024) over AWGN. Plot BLER vs Eb/N0 and mark the waterfall threshold.",
+      "distractor": "Missing bit interleaving between encoder and mapper",
+      "verifier": {"metric": "bler_waterfall_range", "range_db": [1, 4]},
+      "assertions": [
+        "BLER < 1e-2 within [1,4] dB Eb/N0",
+        "Code rate verified from encoder params",
+        "Uses LDPC5GEncoder/Decoder"
+      ]
+    },
+    {
+      "id": "T03", "tier": 1, "difficulty": "medium",
+      "name": "BER curve: multi-modulation comparison",
+      "prompt": "Plot BPSK, QPSK, 16-QAM, 64-QAM BER vs Eb/N0 over AWGN (uncoded) on a single figure. Annotate each curve.",
+      "distractor": "Same num_bits_per_symbol for all constellations",
+      "verifier": {"metric": "curve_count", "expected": 4},
+      "assertions": [
+        "4 distinct curves",
+        "~6dB ordering between modulation doublings at BER=1e-3",
+        "Curves labeled"
+      ]
+    },
+    {
+      "id": "T04", "tier": 1, "difficulty": "medium",
+      "name": "OFDM chain: basic SISO",
+      "prompt": "Build SISO OFDM (14 symbols, FFT=76, 15kHz SCS, Kronecker pilots at symbols [2,11]), flat Rayleigh, LS estimation, LMMSE equalization, QPSK. Report BER at Eb/N0=10dB.",
+      "distractor": "CP shorter than delay spread causes ISI",
+      "verifier": {"metric": "ber_at_snr", "snr_db": 10, "threshold": 0.05},
+      "assertions": ["BER at 10dB < 5e-2", "LSChannelEstimator used", "ResourceGrid dims match"]
+    },
+    {
+      "id": "T05", "tier": 1, "difficulty": "hard",
+      "name": "OFDM + LDPC integration",
+      "prompt": "QPSK-OFDM over CDL-C with 5G NR LDPC. Compare BLER with and without coding on same plot.",
+      "distractor": "CDL for multi-user (CDL only supports point-to-point)",
+      "verifier": {"metric": "coded_below_uncoded", "at_all_snr_above_floor": true},
+      "assertions": ["Two BLER curves", "Coded < uncoded at all SNR above noise floor", "Uses LDPC5GEncoder"]
+    },
+    {
+      "id": "T06", "tier": 1, "difficulty": "medium",
+      "name": "Channel model selection: P2P vs multi-user",
+      "prompt": "2 base stations, 4 users — set up channel model for uplink. Then single-user comparison with 1 TX, 1 RX.",
+      "distractor": "CDL for multi-user scenario (fails at runtime)",
+      "verifier": {"metric": "correct_model_selection", "multi_user": "UMi|UMa", "single_user": "CDL|TDL"},
+      "assertions": ["Multi-user uses UMi/UMa", "Single-user uses CDL/TDL", "CDL for multi-user = FAIL"]
+    },
+    {
+      "id": "T07", "tier": 1, "difficulty": "medium",
+      "name": "CDL-A with Doppler",
+      "prompt": "CDL-A at 60km/h, 3.5GHz. Plot channel magnitude across 14 OFDM symbols. Report Doppler frequency.",
+      "distractor": "Setting speed=0 disables Doppler",
+      "verifier": {"metric": "doppler_hz", "expected": 194, "tolerance_pct": 5},
+      "assertions": ["Channel varies across symbols (std>0.05)", "Doppler within 5% of 194Hz"]
+    },
+    {
+      "id": "T08", "tier": 1, "difficulty": "medium",
+      "name": "MIMO: 4x4 point-to-point",
+      "prompt": "4x4 MIMO OFDM, CDL-B, LMMSE equalization, ZF precoding, 16-QAM, no coding. BER at SNR=15dB.",
+      "distractor": "Missing StreamManagement configuration",
+      "verifier": {"metric": "ber_at_snr", "snr_db": 15, "threshold": 0.01},
+      "assertions": ["BER at 15dB < 1e-2", "StreamManagement with num_streams=4", "LMMSEEqualizer used"]
+    },
+    {
+      "id": "T09", "tier": 1, "difficulty": "hard",
+      "name": "MIMO: multi-user uplink with UMi",
+      "prompt": "4 single-antenna users → 8-antenna BS, urban micro, 3.5GHz. Compute post-equalization SINR per stream.",
+      "distractor": "Using CDL for multi-user (runtime error)",
+      "verifier": {"metric": "uses_correct_channel", "expected": "UMi"},
+      "assertions": ["Uses UMi", "SINR computed per stream", "No runtime error"]
+    },
+    {
+      "id": "T10", "tier": 1, "difficulty": "hard",
+      "name": "Massive MIMO: 64x4",
+      "prompt": "64-antenna BS (8x4 dual-pol), 4 UEs, UMa, downlink, RZF precoding. Sum rate at 20dB SNR.",
+      "distractor": "Single polarization when dual-pol specified → shape mismatch",
+      "verifier": {"metric": "code_runs", "no_shape_errors": true},
+      "assertions": ["AntennaArray 8x4", "RZF precoding", "Sum rate computed"]
+    },
+    {
+      "id": "T11", "tier": 1, "difficulty": "medium",
+      "name": "Polar code for short messages",
+      "prompt": "5G NR Polar code (msg=32 bits, rate 0.5) over AWGN. Plot BLER. Compare to LDPC at same rate and length.",
+      "distractor": "LDPC minimum message length exceeded for 32 bits",
+      "verifier": {"metric": "uses_polar", "expected": true},
+      "assertions": ["Uses Polar5GEncoder/Decoder", "BLER plotted", "LDPC comparison or infeasibility noted"]
+    },
+    {
+      "id": "T12", "tier": 1, "difficulty": "easy",
+      "name": "Code rate sweep",
+      "prompt": "LDPC BG1, k=2048. Plot BLER at SNR=2dB vs code rate from 0.3 to 0.9 (8 points).",
+      "distractor": "Fixed num_bits_per_symbol while sweeping rate",
+      "verifier": {"metric": "monotonic_bler_vs_rate", "at_fixed_snr": true},
+      "assertions": ["8 BLER values", "BLER increases with rate at fixed SNR"]
+    },
+    {
+      "id": "T13", "tier": 1, "difficulty": "medium",
+      "name": "Soft vs hard demapping",
+      "prompt": "64-QAM AWGN with LDPC. Verify soft APP demapping produces lower BLER than hard demapping.",
+      "distractor": "LLR sign convention mismatch with decoder",
+      "verifier": {"metric": "soft_better_than_hard", "at_comparison_snr": true},
+      "assertions": ["Soft BLER < hard BLER", "Both curves present"]
+    },
+    {
+      "id": "T14", "tier": 1, "difficulty": "easy",
+      "name": "Receiver sensitivity calculation",
+      "prompt": "NF=7dB, BW=20MHz. Compute thermal noise power (dBm). Simulate QPSK BER=1e-3, report minimum Prx.",
+      "distractor": "Omitting noise figure from sensitivity",
+      "verifier": {"metric": "noise_power_dbm", "expected": -101, "tolerance": 0.5},
+      "assertions": ["Noise power within 0.5dBm of -101dBm"]
+    },
+    {
+      "id": "T15", "tier": 1, "difficulty": "easy",
+      "name": "sim_ber() efficiency",
+      "prompt": "Use sim_ber() for QPSK-AWGN, 0-8dB, 100 min block errors per point. Compare runtime to manual loop.",
+      "distractor": "max_mc_iter too low → unreliable estimates at high SNR",
+      "verifier": {"metric": "min_errors_per_point", "threshold": 100},
+      "assertions": ["≥100 errors per SNR point", "sim_ber() faster than manual"]
+    },
+    {
+      "id": "T16", "tier": 1, "difficulty": "hard",
+      "name": "Version migration: v0.x to v2.0",
+      "prompt": "Migrate provided v0.16 code (sionna.channel.AWGN, sionna.mapping.Mapper) to v2.0.",
+      "distractor": "Partial migration mixing old and new imports",
+      "verifier": {"metric": "code_runs_v2", "no_import_errors": true},
+      "assertions": ["Runs on v2.0", "Uses sionna.phy.* namespace", "BER matches within 0.5dB"]
+    },
+    {
+      "id": "T17", "tier": 1, "difficulty": "medium",
+      "name": "Spectral efficiency calculation",
+      "prompt": "2x2 MIMO OFDM, 64-QAM, rate 0.75. Compute peak SE. Simulate effective throughput at SNR=25dB.",
+      "distractor": "Not subtracting pilot/guard overhead",
+      "verifier": {"metric": "peak_se", "expected": 9.0, "tolerance": 0.1},
+      "assertions": ["Peak SE = 9 bits/s/Hz", "Effective ≤ peak", "Pilot overhead noted"]
+    },
+    {
+      "id": "T18", "tier": 1, "difficulty": "hard",
+      "name": "HARQ Type-I retransmission",
+      "prompt": "HARQ Type-I (max 4 TX) for LDPC-QPSK AWGN. Plot BLER per retransmission round.",
+      "distractor": "Reusing same channel realization across retransmissions",
+      "verifier": {"metric": "bler_decreasing_per_round", "rounds": 4},
+      "assertions": ["4 BLER curves", "Each round lower", "Different channel per round"]
+    },
+    {
+      "id": "T19", "tier": 2, "difficulty": "easy",
+      "name": "Scene loading and TX/RX placement",
+      "prompt": "Load Munich scene. TX at [0,0,25], 5 random RX at z=1.5m. Compute paths, report count per RX.",
+      "distractor": "Not using synthetic_array=True for large arrays",
+      "verifier": {"metric": "paths_computed", "min_rx_with_paths": 3},
+      "assertions": ["Scene loads", "5 RX placed", "Nonzero paths for ≥3 RX"]
+    },
+    {
+      "id": "T20", "tier": 2, "difficulty": "medium",
+      "name": "CIR extraction and shape verification",
+      "prompt": "Munich scene, 1 TX/RX. Compute CIR, verify shape. Convert to CFR for OFDM (FFT=76, SCS=15kHz).",
+      "distractor": "out_type='tensorflow' on PyTorch backend",
+      "verifier": {"metric": "cir_shape_valid", "cfr_produced": true},
+      "assertions": ["CIR shape [1,1,1,1,num_paths,1]", "CFR produced", "cir_to_ofdm_channel() used"]
+    },
+    {
+      "id": "T21", "tier": 2, "difficulty": "easy",
+      "name": "Radio map: coverage prediction",
+      "prompt": "Generate path loss radio map for urban scene, TX at 25m, 2.4GHz. Plot heatmap. Identify 3dB boundary.",
+      "distractor": "Frequency in Hz vs GHz confusion",
+      "verifier": {"metric": "path_loss_range", "min_db": 40, "max_db": 160},
+      "assertions": ["2D grid", "Values in [40,160]dB", "Coverage boundary identified"]
+    },
+    {
+      "id": "T22", "tier": 2, "difficulty": "hard",
+      "name": "Differentiable optimization: TX orientation",
+      "prompt": "Gradient descent to optimize TX azimuth+tilt in Munich scene. 10 RX, 50 steps. Plot power vs iteration.",
+      "distractor": "Using tf.GradientTape on PyTorch backend",
+      "verifier": {"metric": "power_increases", "min_iterations_monotone": 20},
+      "assertions": ["Power increases first 20 iterations", "Final > initial", "Correct autograd API"]
+    },
+    {
+      "id": "T23", "tier": 2, "difficulty": "hard",
+      "name": "Differentiable optimization: material learning",
+      "prompt": "Given 10 measured path loss values, optimize wall permittivity to match. 30 gradient steps.",
+      "distractor": "Unclamped permittivity → negative values → crash",
+      "verifier": {"metric": "rmse_improves", "permittivity_valid": true},
+      "assertions": ["Permittivity in [1,80]", "Final RMSE < initial", "Loss curve plotted"]
+    },
+    {
+      "id": "T24", "tier": 2, "difficulty": "hard",
+      "name": "RT to PHY: full pipeline",
+      "prompt": "RT CIR → OFDM link-level sim (16-QAM, LS). Compare BER to CDL-C at same mean SNR.",
+      "distractor": "Incompatible delay tap spacing → ISI error floor",
+      "verifier": {"metric": "two_ber_curves", "no_shape_errors": true},
+      "assertions": ["Two BER curves (RT and CDL-C)", "paths.taps() → ApplyOFDMChannel"]
+    },
+    {
+      "id": "T25", "tier": 2, "difficulty": "medium",
+      "name": "Radio map: multi-BS coverage",
+      "prompt": "3 base stations, individual radio maps, best-server map (per-pixel max). Plot with 3 coverage zones.",
+      "distractor": "Single combined map instead of 3 individual + max",
+      "verifier": {"metric": "three_maps_generated", "best_server_computed": true},
+      "assertions": ["3 individual maps", "Best-server = pixelwise max", "3 zones in plot"]
+    },
+    {
+      "id": "T26", "tier": 2, "difficulty": "hard",
+      "name": "RIS optimization via ray tracing",
+      "prompt": "RIS in NLoS scene. Gradient descent on phase shifts. Compare: optimized vs random vs no-RIS.",
+      "distractor": "Random init without normalization → local minimum",
+      "verifier": {"metric": "ris_gain_db", "min_gain": 3.0},
+      "assertions": ["Optimized > random > no-RIS", "≥3dB gain over no-RIS"]
+    },
+    {
+      "id": "T27", "tier": 2, "difficulty": "easy",
+      "name": "CIR plausibility checks",
+      "prompt": "After computing CIR, check: LOS delay matches d/c, path gains decrease with order, all delays positive.",
+      "distractor": "LOS delay in seconds vs samples confusion",
+      "verifier": {"metric": "three_checks_pass", "all_pass": true},
+      "assertions": ["3 checks implemented", "LOS delay = d/c", "All pass"]
+    },
+    {
+      "id": "T28", "tier": 3, "difficulty": "medium",
+      "name": "Neural demapper: training setup",
+      "prompt": "Replace Demapper with 3-layer MLP (128 hidden). Train on QPSK-AWGN, 200 steps. Compare BER to classical.",
+      "distractor": "LLR sign convention mismatch with decoder",
+      "verifier": {"metric": "ber_gap_to_classical", "max_gap_db": 1.0},
+      "assertions": ["Neural BER within 1dB of classical at 6dB", "Loss decreases", "torch.nn.Module used"]
+    },
+    {
+      "id": "T29", "tier": 3, "difficulty": "hard",
+      "name": "Neural channel estimator: NVE metric",
+      "prompt": "Neural estimator for SISO OFDM CDL-C. Train on 1000 realizations. Report NVE. LS baseline ≈ 94.",
+      "distractor": "Evaluating on training set (over-optimistic)",
+      "verifier": {"metric": "nve", "threshold": 70},
+      "assertions": ["NVE < 70", "Evaluation on held-out data", "NVE formula correct"]
+    },
+    {
+      "id": "T30", "tier": 3, "difficulty": "hard",
+      "name": "Neural channel estimator: NMSE",
+      "prompt": "Train estimator for 2x2 MIMO CDL-A. Plot NMSE vs SNR. Compare to LS and LMMSE. Target: NMSE < -10dB at SNR=10dB.",
+      "distractor": "NMSE = MSE/signal_power instead of MSE/||H||²",
+      "verifier": {"metric": "nmse_db", "at_snr": 10, "threshold": -10},
+      "assertions": ["3 curves (neural, LS, LMMSE)", "Neural < -10dB at SNR=10dB", "Correct NMSE formula"]
+    },
+    {
+      "id": "T31", "tier": 3, "difficulty": "medium",
+      "name": "End-to-end autoencoder: AWGN",
+      "prompt": "(7,4) autoencoder over AWGN. Train 500 epochs. Plot learned constellation. Compare BER to 16-QAM.",
+      "distractor": "No power normalization → cheating by increasing Tx power",
+      "verifier": {"metric": "power_normalized", "constellation_plotted": true},
+      "assertions": ["Power normalization layer present", "Constellation plotted", "BER comparison included"]
+    },
+    {
+      "id": "T32", "tier": 3, "difficulty": "hard",
+      "name": "Autoencoder: fading channel",
+      "prompt": "Autoencoder over Rayleigh fading with known CSI at RX. 300 training steps. Show constellation differs from AWGN case.",
+      "distractor": "Same channel realization for all batch items",
+      "verifier": {"metric": "new_channel_per_item", "constellation_differs": true},
+      "assertions": ["New realization per batch item", "Constellation differs from AWGN", "BER curve produced"]
+    },
+    {
+      "id": "T33", "tier": 3, "difficulty": "hard",
+      "name": "Neural decoder: unfolded LDPC",
+      "prompt": "5-iteration unfolded LDPC with learnable scaling factors. Train on CDL-C. Compare to 20-iteration classical.",
+      "distractor": "Not sharing weights across unfolded iterations",
+      "verifier": {"metric": "learnable_params_present", "bler_comparison": true},
+      "assertions": ["Learnable scaling factors", "BLER comparison", "Fewer params than 5 independent decoders"]
+    },
+    {
+      "id": "T34", "tier": 3, "difficulty": "hard",
+      "name": "Neural equalizer: model mismatch",
+      "prompt": "Train neural equalizer on CDL-A. Test on CDL-C (mismatch). Compare degradation to LMMSE under same mismatch.",
+      "distractor": "Evaluating on training distribution",
+      "verifier": {"metric": "mismatch_evaluated", "both_conditions_present": true},
+      "assertions": ["Train=CDL-A, test=CDL-C", "Neural and LMMSE results under mismatch", "Degradation analyzed"]
+    },
+    {
+      "id": "T35", "tier": 3, "difficulty": "hard",
+      "name": "CSI feedback compression",
+      "prompt": "CsiNet-style autoencoder: compress H [32,32] to 32 values. Train on UMi. Report reconstruction NMSE.",
+      "distractor": "Flattening without exploiting spatial-frequency structure",
+      "verifier": {"metric": "nmse_db", "threshold": -5},
+      "assertions": ["Encoder dim=32", "Reconstructed shape=[32,32]", "NMSE < -5dB"]
+    },
+    {
+      "id": "T36", "tier": 3, "difficulty": "medium",
+      "name": "ZF vs MRT beamforming comparison",
+      "prompt": "16-antenna BS, 2 UEs, MU-MIMO downlink. Compare ZF and MRT per-user SINR vs SNR.",
+      "distractor": "MRT without per-user power normalization",
+      "verifier": {"metric": "crossing_behavior", "zf_better_at_high_snr": true},
+      "assertions": ["ZF higher SINR at high SNR", "MRT comparable at low SNR", "Power normalized"]
+    },
+    {
+      "id": "T37", "tier": 3, "difficulty": "hard",
+      "name": "Gradient-based beamforming",
+      "prompt": "RT-computed angles, 4-antenna TX. Optimize beamforming vector via gradient descent. Compare to MRT.",
+      "distractor": "Unconstrained norm → arbitrary power increase",
+      "verifier": {"metric": "norm_constrained", "snr_geq_mrt": true},
+      "assertions": ["||w||=1 throughout", "Gradient BF SNR ≥ MRT SNR", "Optimization curve plotted"]
+    },
+    {
+      "id": "T38", "tier": 3, "difficulty": "hard",
+      "name": "Semantic communication: image classification",
+      "prompt": "Joint source-channel coding for image class over AWGN. Pre-trained feature extractor as encoder. Accuracy vs SNR.",
+      "distractor": "Evaluating BER instead of classification accuracy",
+      "verifier": {"metric": "eval_metric_is_accuracy", "not_ber": true},
+      "assertions": ["Metric is accuracy not BER", "Accuracy degrades gracefully", "Feature extractor used"]
+    },
+    {
+      "id": "T39", "tier": 3, "difficulty": "hard",
+      "name": "ISAC dual-function waveform",
+      "prompt": "OFDM with data + sensing subcarriers. CDL-A, scatterer at 100m. Report BER and ranging RMSE.",
+      "distractor": "All subcarriers to one function",
+      "verifier": {"metric": "dual_function", "both_metrics_reported": true},
+      "assertions": ["Mixed subcarrier allocation", "Communication BER reported", "Ranging RMSE reported"]
+    },
+    {
+      "id": "T40", "tier": 3, "difficulty": "hard",
+      "name": "ISAC localization",
+      "prompt": "3 BSs in RT scene. Estimate user position via AoA from each BS. Report localization RMSE over 50 positions.",
+      "distractor": "Using ToA instead of AoA",
+      "verifier": {"metric": "localization_rmse_m", "threshold": 5.0},
+      "assertions": ["AoA from each BS", "Triangulation", "RMSE over ≥50 positions"]
+    },
+    {
+      "id": "T41", "tier": 3, "difficulty": "medium",
+      "name": "RIS: analytical phase optimization",
+      "prompt": "RIS-assisted SISO (Rayleigh fading). Optimize phases analytically (MRC) and via random search. Compare SNR.",
+      "distractor": "Continuous vs quantized phase assumption",
+      "verifier": {"metric": "analytical_achieves_max", "random_within_20pct": true},
+      "assertions": ["Analytical = max possible SNR", "Random within 20%", "Quantization noted"]
+    },
+    {
+      "id": "T42", "tier": 3, "difficulty": "hard",
+      "name": "Jamming: PyJama barrage vs learned",
+      "prompt": "Barrage jammer 0-20dBm against LDPC-QPSK. Sweep power. Compare to learned jammer (same budget).",
+      "distractor": "Jammer power not normalized to signal",
+      "verifier": {"metric": "bler_monotone_with_power", "learned_geq_barrage": true},
+      "assertions": ["BLER increases with power", "Learned ≥ barrage at all powers", "Both curves present"]
+    },
+    {
+      "id": "T43", "tier": 4, "difficulty": "medium",
+      "name": "Multi-cell hexagonal grid",
+      "prompt": "7-cell hex, 10 users/cell. Cell-edge (5th pct) and median throughput at 20dB SNR.",
+      "distractor": "No wrap-around → edge effects",
+      "verifier": {"metric": "topology_cells", "expected": 7},
+      "assertions": ["7 cells", "70 users", "5th pct and median reported"]
+    },
+    {
+      "id": "T44", "tier": 4, "difficulty": "medium",
+      "name": "Link adaptation: OLLA",
+      "prompt": "OLLA for SU-MIMO targeting 10% BLER. Compare to fixed MCS over 100 slots. Plot BLER over time.",
+      "distractor": "Step size too large (5dB) → oscillation",
+      "verifier": {"metric": "olla_closer_to_target", "target_bler": 0.1},
+      "assertions": ["OLLA mean BLER closer to 10%", "Lower BLER variance", "Step < 1dB"]
+    },
+    {
+      "id": "T45", "tier": 4, "difficulty": "medium",
+      "name": "Proportional fair scheduling",
+      "prompt": "PF scheduling for 4 users (SNR 5,10,15,20 dB). Compare Jain fairness to round-robin.",
+      "distractor": "Max-throughput instead of PF",
+      "verifier": {"metric": "pf_fairer", "jain_index_higher": true},
+      "assertions": ["PF Jain > RR Jain", "Per-user throughput plotted", "PF metric: r_i/R_i"]
+    },
+    {
+      "id": "T46", "tier": 4, "difficulty": "easy",
+      "name": "Uplink power control",
+      "prompt": "Open-loop power control, 8 users, target Prx=-85dBm. Report Tx power range.",
+      "distractor": "No max Tx power cap (23dBm for 5G NR)",
+      "verifier": {"metric": "max_tx_power", "cap_dbm": 23},
+      "assertions": ["Max Tx ≤ 23dBm", "Target within 2dB for all users"]
+    },
+    {
+      "id": "T47", "tier": 4, "difficulty": "easy",
+      "name": "PHY abstraction: SINR to BLER",
+      "prompt": "Map SINR [-5,0,5,10,15,20]dB to BLER for 16-QAM rate 0.5. Plot curve.",
+      "distractor": "SINR used directly as Eb/N0 without MCS mapping",
+      "verifier": {"metric": "bler_monotone_decreasing", "approaches_zero_at_20": true},
+      "assertions": ["BLER decreases with SINR", "BLER→0 at 20dB", "PHYAbstraction used"]
+    },
+    {
+      "id": "T48", "tier": 4, "difficulty": "hard",
+      "name": "Digital twin: RT + system integration",
+      "prompt": "RT radio map → SNR for 20 users → system-level throughput. Compare to stochastic UMi model.",
+      "distractor": "Path loss directly as SNR (unit error: dBm vs dB)",
+      "verifier": {"metric": "snr_formula_correct", "two_throughputs_compared": true},
+      "assertions": ["SNR = Ptx - PL - N (all dB)", "Two throughput values", "Range [0,200] Mbps"]
+    },
+    {
+      "id": "T49", "tier": 4, "difficulty": "hard",
+      "name": "Network slicing: eMBB vs URLLC",
+      "prompt": "2 slices sharing 100MHz: eMBB (6 users, max throughput) and URLLC (2 users, BLER<0.1%). Allocate resources.",
+      "distractor": "Equal allocation fails URLLC target",
+      "verifier": {"metric": "urllc_bler", "threshold": 1e-3},
+      "assertions": ["URLLC BLER < 1e-3", "eMBB throughput > 0", "Allocation justified"]
+    },
+    {
+      "id": "T50", "tier": 4, "difficulty": "medium",
+      "name": "Capacity: Shannon bound comparison",
+      "prompt": "Rayleigh fading: ergodic capacity, 10% outage capacity, AWGN capacity. Plot all vs SNR.",
+      "distractor": "Instantaneous vs average SNR for AWGN comparison",
+      "verifier": {"metric": "ordering_correct", "ergodic_lt_awgn": true},
+      "assertions": ["3 curves", "Ergodic < AWGN", "Outage < ergodic"]
+    },
+    {
+      "id": "T51", "tier": 5, "difficulty": "hard",
+      "name": "Channel charting",
+      "prompt": "CSI from 100 positions in RT scene. Train 2D channel chart. Verify spatial correlation.",
+      "distractor": "Using only magnitude (no phase) loses spatial resolution",
+      "verifier": {"metric": "spatial_correlation", "pearson_min": 0.7},
+      "assertions": ["Correlation > 0.7", "Scatter plot produced"]
+    },
+    {
+      "id": "T52", "tier": 5, "difficulty": "hard",
+      "name": "OTFS waveform",
+      "prompt": "2D OTFS over doubly-dispersive channel (1µs delay, 1kHz Doppler). Compare BER to OFDM at same SE.",
+      "distractor": "Standard OFDM pilots for OTFS estimation",
+      "verifier": {"metric": "otfs_better_high_doppler", "at_high_snr": true},
+      "assertions": ["OTFS BER < OFDM at high Doppler", "2D pilot structure"]
+    },
+    {
+      "id": "T53", "tier": 5, "difficulty": "hard",
+      "name": "Near-field beamforming: XL-MIMO",
+      "prompt": "128 antennas, 30GHz. Compute Rayleigh distance. User in near-field. Compare near vs far-field gain.",
+      "distractor": "Far-field steering in near-field → suboptimal focus",
+      "verifier": {"metric": "rayleigh_distance_correct", "near_field_better": true},
+      "assertions": ["Rayleigh = 2D²/λ", "User within distance", "Near-field > far-field SNR"]
+    },
+    {
+      "id": "T54", "tier": 5, "difficulty": "medium",
+      "name": "THz channel: molecular absorption",
+      "prompt": "300GHz link over 10m indoor. Include molecular absorption. Compare total path loss to 28GHz.",
+      "distractor": "Standard Friis without molecular absorption",
+      "verifier": {"metric": "thz_loss_gt_mmwave", "absorption_applied": true},
+      "assertions": ["Molecular absorption applied", "300GHz loss > 28GHz", "Within 5dB of reference"]
+    },
+    {
+      "id": "T55", "tier": 5, "difficulty": "hard",
+      "name": "Federated learning: channel estimation",
+      "prompt": "5 clients, each different channel realization. FedAvg. Compare federated, centralized, local NMSE.",
+      "distractor": "Equal-weight FedAvg with identical data = centralized",
+      "verifier": {"metric": "federated_between_central_and_local", "three_curves": true},
+      "assertions": ["3 NMSE curves", "Federated closer to centralized than local"]
+    },
+    {
+      "id": "T56", "tier": 5, "difficulty": "hard",
+      "name": "Semantic metric: accuracy vs BER",
+      "prompt": "Semantic comm for images. Plot both BER and accuracy vs SNR. Identify semantic robustness regime.",
+      "distractor": "Assuming BER and accuracy degrade in lockstep",
+      "verifier": {"metric": "decoupling_shown", "robustness_regime_labeled": true},
+      "assertions": ["Two metrics plotted", "Regime where accuracy>70% while BER>10%", "Labeled"]
+    },
+    {
+      "id": "T57", "tier": 5, "difficulty": "medium",
+      "name": "ISAC tradeoff curve",
+      "prompt": "Sweep sensing allocation 0-100%. Plot throughput and RMSE vs allocation. Find Pareto point.",
+      "distractor": "Fixed channel realizations for sensing metric",
+      "verifier": {"metric": "monotone_tradeoff", "pareto_identified": true},
+      "assertions": ["Two curves", "Monotone tradeoff", "Pareto point labeled", "Averaged ≥20 realizations"]
+    },
+    {
+      "id": "T58", "tier": 5, "difficulty": "hard",
+      "name": "O-RAN xApp: MCS adaptation",
+      "prompt": "Near-RT RIC xApp adjusting MCS every 10ms over 1s. Compare to fixed MCS.",
+      "distractor": "Adjusting every 1ms (wrong O-RAN timescale)",
+      "verifier": {"metric": "update_interval_correct", "xapp_better": true},
+      "assertions": ["MCS update every 10 slots", "xApp throughput > fixed", "O-RAN noted in comments"]
+    },
+    {
+      "id": "T59", "tier": 5, "difficulty": "hard",
+      "name": "STAR-RIS: full-space coverage",
+      "prompt": "STAR-RIS serving one UE each side. Optimize T and R coefficients. Compare to conventional RIS.",
+      "distractor": "Reflection code applied to transmission side",
+      "verifier": {"metric": "star_better_than_conventional", "constraint_enforced": true},
+      "assertions": ["Two UEs served", "Separate T/R matrices", "|t|²+|r|²=1 enforced"]
+    },
+    {
+      "id": "T60", "tier": 5, "difficulty": "hard",
+      "name": "Channel prediction: autoregressive LSTM",
+      "prompt": "LSTM predicting next channel from 5 past observations. CDL-A 60km/h. NMSE at 1,2,5,10 steps ahead.",
+      "distractor": "Not normalizing channel coefficient magnitudes",
+      "verifier": {"metric": "nmse_increases_with_horizon", "lstm_better_at_1step": true},
+      "assertions": ["NMSE for 4 horizons", "LSTM < last-sample at 1-2 steps", "Normalization applied"]
+    }
+  ]
+}

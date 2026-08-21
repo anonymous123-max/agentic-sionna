@@ -1,0 +1,247 @@
+{
+  "version": "1.0",
+  "tier": "N4_phy_link",
+  "design": "Single-user PHY link evaluation. 4 tasks covering BER (uncoded QPSK & 16-QAM), BLER (LDPC QPSK), and throughput (LDPC QPSK), all over AWGN. No scene needed.",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_phy_used) + Layer C (n4_phy_oracle: per-point comparison vs precomputed Sionna PHY reference)",
+  "count": 4,
+  "tasks": [
+    {
+      "id": "N4_ber_qpsk_awgn",
+      "tier": "N4_phy_link",
+      "metric_type": "ber",
+      "capability": "phy_link",
+      "difficulty": "easy",
+      "split": "train",
+      "modulation": "QPSK",
+      "codec": "uncoded",
+      "channel": "AWGN",
+      "eb_n0_db": [
+        0,
+        2,
+        4,
+        6,
+        8
+      ],
+      "oracle_path": "benchmark/oracles/n4_phy/ber_qpsk_awgn.json",
+      "prompt": "Run a Sionna PHY simulation: uncoded QPSK modulation over an AWGN channel. Compute the bit error rate (BER) at Eb/N0 = [0, 2, 4, 6, 8] dB using approximately 1 million bits per SNR point. Return the BER curve.",
+      "required_artifacts": [
+        "simulation.py",
+        "ber_curve.npy",
+        "ber_curve.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_ber_npy",
+            "type": "file_exists",
+            "path": "ber_curve.npy"
+          },
+          {
+            "key": "must_create_ber_png",
+            "type": "file_exists",
+            "path": "ber_curve.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n4_phy_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N4_ber_16qam_awgn",
+      "tier": "N4_phy_link",
+      "metric_type": "ber",
+      "capability": "phy_link",
+      "difficulty": "easy",
+      "split": "train",
+      "modulation": "16-QAM",
+      "codec": "uncoded",
+      "channel": "AWGN",
+      "eb_n0_db": [
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "oracle_path": "benchmark/oracles/n4_phy/ber_16qam_awgn.json",
+      "prompt": "Run a Sionna PHY simulation: uncoded 16-QAM modulation over an AWGN channel. Compute the bit error rate (BER) at Eb/N0 = [4, 6, 8, 10, 12] dB using approximately 1 million bits per SNR point. Return the BER curve.",
+      "required_artifacts": [
+        "simulation.py",
+        "ber_curve.npy",
+        "ber_curve.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_ber_npy",
+            "type": "file_exists",
+            "path": "ber_curve.npy"
+          },
+          {
+            "key": "must_create_ber_png",
+            "type": "file_exists",
+            "path": "ber_curve.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n4_phy_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N4_bler_ldpc_qpsk_awgn",
+      "tier": "N4_phy_link",
+      "metric_type": "bler",
+      "capability": "phy_link",
+      "difficulty": "medium",
+      "split": "train",
+      "modulation": "QPSK",
+      "codec": "ldpc",
+      "code_rate": 0.5,
+      "channel": "AWGN",
+      "eb_n0_db": [
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        2.5
+      ],
+      "oracle_path": "benchmark/oracles/n4_phy/bler_ldpc_qpsk_awgn.json",
+      "prompt": "Run a Sionna PHY simulation: 5G LDPC-coded QPSK with k=1024, n=2048 (rate 1/2) over an AWGN channel. Compute the block error rate (BLER) at Eb/N0 = [0.5, 1.0, 1.5, 2.0, 2.5] dB, using at least 1000 codewords per SNR point. Return the BLER curve.",
+      "required_artifacts": [
+        "simulation.py",
+        "bler_curve.npy",
+        "bler_curve.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_bler_npy",
+            "type": "file_exists",
+            "path": "bler_curve.npy"
+          },
+          {
+            "key": "must_create_bler_png",
+            "type": "file_exists",
+            "path": "bler_curve.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n4_phy_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "N4_throughput_ldpc_qpsk_awgn",
+      "tier": "N4_phy_link",
+      "metric_type": "throughput",
+      "capability": "phy_link",
+      "difficulty": "medium",
+      "split": "train",
+      "modulation": "QPSK",
+      "codec": "ldpc",
+      "code_rate": 0.5,
+      "channel": "AWGN",
+      "eb_n0_db": [
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        2.5
+      ],
+      "oracle_path": "benchmark/oracles/n4_phy/throughput_ldpc_qpsk_awgn.json",
+      "prompt": "Run a Sionna PHY simulation: 5G LDPC-coded QPSK with k=1024, n=2048 (rate 1/2) over an AWGN channel. Compute the throughput in bits per channel use at Eb/N0 = [0.5, 1.0, 1.5, 2.0, 2.5] dB, using at least 1000 codewords per SNR point. Throughput = code_rate \u00d7 log2(M) \u00d7 (1 \u2212 BLER). Return the throughput curve.",
+      "required_artifacts": [
+        "simulation.py",
+        "throughput_curve.npy",
+        "throughput_curve.png",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_throughput_npy",
+            "type": "file_exists",
+            "path": "throughput_curve.npy"
+          },
+          {
+            "key": "must_create_throughput_png",
+            "type": "file_exists",
+            "path": "throughput_curve.png"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "n4_phy_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}

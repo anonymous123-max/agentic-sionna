@@ -1,0 +1,25 @@
+{
+  "scene_name": "box_two_screens",
+  "tx_position": [
+    0,
+    0,
+    4.5
+  ],
+  "rx_position": [
+    3,
+    2,
+    1.5
+  ],
+  "frequency_hz": 5000000000.0,
+  "tx_power_dbm": 20.0,
+  "max_depth": 3,
+  "samples_per_src": 1000000,
+  "tx_rx_distance_m": 4.69041575982343,
+  "path_gain_db": -53.33,
+  "num_paths": 37,
+  "mean_delay_ns": 31.588,
+  "delay_spread_ns": 14.023,
+  "method": "sionna_rt",
+  "solver_elapsed_s": 0.14,
+  "sionna_version": "2.0.1"
+}

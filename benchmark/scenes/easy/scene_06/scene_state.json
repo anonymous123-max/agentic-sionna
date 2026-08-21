@@ -1,0 +1,344 @@
+{
+  "version": "2.0",
+  "meta": {
+    "created": "2026-04-10T17:15:07.905134+00:00",
+    "modified": "2026-04-10T17:15:07.905134+00:00",
+    "name": "Benchmark Easy 06",
+    "description": "Easy benchmark scene: office, 5.7x7.5m, rectangle layout, 1 TX, target 92% coverage",
+    "benchmark": {
+      "tier": "easy",
+      "index": 6,
+      "seed": 47004,
+      "target_coverage_pct": 91,
+      "shape": "rectangle",
+      "area_m2": 42.8,
+      "center_coverage_pct": 89.7,
+      "grid_best_coverage_pct": 94.5
+    }
+  },
+  "scene": {
+    "type": "indoor",
+    "origin": "SW",
+    "coordinate_system": {
+      "x": "east",
+      "y": "north",
+      "z": "up",
+      "theta_zero": "north",
+      "units": "meters"
+    },
+    "bounds": {
+      "width": 5.7,
+      "depth": 7.5,
+      "height": 3.0
+    },
+    "frequency_hz": 3500000000.0,
+    "source_format": "benchmark_generated"
+  },
+  "rooms": [
+    {
+      "id": "room_easy_06",
+      "name": "Office",
+      "type": "office",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          5.7,
+          0
+        ],
+        [
+          5.7,
+          7.5
+        ],
+        [
+          0,
+          7.5
+        ]
+      ],
+      "height": 3.0,
+      "materials": {
+        "walls": "itu_concrete",
+        "floor": "itu_concrete",
+        "ceiling": "itu_plasterboard"
+      }
+    }
+  ],
+  "walls": [
+    {
+      "id": "wall_room_easy_06_01",
+      "room_id": "room_easy_06",
+      "start": [
+        0,
+        0
+      ],
+      "end": [
+        5.7,
+        0
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": true,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_easy_06_02",
+      "room_id": "room_easy_06",
+      "start": [
+        5.7,
+        0
+      ],
+      "end": [
+        5.7,
+        7.5
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_easy_06_03",
+      "room_id": "room_easy_06",
+      "start": [
+        5.7,
+        7.5
+      ],
+      "end": [
+        0,
+        7.5
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": false,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_easy_06_04",
+      "room_id": "room_easy_06",
+      "start": [
+        0,
+        7.5
+      ],
+      "end": [
+        0,
+        0
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": false,
+      "has_window": true,
+      "has_door": false
+    },
+    {
+      "id": "wall_room_easy_06_int_05",
+      "room_id": "room_easy_06",
+      "start": [
+        3.6,
+        0.1
+      ],
+      "end": [
+        3.6,
+        5.9
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    },
+    {
+      "id": "wall_room_easy_06_int_06",
+      "room_id": "room_easy_06",
+      "start": [
+        0.2,
+        3.8
+      ],
+      "end": [
+        4.4,
+        3.8
+      ],
+      "thickness": 0.15,
+      "material": "itu_concrete",
+      "is_interior": true,
+      "has_window": false,
+      "has_door": true
+    }
+  ],
+  "furniture": [
+    {
+      "id": "furn_room_easy_06_001",
+      "type": "sofa",
+      "catalog_id": null,
+      "position": [
+        2.76,
+        0.75,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        2.0,
+        0.9,
+        0.85
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_06_002",
+      "type": "wardrobe",
+      "catalog_id": null,
+      "position": [
+        5.1,
+        2.62,
+        0.0
+      ],
+      "orientation_deg": 90,
+      "dimensions": [
+        1.2,
+        0.6,
+        2.0
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_06_003",
+      "type": "chair",
+      "catalog_id": null,
+      "position": [
+        3.51,
+        6.95,
+        0.0
+      ],
+      "orientation_deg": 180,
+      "dimensions": [
+        0.5,
+        0.5,
+        0.9
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_06_004",
+      "type": "bookcase",
+      "catalog_id": null,
+      "position": [
+        0.47,
+        3.7,
+        0.0
+      ],
+      "orientation_deg": 270,
+      "dimensions": [
+        0.8,
+        0.35,
+        1.8
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_06_005",
+      "type": "desk",
+      "catalog_id": null,
+      "position": [
+        0.92,
+        0.6,
+        0.0
+      ],
+      "orientation_deg": 0,
+      "dimensions": [
+        1.2,
+        0.6,
+        0.75
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_06_006",
+      "type": "bookcase",
+      "catalog_id": null,
+      "position": [
+        5.23,
+        3.87,
+        0.0
+      ],
+      "orientation_deg": 90,
+      "dimensions": [
+        0.8,
+        0.35,
+        1.8
+      ],
+      "material": "itu_wood",
+      "visible": true
+    },
+    {
+      "id": "furn_room_easy_06_007",
+      "type": "tv_stand",
+      "catalog_id": null,
+      "position": [
+        4.52,
+        7.0,
+        0.0
+      ],
+      "orientation_deg": 180,
+      "dimensions": [
+        1.2,
+        0.4,
+        0.5
+      ],
+      "material": "itu_wood",
+      "visible": true
+    }
+  ],
+  "transmitters": [
+    {
+      "id": "tx_room_easy_06_1",
+      "name": "AP-1",
+      "position": [
+        2.85,
+        3.75,
+        2.8
+      ],
+      "power_dbm": 20.0,
+      "frequency_hz": 3500000000.0,
+      "antenna": {
+        "type": "isotropic",
+        "pattern": null,
+        "polarization": "V",
+        "mimo_config": null
+      },
+      "orientation_deg": 0,
+      "visible": true
+    }
+  ],
+  "receivers": [
+    {
+      "id": "rx_grid_easy_06",
+      "type": "grid",
+      "height": 1.5,
+      "resolution": 0.2,
+      "bounds": [
+        [
+          0,
+          0
+        ],
+        [
+          5.7,
+          7.5
+        ]
+      ],
+      "visible": true
+    }
+  ],
+  "constraints": [],
+  "simulation_results": [],
+  "export_history": [],
+  "code_artifacts": []
+}

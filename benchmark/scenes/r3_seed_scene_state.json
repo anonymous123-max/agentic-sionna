@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "rooms": [{
+    "room_type": "living",
+    "dimensions": [6.0, 5.0],
+    "height": 2.7,
+    "wall_material": "drywall",
+    "furniture": [{
+      "id": "sofa1", "category": "sofa",
+      "position": {"x": 1.0, "y": 1.0, "theta": 0.0},
+      "dimensions": {"width": 2.0, "depth": 0.9, "height": 0.85},
+      "model_id": "", "model_path": ""
+    }],
+    "windows": []
+  }],
+  "transmitters": [],
+  "receivers": []
+}

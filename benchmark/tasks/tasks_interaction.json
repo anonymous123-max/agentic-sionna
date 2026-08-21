@@ -1,0 +1,56 @@
+{
+  "version": "0.1-scaffold",
+  "description": "Multi-turn interaction tasks. Each task is intentionally under-specified in the initial prompt. The agent should consult SKILL.md's 'When to ask vs proceed' gate and ASK at least one clarifying question. The user-simulator (driven by an LLM persona) responds with the missing parameters. Trial passes if (a) the agent asked at least one valid clarifying Q AND (b) the final simulation_result.json passes the same verifier as the equivalent single-turn task.",
+  "tasks": [
+    {
+      "id": "I001",
+      "origin_id": "U001-interactive",
+      "tier": "T1_phy_link_level",
+      "capability": "ber_curve",
+      "difficulty": "easy",
+      "split": "train",
+      "initial_prompt": "Run a BER simulation.",
+      "ground_truth": {
+        "modulation": "QPSK",
+        "channel": "AWGN",
+        "ebno_db_range": [0, 10],
+        "code": "uncoded"
+      },
+      "user_persona": "You are a wireless researcher. The agent is about to run a BER simulation but you didn't fully specify it. When asked, reveal: modulation = QPSK, channel = AWGN, Eb/N0 range = 0-10 dB, no channel coding. Be concise (≤2 sentences per turn). If asked about parameters not in the ground truth, say 'use sensible defaults'.",
+      "min_clarifying_qs": 1,
+      "max_clarifying_qs": 4,
+      "required_artifacts": ["simulation_result.json"],
+      "runner_checks": [
+        {"kind": "artifact", "name": "simulation_result.json"},
+        {"kind": "range", "field": "ber_at_0db", "min": 0.05, "max": 0.15,
+         "rationale": "QPSK AWGN Q-function ≈ 0.078 at 0 dB"},
+        {"kind": "interaction", "min_clarifying_qs": 1,
+         "rationale": "Agent must ask at least one clarifying question per SKILL.md ask-vs-proceed gate"}
+      ]
+    },
+    {
+      "id": "I002",
+      "origin_id": "U079-interactive",
+      "tier": "T0_scene_gen",
+      "capability": "scene_gen_indoor",
+      "difficulty": "medium",
+      "split": "train",
+      "initial_prompt": "Generate a scene for me.",
+      "ground_truth": {
+        "scene_type": "indoor",
+        "room_dims": [6.0, 5.0, 3.0],
+        "furniture_count": 5,
+        "tx_position": [3.0, 2.5, 2.5]
+      },
+      "user_persona": "You are setting up a wireless simulation in your office. The room is 6m × 5m × 3m. You want about 5 furniture items (sofa, desk, chair, lamp, bookcase). The TX should be ceiling-mounted near the center. Reveal these only when asked.",
+      "min_clarifying_qs": 2,
+      "max_clarifying_qs": 5,
+      "required_artifacts": ["scene_state.json"],
+      "runner_checks": [
+        {"kind": "artifact", "name": "scene_state.json"},
+        {"kind": "scene_nontrivial"},
+        {"kind": "interaction", "min_clarifying_qs": 2}
+      ]
+    }
+  ]
+}

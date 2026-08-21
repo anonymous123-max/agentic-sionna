@@ -1,0 +1,177 @@
+{
+  "version": "1.0",
+  "tier": "P1_optimize",
+  "design": "AP azimuth/downtilt optimization for single-UE throughput. 4 tasks across 2 indoor + 2 outdoor scenes. Per task the agent sweeps a 5x3 (az, dt) grid of antenna orientations using Sionna RT PathSolver, computes throughput per config from a Sionna PHY LDPC QPSK chain, and reports the optimal orientation.",
+  "verifier_strategy": "Layer A (artifacts) + Layer B (sionna_rt_used + sionna_phy_used) + Layer C (p1_oracle: (a) agent_best \u2265 0.95*ref_best, (b) agent_best \u2264 1.05*ref_best AND in sweep_table, (c) per-config path_gain_db MAE \u2264 3 dB on \u226512/15 grid points).",
+  "count": 4,
+  "tasks": [
+    {
+      "id": "P1_box_one_screen",
+      "tier": "P1_optimize",
+      "capability": "rt_optimize",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_one_screen",
+      "kind": "indoor",
+      "oracle_path": "benchmark/oracles/p1_optimize/box_one_screen/oracle.json",
+      "prompt": "An indoor low-power access point sits at (-2, 0, 4.5) m and a user is at (2, 0, 1.5) m inside the box_one_screen scene. The AP can rotate its antenna over a 5x3 grid of azimuth and downtilt angles. Find the orientation that maximises the user's downlink throughput, and report the full sweep results. Use Sionna's ray tracer (sionna.rt) for the per-configuration path gain and Sionna's PHY chain (sionna.phy.LDPC5G + Mapper/AWGN) for the throughput model; the verifier rejects closed-form FSPL or Shannon log2(1+SNR) substitutes.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P1_box_two_screens",
+      "tier": "P1_optimize",
+      "capability": "rt_optimize",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "box_two_screens",
+      "kind": "indoor",
+      "oracle_path": "benchmark/oracles/p1_optimize/box_two_screens/oracle.json",
+      "prompt": "An indoor low-power access point sits at (-2, 0, 4.5) m and a user is at (2, 0, 1.5) m inside the box_two_screens scene. The AP can rotate its antenna over a 5x3 grid of azimuth and downtilt angles. Find the orientation that maximises the user's downlink throughput, and report the full sweep results. Use Sionna's ray tracer (sionna.rt) for the per-configuration path gain and Sionna's PHY chain (sionna.phy.LDPC5G + Mapper/AWGN) for the throughput model; the verifier rejects closed-form FSPL or Shannon log2(1+SNR) substitutes.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P1_simple_street_canyon",
+      "tier": "P1_optimize",
+      "capability": "rt_optimize",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "simple_street_canyon",
+      "kind": "outdoor",
+      "oracle_path": "benchmark/oracles/p1_optimize/simple_street_canyon/oracle.json",
+      "prompt": "An outdoor low-power access point is mounted at (-15, 0, 15) m and a user is at (15, 0, 1.5) m in the simple_street_canyon scene. The AP can rotate its antenna over a 5x3 grid of azimuth and downtilt angles. Find the orientation that maximises the user's downlink throughput, and report the full sweep results. Use Sionna's ray tracer (sionna.rt) for the per-configuration path gain and Sionna's PHY chain (sionna.phy.LDPC5G + Mapper/AWGN) for the throughput model; the verifier rejects closed-form FSPL or Shannon log2(1+SNR) substitutes.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P1_etoile",
+      "tier": "P1_optimize",
+      "capability": "rt_optimize",
+      "difficulty": "medium",
+      "split": "train",
+      "scene_name": "etoile",
+      "kind": "outdoor",
+      "oracle_path": "benchmark/oracles/p1_optimize/etoile/oracle.json",
+      "prompt": "An outdoor low-power access point is mounted at (-50, 0, 30) m and a user is at (50, 0, 1.5) m in the etoile scene. The AP can rotate its antenna over a 5x3 grid of azimuth and downtilt angles. Find the orientation that maximises the user's downlink throughput, and report the full sweep results. Use Sionna's ray tracer (sionna.rt) for the per-configuration path gain and Sionna's PHY chain (sionna.phy.LDPC5G + Mapper/AWGN) for the throughput model; the verifier rejects closed-form FSPL or Shannon log2(1+SNR) substitutes.",
+      "required_artifacts": [
+        "simulation.py",
+        "simulation_result.json"
+      ],
+      "verifier": {
+        "type": "composite",
+        "subchecks": [
+          {
+            "key": "must_create_simulation_py",
+            "type": "file_exists",
+            "path": "simulation.py"
+          },
+          {
+            "key": "must_create_result_json",
+            "type": "file_exists",
+            "path": "simulation_result.json"
+          },
+          {
+            "metric": "sionna_rt_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "sionna_phy_used_check",
+            "type": "code_contains"
+          },
+          {
+            "metric": "p1_oracle_check",
+            "type": "code_contains"
+          }
+        ]
+      }
+    }
+  ]
+}
